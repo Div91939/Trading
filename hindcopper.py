@@ -6,7 +6,7 @@ import yfinance as yf
 from email.mime.text import MIMEText
 
 ticker       = "hindcopper.bo"
-csv_path      = r'C:\\Users\\Divyansh\\OneDrive\\Desktop\\IISER\\Trading\\Data\\hindcopper.csv'
+csv_path = "data/hindcopper.csv"
 #LOG_PATH       = r'C:\\Users\\Divyansh\\OneDrive\\Desktop\\IISER\\Finance_Codes\\email_log.json'
 email   = "divyanshdewan@gmail.com"
 key = "osrp rtab jvyv rcvz"
@@ -91,5 +91,5 @@ ax2.grid(True)
 ax2.axhspan(10, 35, color='red', alpha=0.2)
 ax2.axhspan(80,100, color='green', alpha=0.2)
 
-plt.tight_layout()
-plt.show()
+#plt.tight_layout()
+#plt.show()
