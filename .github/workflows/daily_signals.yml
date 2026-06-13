@@ -44,6 +44,6 @@ jobs:
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/*.csv *.json || true
-          git diff --cached --quiet || git commit -m "Auto: update data $(date +'%d-%m-%Y %H:%M UTC')"
+          git add Data/*.csv *.json || true
+          git diff --cached --quiet || git commit -m "Auto: update Data $(date +'%d-%m-%Y %H:%M UTC')"
           git push
