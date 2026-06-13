@@ -14,7 +14,7 @@ from email.mime.text import MIMEText
 TICKER   = "EICHERMOT.BO"
 DATA_DIR = os.path.join(os.path.expanduser('~'), 'OneDrive', 'Desktop', 'Finance', 'Finance_Codes')
 CSV_PATH = "data/eicher.csv"
-LOG_PATH = "data/email_log.json"
+LOG_PATH = "email_log.json"
 EMAIL_SENDER   = "divyanshdewan@gmail.com"
 EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', 'osrp rtab jvyv rcvz')
 EMAIL_RECEIVER = "divyanshdewan@gmail.com"
