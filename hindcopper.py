@@ -47,7 +47,7 @@ if today_str in df['Date'].values:
 else:
     df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
 
-df.to_csv(csv_path, index=False)
+df.to_csv(CSV_PATH, index=False)
 df = pd.read_csv(CSV_PATH)
 open=df['Open']
 close=df['Close']
