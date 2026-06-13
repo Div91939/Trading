@@ -12,7 +12,7 @@ email   = "divyanshdewan@gmail.com"
 key = "osrp rtab jvyv rcvz"
 
 
-df=pd.read_csv(csv_path)
+df=pd.read_csv(CSV_PATH)
 
 stock = yf.Ticker(ticker)
 info  = stock.info
@@ -48,7 +48,7 @@ else:
     df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
 
 df.to_csv(csv_path, index=False)
-df = pd.read_csv(csv_path)
+df = pd.read_csv(CSV_PATH)
 open=df['Open']
 close=df['Close']
 high=df['High']
