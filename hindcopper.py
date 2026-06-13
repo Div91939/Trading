@@ -6,8 +6,8 @@ import yfinance as yf
 from email.mime.text import MIMEText
 
 ticker       = "hindcopper.bo"
-csv_path = "data/hindcopper.csv"
-#LOG_PATH       = r'C:\\Users\\Divyansh\\OneDrive\\Desktop\\IISER\\Finance_Codes\\email_log.json'
+CSV_PATH = "data/hindcopper.csv"
+LOG_PATH = "email_log.json"
 email   = "divyanshdewan@gmail.com"
 key = "osrp rtab jvyv rcvz"
 
