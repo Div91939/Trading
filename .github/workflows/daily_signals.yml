@@ -32,6 +32,10 @@ jobs:
         run: python hindcopper.py
         continue-on-error: true    # if one script fails, others still run
 
+        - name: Run Hindzinc
+        run: python hindzinc.py
+        continue-on-error: true    # if one script fails, others still run
+
       - name: Run BSE
         run: python bse.py
         continue-on-error: true
