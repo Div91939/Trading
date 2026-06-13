@@ -6,13 +6,13 @@ import yfinance as yf
 from email.mime.text import MIMEText
 
 ticker       = "hindcopper.bo"
-csv_path = "data/hindcopper.csv"
-#LOG_PATH       = r'C:\\Users\\Divyansh\\OneDrive\\Desktop\\IISER\\Finance_Codes\\email_log.json'
+CSV_PATH = "Data/hindcopper.csv"
+LOG_PATH = "email_log.json"
 email   = "divyanshdewan@gmail.com"
 key = "osrp rtab jvyv rcvz"
 
 
-df=pd.read_csv(csv_path)
+df=pd.read_csv(CSV_PATH)
 
 stock = yf.Ticker(ticker)
 info  = stock.info
@@ -47,8 +47,8 @@ if today_str in df['Date'].values:
 else:
     df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
 
-df.to_csv(csv_path, index=False)
-df = pd.read_csv(csv_path)
+df.to_csv(CSV_PATH, index=False)
+df = pd.read_csv(CSV_PATH)
 open=df['Open']
 close=df['Close']
 high=df['High']
