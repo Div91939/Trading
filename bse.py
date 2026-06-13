@@ -13,8 +13,8 @@ from email.mime.text import MIMEText
 # ─────────────────────────────────────────────
 TICKER         = "BSE.ns"
 DATA_DIR       = os.path.join(os.path.expanduser('~'), 'OneDrive', 'Desktop', 'Finance', 'Finance_Codes')
-CSV_PATH       = "C:\\Users\\fourt\\OneDrive\\Desktop\\Finance\\Trading\\Data\\bse.csv"
-LOG_PATH       = os.path.join(DATA_DIR, 'email_log.json')
+CSV_PATH = "data/bse.csv"
+LOG_PATH       = "email_log.json"
 EMAIL_SENDER   = "divyanshdewan@gmail.com"
 EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', 'osrp rtab jvyv rcvz')
 EMAIL_RECEIVER = "divyanshdewan@gmail.com"
@@ -324,4 +324,4 @@ ax3.legend(fontsize=7)
 ax3.grid(alpha=0.3)
 
 plt.tight_layout()
-plt.show()
+#plt.show()
