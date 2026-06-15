@@ -1,1 +1,50 @@
+name: Daily Stock Signals
 
+on:
+  schedule:
+    - cron: '30 4 * * 1-5'
+    - cron: '0 7 * * 1-5'
+    - cron: '45 8 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  run-signals:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Hindcopper
+        run: python hindcopper.py
+        continue-on-error: true
+
+      - name: Run Hindzinc
+        run: python hindzinc.py
+        continue-on-error: true
+
+      - name: Run BSE
+        run: python bse.py
+        continue-on-error: true
+
+      - name: Run Eicher
+        run: python eicher.py
+        continue-on-error: true
+
+      - name: Commit updated CSVs
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add Data/
+          git diff --cached --quiet || git commit -m "Auto: update Data $(date +'%d-%m-%Y %H:%M UTC')"
+          git push
