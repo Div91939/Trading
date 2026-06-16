@@ -12,7 +12,7 @@ from email.mime.text import MIMEText
 # CONFIG
 # ─────────────────────────────────────────────
 TICKER         = "EDELWEISS.BO"
-CSV_PATH = "Data\\edelweiss.csv"
+CSV_PATH = "Data/edelweiss.csv"
 LOG_PATH = "email_log.json"
 EMAIL_SENDER   = "divyanshdewan@gmail.com"
 EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', 'osrp rtab jvyv rcvz')
