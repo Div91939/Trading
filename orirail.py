@@ -12,7 +12,7 @@ from email.mime.text import MIMEText
 # CONFIG
 # ─────────────────────────────────────────────
 TICKER         = "ORIRAIL.BO"
-CSV_PATH       = "C:\\Users\\fourt\\OneDrive\\Desktop\\Finance\\Trading\\Data\\orirail.csv"
+CSV_PATH       = "Data\\orirail.csv"
 LOG_PATH       = "email_log.json"
 EMAIL_SENDER   = "divyanshdewan@gmail.com"
 EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', 'osrp rtab jvyv rcvz')
