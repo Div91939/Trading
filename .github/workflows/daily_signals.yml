@@ -29,6 +29,10 @@ jobs:
       - name: Run Hindcopper
         run: python hindcopper.py
         continue-on-error: true
+        
+      - name: Run Edelweiss
+        run: python edelweiss.py
+        continue-on-error: true
 
       - name: Run Hindzinc
         run: python hindzinc.py
