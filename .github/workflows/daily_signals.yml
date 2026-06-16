@@ -34,6 +34,10 @@ jobs:
         run: python edelweiss.py
         continue-on-error: true
 
+      - name: Run Orirail
+        run: python orirail.py
+        continue-on-error: true        
+
       - name: Run Hindzinc
         run: python hindzinc.py
         continue-on-error: true
