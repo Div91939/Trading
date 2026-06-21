@@ -33,6 +33,10 @@ jobs:
       - name: Run Hindzinc
         run: python hindzinc.py
         continue-on-error: true
+        
+      - name: Run combined
+        run: python Combined.py
+        continue-on-error: true  
 
       - name: Run BSE
         run: python bse.py
