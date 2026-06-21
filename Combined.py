@@ -168,7 +168,7 @@ STOCKS = {
                   ("E6_MACD_TURN_RSI","X2_BB_UPPER")],
     },
     "ORIRAIL": {
-        "ticker": "ORIENTRAIL.NS",
+        "ticker": "ORIRAIL.BO",
         "csv_path": "Data/orirail.csv",
         "pairs": [("E4_STOCH_WILLR", "X8_BBUP_VOLFADE"),
                   ("E2_WILLR_RSI",   "X8_BBUP_VOLFADE"),
