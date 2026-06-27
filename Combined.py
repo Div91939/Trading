@@ -1,23 +1,29 @@
 import pandas as pd
 import numpy as np
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 import ta
 import smtplib
 import os
 import json
+import io
 import yfinance as yf
 from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.mime.image import MIMEImage
 
 # ─────────────────────────────────────────────
 # CONFIG
 # ─────────────────────────────────────────────
 LOG_PATH       = "email_log.json"
 EMAIL_SENDER   = "divyanshdewan@gmail.com"
-EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD', 'osrp rtab jvyv rcvz')
+EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 EMAIL_RECEIVER = "divyanshdewan@gmail.com"
 
 # ─────────────────────────────────────────────
-# SIGNAL LIBRARY — same E1-E8 / X1-X8 definitions used across every stock
-# Each function takes the indicator dict for ONE stock and a bar index i
+# SIGNAL LIBRARY — E1-E8 entries / X1-X8 exits
+# Same definitions used for every stock (no per-stock tuning)
 # ─────────────────────────────────────────────
 def e1_roc5_rsi(ind, i):
     return (not np.isnan(ind['roc5'][i]) and ind['roc5'][i] <= -8
@@ -90,25 +96,25 @@ def x8_bbup_volfade(ind, i):
             and ind['vol'][i] < 0.9 * ind['vol_ma20'][i])
 
 ENTRY_FUNCS = {
-    "E1_ROC5_RSI":     e1_roc5_rsi,
-    "E2_WILLR_RSI":    e2_willr_rsi,
-    "E3_MTF_RSI":      e3_mtf_rsi,
-    "E4_STOCH_WILLR":  e4_stoch_willr,
-    "E5_DOJI_BBLOW":   e5_doji_bblow,
-    "E6_MACD_TURN_RSI":e6_macd_turn_rsi,
-    "E7_BBLOW_RSI":    e7_bblow_rsi,
-    "E8_EMA50_BOUNCE": e8_ema50_bounce,
+    "E1_ROC5_RSI":      e1_roc5_rsi,
+    "E2_WILLR_RSI":     e2_willr_rsi,
+    "E3_MTF_RSI":       e3_mtf_rsi,
+    "E4_STOCH_WILLR":   e4_stoch_willr,
+    "E5_DOJI_BBLOW":    e5_doji_bblow,
+    "E6_MACD_TURN_RSI": e6_macd_turn_rsi,
+    "E7_BBLOW_RSI":     e7_bblow_rsi,
+    "E8_EMA50_BOUNCE":  e8_ema50_bounce,
 }
 
 EXIT_FUNCS = {
-    "X1_RSI_OVERBOUGHT":   x1_rsi_overbought,
-    "X2_BB_UPPER":         x2_bb_upper,
-    "X3_MACD_TURN_NEG":    x3_macd_turn_neg,
-    "X4_WILLR_HIGH":       x4_willr_high,
-    "X5_STOCH_HIGH":       x5_stoch_high,
-    "X6_ROC5_SURGE":       x6_roc5_surge,
-    "X7_RSI7_HIGH":        x7_rsi7_high,
-    "X8_BBUP_VOLFADE":     x8_bbup_volfade,
+    "X1_RSI_OVERBOUGHT": x1_rsi_overbought,
+    "X2_BB_UPPER":       x2_bb_upper,
+    "X3_MACD_TURN_NEG":  x3_macd_turn_neg,
+    "X4_WILLR_HIGH":     x4_willr_high,
+    "X5_STOCH_HIGH":     x5_stoch_high,
+    "X6_ROC5_SURGE":     x6_roc5_surge,
+    "X7_RSI7_HIGH":      x7_rsi7_high,
+    "X8_BBUP_VOLFADE":   x8_bbup_volfade,
 }
 
 ENTRY_DESCRIPTIONS = {
@@ -119,85 +125,39 @@ ENTRY_DESCRIPTIONS = {
     "E5_DOJI_BBLOW":    "Doji-style candle (small body) forming at/near the lower Bollinger Band.",
     "E6_MACD_TURN_RSI": "MACD histogram turning up from negative territory while RSI(14) < 45.",
     "E7_BBLOW_RSI":     "Close below the lower Bollinger Band AND RSI(14) < 40. Double oversold confirmation.",
-    "E8_EMA50_BOUNCE":  "Price within 1.5% of EMA50 from above, with RSI(14) between 35-50 — a trend-pullback bounce.",
+    "E8_EMA50_BOUNCE":  "Price within 1.5% of EMA50 from above, with RSI(14) between 35-50 - a trend-pullback bounce.",
 }
 
 EXIT_DESCRIPTIONS = {
-    "X1_RSI_OVERBOUGHT": "RSI(14) crosses above 70 — momentum has run hot.",
-    "X2_BB_UPPER":       "Close breaks above the upper Bollinger Band — price at statistical extension.",
-    "X3_MACD_TURN_NEG":  "MACD histogram turns down from positive territory — momentum rolling over. (Generally the weakest exit historically — fires early, caps gains.)",
-    "X4_WILLR_HIGH":     "Williams %R rises above -10 — price near the top of its 14-day range.",
-    "X5_STOCH_HIGH":     "Stochastic %K rises above 85 — short-term overbought.",
-    "X6_ROC5_SURGE":     "5-day rate of change exceeds +12% — sharp momentum surge, take profit into strength.",
-    "X7_RSI7_HIGH":      "RSI(7) rises above 75 — fast oscillator overbought.",
-    "X8_BBUP_VOLFADE":   "Close above upper BB AND volume fading below its 20-day average — move has run out of fuel. Strongest exit across most stocks tested.",
+    "X1_RSI_OVERBOUGHT": "RSI(14) > 70 - momentum has run hot.",
+    "X2_BB_UPPER":       "Close breaks above upper Bollinger Band - price at statistical extension.",
+    "X3_MACD_TURN_NEG":  "MACD histogram turns down from positive - momentum rolling over. (Weakest exit: fires early, caps gains.)",
+    "X4_WILLR_HIGH":     "Williams %R > -10 - price near the top of its 14-day range.",
+    "X5_STOCH_HIGH":     "Stochastic %K > 85 - short-term overbought.",
+    "X6_ROC5_SURGE":     "5-day ROC > +12% - sharp momentum surge, take profit into strength.",
+    "X7_RSI7_HIGH":      "RSI(7) > 75 - fast oscillator overbought.",
+    "X8_BBUP_VOLFADE":   "Close above upper BB AND volume fading below 20d average - move exhausted. Strongest exit across most stocks.",
 }
 
 # ─────────────────────────────────────────────
-# STOCK UNIVERSE
-# Each stock: ticker, CSV path, and curated entry/exit pairs
-# (best-recommended pairs per stock from backtesting; not all 64 combos)
+# STOCK UNIVERSE — all stocks use the full generic E1-E8/X1-X8 set
 # ─────────────────────────────────────────────
 STOCKS = {
-    "BSE": {
-        "ticker": "BSE.ns",
-        "csv_path": "Data/bse.csv",
-        "pairs": [("E2_WILLR_RSI", "X2_BB_UPPER"),
-                  ("E3_MTF_RSI",   "X8_BBUP_VOLFADE"),
-                  ("E4_STOCH_WILLR","X8_BBUP_VOLFADE")],
-    },
-    "EDELWEISS": {
-        "ticker": "EDELWEISS.BO",
-        "csv_path": "Data/edelweiss.csv",
-        "pairs": [("E1_ROC5_RSI",      "X3_MACD_TURN_NEG"),
-                  ("E6_MACD_TURN_RSI", "X3_MACD_TURN_NEG"),
-                  ("E7_BBLOW_RSI",     "X2_BB_UPPER")],
-    },
-    "EICHER": {
-        "ticker": "EICHERMOT.BO",
-        "csv_path": "Data/eicher.csv",
-        "pairs": [("E3_MTF_RSI",       "X8_BBUP_VOLFADE"),
-                  ("E6_MACD_TURN_RSI", "X8_BBUP_VOLFADE"),
-                  ("E7_BBLOW_RSI",     "X2_BB_UPPER")],
-    },
-    "HINDCOPPER": {
-        "ticker": "HINDCOPPER.NS",
-        "csv_path": "Data/hindcopper.csv",
-        "pairs": [("E1_ROC5_RSI",   "X1_RSI_OVERBOUGHT"),
-                  ("E2_WILLR_RSI",  "X1_RSI_OVERBOUGHT"),
-                  ("E6_MACD_TURN_RSI","X2_BB_UPPER")],
-    },
-    "ORIRAIL": {
-        "ticker": "ORIRAIL.BO",
-        "csv_path": "Data/orirail.csv",
-        "pairs": [("E4_STOCH_WILLR", "X8_BBUP_VOLFADE"),
-                  ("E2_WILLR_RSI",   "X8_BBUP_VOLFADE"),
-                  ("E1_ROC5_RSI",    "X1_RSI_OVERBOUGHT")],
-    },
-    "INDOTHAI": {
-        "ticker": "INDOTHAI.NS",
-        "csv_path": "Data/indothai.csv",
-        "pairs": [("E3_MTF_RSI", "X8_BBUP_VOLFADE"),
-                  ("E3_MTF_RSI", "X5_STOCH_HIGH"),
-                  ("E3_MTF_RSI", "X6_ROC5_SURGE")],
-    },
-    "PARAS": {
-        "ticker": "PARAS.NS",
-        "csv_path": "Data/paras.csv",
-        "pairs": [("E3_MTF_RSI",      "X4_WILLR_HIGH"),
-                  ("E4_STOCH_WILLR",  "X2_BB_UPPER"),
-                  ("E3_MTF_RSI",      "X2_BB_UPPER")],
-    },
-    "HINDZINC": {
-        "ticker": "HINDZINC.BO",
-        "csv_path": "Data/hindzinc.csv",
-        "pairs": [("E3_MTF_RSI",   "X1_RSI_OVERBOUGHT"),
-                  ("E2_WILLR_RSI", "X1_RSI_OVERBOUGHT"),
-                  ("E7_BBLOW_RSI", "X1_RSI_OVERBOUGHT")],
-    },
-    # SARTHAKGL intentionally omitted — backtesting found no statistically
-    # significant entry-exit pair for this stock (test-period was a clean
-    # uptrend with no pullbacks for a mean-reversion strategy to catch).
+    "BSE":        {"ticker": "BSE.NS",         "csv_path": "Data/bse.csv"},
+    "EDELWEISS":  {"ticker": "EDELWEISS.BO",   "csv_path": "Data/edelweiss.csv"},
+    "EICHER":     {"ticker": "EICHERMOT.BO",   "csv_path": "Data/eicher.csv"},
+    "HINDCOPPER": {"ticker": "HINDCOPPER.NS",  "csv_path": "Data/hindcopper.csv"},
+    "HINDZINC":   {"ticker": "HINDZINC.BO",    "csv_path": "Data/hindzinc.csv"},
+    "INDOTHAI":   {"ticker": "INDOTHAI.NS",    "csv_path": "Data/indothai.csv"},
+    "ORIRAIL":    {"ticker": "ORIRAIL.BO",     "csv_path": "Data/orirail.csv"},
+    "PARAS":      {"ticker": "PARAS.NS",       "csv_path": "Data/paras.csv"},
+    "DOLAT":      {"ticker": "DOLAT.BO",       "csv_path": "Data/dolat.csv"},
+    "TITAN":      {"ticker": "TITAN.NS",       "csv_path": "Data/titan.csv"},
+    "TRENT":      {"ticker": "TRENT.NS",       "csv_path": "Data/trent.csv"},
+    "SBIN":       {"ticker": "SBIN.NS",        "csv_path": "Data/sbin.csv"},
+    "CDSL":       {"ticker": "CDSL.NS",        "csv_path": "Data/cdsl.csv"},
+    "RECLTD":     {"ticker": "RECLTD.NS",      "csv_path": "Data/recltd.csv"},
+    "TITAGARH":   {"ticker": "TITAGARH.NS",    "csv_path": "Data/titagarh.csv"},
 }
 
 # ─────────────────────────────────────────────
@@ -208,8 +168,8 @@ def fetch_and_update_csv(ticker, csv_path):
     info  = stock.info
 
     company_name = info.get('longName') or info.get('shortName') or ticker
-    avg_volume    = info.get('averageDailyVolume10Day') or 0
-    volume        = info.get('volume') or 0
+    avg_volume   = info.get('averageDailyVolume10Day') or 0
+    volume       = info.get('volume') or 0
 
     hist_today = stock.history(period="1d", interval="1d")
     if hist_today.empty:
@@ -234,10 +194,8 @@ def fetch_and_update_csv(ticker, csv_path):
         df = pd.DataFrame([new_row])
         df.to_csv(csv_path, index=False)
         df = pd.read_csv(csv_path)
-        meta = {
-            'company': company_name, 'ticker': ticker, 'date': today_str,
-            'volume': volume, 'avg_volume': avg_volume,
-        }
+        meta = {'company': company_name, 'ticker': ticker, 'date': today_str,
+                'volume': volume, 'avg_volume': avg_volume}
         return df, meta
 
     df = pd.read_csv(csv_path)
@@ -254,14 +212,12 @@ def fetch_and_update_csv(ticker, csv_path):
     df.to_csv(csv_path, index=False)
     df = pd.read_csv(csv_path)
 
-    meta = {
-        'company': company_name, 'ticker': ticker, 'date': today_str,
-        'volume': volume, 'avg_volume': avg_volume,
-    }
+    meta = {'company': company_name, 'ticker': ticker, 'date': today_str,
+            'volume': volume, 'avg_volume': avg_volume}
     return df, meta
 
 # ─────────────────────────────────────────────
-# 2. COMPUTE INDICATOR SET FOR ONE STOCK
+# 2. COMPUTE INDICATORS FOR ONE STOCK
 # ─────────────────────────────────────────────
 def compute_indicators(df):
     close  = np.array(df['Close'])
@@ -276,6 +232,7 @@ def compute_indicators(df):
 
     bb     = ta.volatility.BollingerBands(df["Close"], window=25, window_dev=2)
     bb_up  = np.array(bb.bollinger_hband())
+    bb_mav = np.array(bb.bollinger_mavg())
     bb_low = np.array(bb.bollinger_lband())
 
     stoch = np.array(ta.momentum.StochasticOscillator(
@@ -293,13 +250,57 @@ def compute_indicators(df):
     return {
         'close': close, 'high': high, 'low': low, 'open_': open_, 'vol': vol,
         'rsi14': rsi14, 'rsi7': rsi7, 'rsi21': rsi21,
-        'bb_up': bb_up, 'bb_low': bb_low,
+        'bb_up': bb_up, 'bb_mav': bb_mav, 'bb_low': bb_low,
         'stoch': stoch, 'willr': willr, 'macd_h': macd_h,
         'ema50': ema50, 'vol_ma20': vol_ma20, 'roc5': roc5,
     }
 
 # ─────────────────────────────────────────────
-# 3. EMAIL LOG (dedup so we don't re-send same-day alerts)
+# 3. PLOT — price+BB subplot, RSI subplot. Returns PNG bytes.
+# ─────────────────────────────────────────────
+def build_plot(ind, company_name, ticker, date_label, lookback=120):
+    n = len(ind['close'])
+    start = max(0, n - lookback)
+    x = np.arange(start, n)
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 7),
+                                    gridspec_kw={'height_ratios': [2, 1]},
+                                    sharex=True)
+    fig.suptitle(f"{company_name} ({ticker}) - {date_label}", fontsize=12, fontweight='bold')
+
+    ax1.plot(x, ind['close'][start:n], color='black', lw=1.3, label='Close')
+    ax1.plot(x, ind['bb_up'][start:n], color='green', lw=0.8, ls='--', label='BB Upper')
+    ax1.plot(x, ind['bb_low'][start:n], color='red', lw=0.8, ls='--', label='BB Lower')
+    ax1.plot(x, ind['bb_mav'][start:n], color='steelblue', lw=0.8, ls='--', label='BB Mid')
+    ax1.fill_between(x, ind['bb_low'][start:n], ind['bb_up'][start:n], alpha=0.05, color='steelblue')
+    ax1.set_ylabel("Price")
+    ax1.legend(loc='upper left', fontsize=7, ncol=2)
+    ax1.grid(alpha=0.3)
+
+    ax2.plot(x, ind['rsi14'][start:n], color='darkorange', lw=1.2, label='RSI(14)')
+    ax2.axhline(70, color='red', ls='--', lw=0.8)
+    ax2.axhline(35, color='green', ls='--', lw=0.8)
+    ax2.axhline(50, color='gray', ls=':', lw=0.6)
+    ax2.fill_between(x, ind['rsi14'][start:n], 35,
+                      where=(ind['rsi14'][start:n] < 35), alpha=0.2, color='green')
+    ax2.fill_between(x, ind['rsi14'][start:n], 70,
+                      where=(ind['rsi14'][start:n] > 70), alpha=0.2, color='red')
+    ax2.set_ylim(0, 100)
+    ax2.set_ylabel("RSI")
+    ax2.set_xlabel("Bar index")
+    ax2.legend(loc='upper left', fontsize=7)
+    ax2.grid(alpha=0.3)
+
+    plt.tight_layout()
+
+    buf = io.BytesIO()
+    fig.savefig(buf, format='png', dpi=110)
+    plt.close(fig)
+    buf.seek(0)
+    return buf.read()
+
+# ─────────────────────────────────────────────
+# 4. EMAIL LOG — dedup so we don't re-send same-day alerts
 # ─────────────────────────────────────────────
 def load_log():
     if os.path.exists(LOG_PATH):
@@ -317,28 +318,36 @@ def save_log(log):
     with open(LOG_PATH, 'w') as f:
         json.dump(log, f)
 
-def send_email(subject, body):
-    msg = MIMEText(body)
+def send_email_with_attachments(subject, body, attachments):
+    """attachments: list of (filename, png_bytes) tuples"""
+    msg = MIMEMultipart()
     msg['Subject'] = subject
     msg['From']    = EMAIL_SENDER
     msg['To']      = EMAIL_RECEIVER
+    msg.attach(MIMEText(body, 'plain'))
+
+    for filename, png_bytes in attachments:
+        img = MIMEImage(png_bytes, name=filename)
+        msg.attach(img)
+
     try:
         with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
             server.login(EMAIL_SENDER, EMAIL_PASSWORD)
             server.send_message(msg)
-        print(f"Email sent: {subject}")
+        print(f"Email sent: {subject} ({len(attachments)} attachment(s))")
         return True
     except Exception as e:
         print(f"Email failed: {e}")
         return False
 
 # ─────────────────────────────────────────────
-# 4. MAIN LOOP — scan every stock for today's signals
+# 5. MAIN LOOP — scan every stock for today's signals
 # ─────────────────────────────────────────────
 def main():
     log = load_log()
     today_date_label = None
     report_sections = []
+    plot_attachments = []
 
     for stock_name, cfg in STOCKS.items():
         print(f"\n--- {stock_name} ---")
@@ -356,16 +365,12 @@ def main():
         ind = compute_indicators(df)
         i_today = len(ind['close']) - 1
 
-        # which entries/exits are actually used by this stock's curated pairs
-        used_entries = sorted({p[0] for p in cfg["pairs"]})
-        used_exits   = sorted({p[1] for p in cfg["pairs"]})
+        fired_entries = [name for name, fn in ENTRY_FUNCS.items() if fn(ind, i_today)]
+        fired_exits   = [name for name, fn in EXIT_FUNCS.items()  if fn(ind, i_today)]
 
-        fired_entries = [name for name in used_entries if ENTRY_FUNCS[name](ind, i_today)]
-        fired_exits   = [name for name in used_exits   if EXIT_FUNCS[name](ind, i_today)]
-
-        for name in used_entries:
+        for name in ENTRY_FUNCS:
             print(f"  ENTRY {name}: {'TRIGGERED' if name in fired_entries else 'no'}")
-        for name in used_exits:
+        for name in EXIT_FUNCS:
             print(f"  EXIT  {name}: {'TRIGGERED' if name in fired_exits else 'no'}")
 
         if not fired_entries and not fired_exits:
@@ -383,8 +388,6 @@ def main():
             tag = " [already sent today]" if log.get(log_key) == today_date_label else ""
             lines.append(f"\nENTRY: {name}{tag}")
             lines.append(f"  {ENTRY_DESCRIPTIONS.get(name, '')}")
-            recommended_exits = sorted({p[1] for p in cfg["pairs"] if p[0] == name})
-            lines.append(f"  Recommended exit(s): {', '.join(recommended_exits)}")
             if not tag:
                 log[log_key] = today_date_label
 
@@ -398,6 +401,10 @@ def main():
 
         report_sections.append("\n".join(lines))
 
+        # Build plot only for stocks with a fresh (not-already-sent) trigger today
+        png_bytes = build_plot(ind, meta['company'], meta['ticker'], today_date_label)
+        plot_attachments.append((f"{stock_name}_{today_date_label}.png", png_bytes))
+
     save_log(log)
 
     if not report_sections:
@@ -409,7 +416,11 @@ def main():
         f"Stocks scanned: {len(STOCKS)}\n"
         + "\n".join(report_sections)
     )
-    send_email(f"[Daily Scan] {len(report_sections)} stock(s) with signals — {today_date_label}", full_body)
+    send_email_with_attachments(
+        f"[Daily Scan] {len(report_sections)} stock(s) with signals — {today_date_label}",
+        full_body,
+        plot_attachments
+    )
 
 if __name__ == "__main__":
     main()

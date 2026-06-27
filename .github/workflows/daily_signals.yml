@@ -1,11 +1,6 @@
 name: Daily Stock Signals
 
 on:
-  schedule:
-    - cron: '30 4 * * 1-5'
-    - cron: '0 7 * * 1-5'
-    - cron: '45 8 * * 1-5'
-    - cron: '25 9 * * 1-5'
   workflow_dispatch:
 
 permissions:
@@ -26,25 +21,10 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run Hindcopper
-        run: python hindcopper.py
-        continue-on-error: true   
-
-      - name: Run Hindzinc
-        run: python hindzinc.py
-        continue-on-error: true
-        
-      - name: Run combined
+      - name: Run Combined
+        env:
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
         run: python Combined.py
-        continue-on-error: true  
-
-      - name: Run BSE
-        run: python bse.py
-        continue-on-error: true
-
-      - name: Run Eicher
-        run: python eicher.py
-        continue-on-error: true
 
       - name: Commit updated CSVs
         run: |
