@@ -23,7 +23,7 @@ EMAIL_RECEIVER = "divyanshdewan@gmail.com"
 
 # ─────────────────────────────────────────────
 # SIGNAL LIBRARY — E1-E8 entries / X1-X8 exits
-# Same definitions used for every stock (no per-stock tuning)
+# Same definitions used for every stock 
 # ─────────────────────────────────────────────
 def e1_roc5_rsi(ind, i):
     return (not np.isnan(ind['roc5'][i]) and ind['roc5'][i] <= -8
@@ -140,7 +140,7 @@ EXIT_DESCRIPTIONS = {
 }
 
 # ─────────────────────────────────────────────
-# STOCK UNIVERSE — all stocks use the full generic E1-E8/X1-X8 set
+
 # ─────────────────────────────────────────────
 STOCKS = {
     "BSE":        {"ticker": "BSE.NS",         "csv_path": "Data/bse.csv"},
