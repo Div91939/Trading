@@ -258,24 +258,48 @@ def compute_indicators(df):
 # ─────────────────────────────────────────────
 # 3. PLOT — price+BB subplot, RSI subplot. Returns PNG bytes.
 # ─────────────────────────────────────────────
+def draw_candlesticks(ax, x_indices, open_, high, low, close):
+    """Draw candlestick bodies and wicks. Green = up candle, Red = down candle."""
+    width_body = 0.6
+    for xi, o, h, l, c in zip(x_indices, open_, high, low, close):
+        color  = '#26a69a' if c >= o else '#ef5350'   # teal up, red down
+        body_lo = min(o, c)
+        body_hi = max(o, c)
+        # Wick (high-low line)
+        ax.plot([xi, xi], [l, h], color=color, lw=0.8, zorder=2)
+        # Body (filled rectangle)
+        ax.add_patch(plt.Rectangle(
+            (xi - width_body / 2, body_lo),
+            width_body, body_hi - body_lo,
+            facecolor=color, edgecolor=color, lw=0.4, zorder=3
+        ))
+
 def build_plot(ind, company_name, ticker, date_label, lookback=120):
     n = len(ind['close'])
     start = max(0, n - lookback)
     x = np.arange(start, n)
 
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 7),
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8),
                                     gridspec_kw={'height_ratios': [2, 1]},
                                     sharex=True)
     fig.suptitle(f"{company_name} ({ticker}) - {date_label}", fontsize=12, fontweight='bold')
 
-    ax1.plot(x, ind['close'][start:n], color='black', lw=1.3, label='Close')
-    ax1.plot(x, ind['bb_up'][start:n], color='green', lw=0.8, ls='--', label='BB Upper')
-    ax1.plot(x, ind['bb_low'][start:n], color='red', lw=0.8, ls='--', label='BB Lower')
-    ax1.plot(x, ind['bb_mav'][start:n], color='steelblue', lw=0.8, ls='--', label='BB Mid')
+    # Candlesticks
+    draw_candlesticks(
+        ax1, x,
+        ind['open_'][start:n], ind['high'][start:n],
+        ind['low'][start:n],   ind['close'][start:n]
+    )
+
+    # Bollinger Bands overlaid on candlesticks
+    ax1.plot(x, ind['bb_up'][start:n], color='green', lw=0.9, ls='--', label='BB Upper', zorder=4)
+    ax1.plot(x, ind['bb_low'][start:n], color='red', lw=0.9, ls='--', label='BB Lower', zorder=4)
+    ax1.plot(x, ind['bb_mav'][start:n], color='steelblue', lw=0.9, ls='--', label='BB Mid', zorder=4)
     ax1.fill_between(x, ind['bb_low'][start:n], ind['bb_up'][start:n], alpha=0.05, color='steelblue')
+    ax1.set_xlim(start - 0.5, n - 0.5)
     ax1.set_ylabel("Price")
     ax1.legend(loc='upper left', fontsize=7, ncol=2)
-    ax1.grid(alpha=0.3)
+    ax1.grid(alpha=0.3, zorder=1)
 
     ax2.plot(x, ind['rsi14'][start:n], color='darkorange', lw=1.2, label='RSI(14)')
     ax2.axhline(70, color='red', ls='--', lw=0.8)
