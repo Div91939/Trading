@@ -1,3 +1,29 @@
+"""
+combined_new.py  —  Daily Signal Scanner (New Strategy)
+========================================================
+Two strategies, both regime-gated:
+
+  REGIME DETECTION (runs first on every bar):
+    UP    → price above rising MA50, ADX > threshold, DI+ > DI-
+    DOWN  → price below falling MA50, ADX > threshold, DI- > DI+
+    RANGE → everything else
+
+  REV signal  (fires in RANGE only):
+    - 20-day return < dd_thresh   (meaningful dislocation)
+    - Volume ratio  > vol_thresh  (real sellers, not drift)
+    - ADX           < adx_ceil    (confirmed ranging)
+    → Hold 30 days, 25% stop loss
+
+  MOM signal  (fires in UP only):
+    - 60-day return > ret_thresh  (real momentum)
+    - Volume ratio  > vol_thresh  (participation behind the move)
+    - ADX           > adx_floor   (confirmed trend strength)
+    - DI+ > DI-                   (direction confirmed)
+    → Hold 30 days, 25% stop loss
+
+Run daily. Fetches latest bar, appends to CSV, checks signals, emails alert.
+"""
+
 import pandas as pd
 import numpy as np
 import matplotlib
@@ -13,438 +39,536 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
 
-# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────────
 # CONFIG
-# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────────
+
 LOG_PATH       = "email_log.json"
 EMAIL_SENDER   = "divyanshdewan@gmail.com"
-EMAIL_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
 EMAIL_RECEIVER = "divyanshdewan@gmail.com"
 
-# ─────────────────────────────────────────────
-# SIGNAL LIBRARY — E1-E8 entries / X1-X8 exits
-# Same definitions used for every stock 
-# ─────────────────────────────────────────────
-def e1_roc5_rsi(ind, i):
-    return (not np.isnan(ind['roc5'][i]) and ind['roc5'][i] <= -8
-            and not np.isnan(ind['rsi14'][i]) and ind['rsi14'][i] < 45)
+# Regime detection — fixed across all stocks
+REG_MA_SLOPE = 0.3    # MA50 slope threshold (% over 20 bars)
+REG_ADX      = 20     # ADX threshold for trend confirmation
 
-def e2_willr_rsi(ind, i):
-    return (not np.isnan(ind['willr'][i]) and ind['willr'][i] < -90
-            and not np.isnan(ind['rsi14'][i]) and ind['rsi14'][i] < 45)
+# Per-stock config:
+#   ticker      — yfinance ticker string
+#   csv_path    — local CSV path
+#   RevDD       — max 20d return to trigger REV (negative %)
+#   RevVol      — min volume ratio vs 20d avg to trigger REV
+#   RevADX      — max ADX to trigger REV (confirms ranging)
+#   MomRet      — min 60d return to trigger MOM (positive %)
+#   MomVol      — min volume ratio vs 20d avg to trigger MOM
+#   MomADX      — min ADX to trigger MOM (confirms trend)
 
-def e3_mtf_rsi(ind, i):
-    return (not np.isnan(ind['rsi7'][i]) and not np.isnan(ind['rsi14'][i]) and not np.isnan(ind['rsi21'][i])
-            and ind['rsi7'][i] < 35 and ind['rsi14'][i] < 40 and ind['rsi21'][i] < 45)
-
-def e4_stoch_willr(ind, i):
-    return (not np.isnan(ind['stoch'][i]) and ind['stoch'][i] < 15
-            and not np.isnan(ind['willr'][i]) and ind['willr'][i] < -85)
-
-def e5_doji_bblow(ind, i):
-    body = abs(ind['close'][i] - ind['open_'][i])
-    rng  = ind['high'][i] - ind['low'][i]
-    return (rng > 0 and body / rng < 0.1
-            and not np.isnan(ind['bb_low'][i]) and ind['close'][i] <= ind['bb_low'][i] * 1.02)
-
-def e6_macd_turn_rsi(ind, i):
-    if i < 1:
-        return False
-    macd_h = ind['macd_h']
-    return (not np.isnan(macd_h[i]) and not np.isnan(macd_h[i-1])
-            and macd_h[i] > macd_h[i-1] and macd_h[i-1] < 0
-            and not np.isnan(ind['rsi14'][i]) and ind['rsi14'][i] < 45)
-
-def e7_bblow_rsi(ind, i):
-    return (not np.isnan(ind['bb_low'][i]) and ind['close'][i] < ind['bb_low'][i]
-            and not np.isnan(ind['rsi14'][i]) and ind['rsi14'][i] < 40)
-
-def e8_ema50_bounce(ind, i):
-    ema50 = ind['ema50']
-    return (not np.isnan(ema50[i]) and abs(ind['close'][i] / ema50[i] - 1) < 0.015
-            and ind['close'][i] >= ema50[i]
-            and not np.isnan(ind['rsi14'][i]) and 35 <= ind['rsi14'][i] <= 50)
-
-def x1_rsi_overbought(ind, i):
-    return not np.isnan(ind['rsi14'][i]) and ind['rsi14'][i] > 70
-
-def x2_bb_upper(ind, i):
-    return not np.isnan(ind['bb_up'][i]) and ind['close'][i] > ind['bb_up'][i]
-
-def x3_macd_turn_neg(ind, i):
-    if i < 1:
-        return False
-    macd_h = ind['macd_h']
-    return (not np.isnan(macd_h[i]) and not np.isnan(macd_h[i-1])
-            and macd_h[i] < macd_h[i-1] and macd_h[i-1] > 0)
-
-def x4_willr_high(ind, i):
-    return not np.isnan(ind['willr'][i]) and ind['willr'][i] > -10
-
-def x5_stoch_high(ind, i):
-    return not np.isnan(ind['stoch'][i]) and ind['stoch'][i] > 85
-
-def x6_roc5_surge(ind, i):
-    return not np.isnan(ind['roc5'][i]) and ind['roc5'][i] > 12
-
-def x7_rsi7_high(ind, i):
-    return not np.isnan(ind['rsi7'][i]) and ind['rsi7'][i] > 75
-
-def x8_bbup_volfade(ind, i):
-    return (not np.isnan(ind['bb_up'][i]) and ind['close'][i] > ind['bb_up'][i]
-            and not np.isnan(ind['vol_ma20'][i]) and ind['vol_ma20'][i] > 0
-            and ind['vol'][i] < 0.9 * ind['vol_ma20'][i])
-
-ENTRY_FUNCS = {
-    "E1_ROC5_RSI":      e1_roc5_rsi,
-    "E2_WILLR_RSI":     e2_willr_rsi,
-    "E3_MTF_RSI":       e3_mtf_rsi,
-    "E4_STOCH_WILLR":   e4_stoch_willr,
-    "E5_DOJI_BBLOW":    e5_doji_bblow,
-    "E6_MACD_TURN_RSI": e6_macd_turn_rsi,
-    "E7_BBLOW_RSI":     e7_bblow_rsi,
-    "E8_EMA50_BOUNCE":  e8_ema50_bounce,
-}
-
-EXIT_FUNCS = {
-    "X1_RSI_OVERBOUGHT": x1_rsi_overbought,
-    "X2_BB_UPPER":       x2_bb_upper,
-    "X3_MACD_TURN_NEG":  x3_macd_turn_neg,
-    "X4_WILLR_HIGH":     x4_willr_high,
-    "X5_STOCH_HIGH":     x5_stoch_high,
-    "X6_ROC5_SURGE":     x6_roc5_surge,
-    "X7_RSI7_HIGH":      x7_rsi7_high,
-    "X8_BBUP_VOLFADE":   x8_bbup_volfade,
-}
-
-ENTRY_DESCRIPTIONS = {
-    "E1_ROC5_RSI":      "5-day rate of change <= -8% AND RSI(14) < 45. Sharp short-term drop with confirming oversold momentum.",
-    "E2_WILLR_RSI":     "Williams %R < -90 AND RSI(14) < 45. Price near the bottom of its 14-day range with RSI confirmation.",
-    "E3_MTF_RSI":       "RSI(7) < 35 AND RSI(14) < 40 AND RSI(21) < 45. Three timeframes all confirming deep oversold.",
-    "E4_STOCH_WILLR":   "Stochastic %K < 15 AND Williams %R < -85. Double oversold across momentum oscillators.",
-    "E5_DOJI_BBLOW":    "Doji-style candle (small body) forming at/near the lower Bollinger Band.",
-    "E6_MACD_TURN_RSI": "MACD histogram turning up from negative territory while RSI(14) < 45.",
-    "E7_BBLOW_RSI":     "Close below the lower Bollinger Band AND RSI(14) < 40. Double oversold confirmation.",
-    "E8_EMA50_BOUNCE":  "Price within 1.5% of EMA50 from above, with RSI(14) between 35-50 - a trend-pullback bounce.",
-}
-
-EXIT_DESCRIPTIONS = {
-    "X1_RSI_OVERBOUGHT": "RSI(14) > 70 - momentum has run hot.",
-    "X2_BB_UPPER":       "Close breaks above upper Bollinger Band - price at statistical extension.",
-    "X3_MACD_TURN_NEG":  "MACD histogram turns down from positive - momentum rolling over. (Weakest exit: fires early, caps gains.)",
-    "X4_WILLR_HIGH":     "Williams %R > -10 - price near the top of its 14-day range.",
-    "X5_STOCH_HIGH":     "Stochastic %K > 85 - short-term overbought.",
-    "X6_ROC5_SURGE":     "5-day ROC > +12% - sharp momentum surge, take profit into strength.",
-    "X7_RSI7_HIGH":      "RSI(7) > 75 - fast oscillator overbought.",
-    "X8_BBUP_VOLFADE":   "Close above upper BB AND volume fading below 20d average - move exhausted. Strongest exit across most stocks.",
-}
-
-# ─────────────────────────────────────────────
-
-# ─────────────────────────────────────────────
 STOCKS = {
-    "BSE":        {"ticker": "BSE.NS",         "csv_path": "Data/bse.csv"},
-    "EDELWEISS":  {"ticker": "EDELWEISS.BO",   "csv_path": "Data/edelweiss.csv"},
-    "EICHER":     {"ticker": "EICHERMOT.BO",   "csv_path": "Data/eicher.csv"},
-    "HINDCOPPER": {"ticker": "HINDCOPPER.NS",  "csv_path": "Data/hindcopper.csv"},
-    "HINDZINC":   {"ticker": "HINDZINC.BO",    "csv_path": "Data/hindzinc.csv"},
-    "INDOTHAI":   {"ticker": "INDOTHAI.NS",    "csv_path": "Data/indothai.csv"},
-    "ORIRAIL":    {"ticker": "ORIRAIL.BO",     "csv_path": "Data/orirail.csv"},
-    "PARAS":      {"ticker": "PARAS.NS",       "csv_path": "Data/paras.csv"},
-    "DOLAT":      {"ticker": "DOLAT.BO",       "csv_path": "Data/dolat.csv"},
-    "TITAN":      {"ticker": "TITAN.NS",       "csv_path": "Data/titan.csv"},
-    "TRENT":      {"ticker": "TRENT.NS",       "csv_path": "Data/trent.csv"},
-    "SBIN":       {"ticker": "SBIN.NS",        "csv_path": "Data/sbin.csv"},
-    "CDSL":       {"ticker": "CDSL.NS",        "csv_path": "Data/cdsl.csv"},
-    "RECLTD":     {"ticker": "RECLTD.NS",      "csv_path": "Data/recltd.csv"},
-    "TITAGARH":   {"ticker": "TITAGARH.NS",    "csv_path": "Data/titagarh.csv"},
+    "BSE": {
+        "ticker":   "BSE.NS",
+        "csv_path": "Data/bse.csv",
+        "RevDD": -8,  "RevVol": 1.2, "RevADX": 20,
+        "MomRet": 10, "MomVol": 1.5, "MomADX": 30,
+    },
+    "CDSL": {
+        "ticker":   "CDSL.NS",
+        "csv_path": "Data/cdsl.csv",
+        "RevDD": -8,  "RevVol": 1.2, "RevADX": 25,
+        "MomRet": 20, "MomVol": 1.2, "MomADX": 25,
+    },
+    "EDELWEISS": {
+        "ticker":   "EDELWEISS.BO",
+        "csv_path": "Data/edelweiss.csv",
+        "RevDD": -8,  "RevVol": 1.8, "RevADX": 30,
+        "MomRet": 10, "MomVol": 1.5, "MomADX": 30,
+    },
+    "EICHER": {
+        "ticker":   "EICHERMOT.BO",
+        "csv_path": "Data/eicher.csv",
+        "RevDD": -8,  "RevVol": 1.2, "RevADX": 20,
+        "MomRet": 10, "MomVol": 1.2, "MomADX": 25,
+    },
+    "HINDCOPPER": {
+        "ticker":   "HINDCOPPER.NS",
+        "csv_path": "Data/hindcopper.csv",
+        "RevDD": -12, "RevVol": 1.2, "RevADX": 25,
+        "MomRet": 10, "MomVol": 1.5, "MomADX": 30,
+    },
+    "HINDZINC": {
+        "ticker":   "HINDZINC.BO",
+        "csv_path": "Data/hindzinc.csv",
+        "RevDD": -8,  "RevVol": 1.2, "RevADX": 20,
+        "MomRet": 10, "MomVol": 1.0, "MomADX": 25,
+    },
+    "INDOTHAI": {
+        "ticker":   "INDOTHAI.NS",
+        "csv_path": "Data/indothai.csv",
+        "RevDD": -8,  "RevVol": 1.8, "RevADX": 20,
+        "MomRet": 10, "MomVol": 1.0, "MomADX": 30,
+    },
+    "ORIRAIL": {
+        "ticker":   "ORIRAIL.BO",
+        "csv_path": "Data/orirail.csv",
+        "RevDD": -8,  "RevVol": 1.5, "RevADX": 25,
+        "MomRet": 10, "MomVol": 1.0, "MomADX": 25,
+    },
+    "PARAS": {
+        "ticker":   "PARAS.NS",
+        "csv_path": "Data/paras.csv",
+        "RevDD": -10, "RevVol": 1.2, "RevADX": 20,
+        "MomRet": 10, "MomVol": 1.0, "MomADX": 30,
+    },
+    "RECLTD": {
+        "ticker":   "RECLTD.NS",
+        "csv_path": "Data/recltd.csv",
+        "RevDD": -10, "RevVol": 1.2, "RevADX": 25,
+        "MomRet": 10, "MomVol": 1.5, "MomADX": 30,
+    },
+    "SBIN": {
+        "ticker":   "SBIN.NS",
+        "csv_path": "Data/sbin.csv",
+        "RevDD": -8,  "RevVol": 1.2, "RevADX": 20,
+        "MomRet": 10, "MomVol": 1.0, "MomADX": 25,
+    },
+    "TITAGARH": {
+        "ticker":   "TITAGARH.NS",
+        "csv_path": "Data/titagarh.csv",
+        "RevDD": -12, "RevVol": 1.2, "RevADX": 25,
+        "MomRet": 10, "MomVol": 1.2, "MomADX": 30,
+    },
+    "TITAN": {
+        "ticker":   "TITAN.NS",
+        "csv_path": "Data/titan.csv",
+        "RevDD": -8,  "RevVol": 1.2, "RevADX": 25,
+        "MomRet": 10, "MomVol": 1.0, "MomADX": 25,
+    },
+    "TRENT": {
+        "ticker":   "TRENT.NS",
+        "csv_path": "Data/trent.csv",
+        "RevDD": -8,  "RevVol": 1.2, "RevADX": 20,
+        "MomRet": 10, "MomVol": 1.0, "MomADX": 30,
+    },
+    "DOLAT": {
+        "ticker":   "DOLAT.BO",
+        "csv_path": "Data/dolat.csv",
+        "RevDD": -10, "RevVol": 1.5, "RevADX": 25,
+        "MomRet": 15, "MomVol": 1.2, "MomADX": 25,
+    },
+    "E2E": {
+        "ticker":   "E2ENETWORKS.NS",
+        "csv_path": "Data/e2e.csv",
+        "RevDD": -10, "RevVol": 1.5, "RevADX": 25,
+        "MomRet": 15, "MomVol": 1.2, "MomADX": 25,
+    },
+    "EICHERMOT": {
+        "ticker":   "EICHERMOT.NS",
+        "csv_path": "Data/eichermot.csv",
+        "RevDD": -8,  "RevVol": 1.2, "RevADX": 20,
+        "MomRet": 10, "MomVol": 1.2, "MomADX": 25,
+    },
+    "SARTHAK": {
+        "ticker":   "SARTHAKGL.NS",
+        "csv_path": "Data/sarthak.csv",
+        "RevDD": -10, "RevVol": 1.5, "RevADX": 25,
+        "MomRet": 15, "MomVol": 1.2, "MomADX": 25,
+    },
+    # OGST removed — consistent underperformer on MOM
 }
 
-# ─────────────────────────────────────────────
-# 1. FETCH + APPEND TODAY'S BAR FOR ONE STOCK
-# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────────
+# 1. FETCH + UPDATE CSV
+# ─────────────────────────────────────────────────────────────────────────────
+
 def fetch_and_update_csv(ticker, csv_path):
     stock = yf.Ticker(ticker)
     info  = stock.info
 
-    company_name = info.get('longName') or info.get('shortName') or ticker
-    avg_volume   = info.get('averageDailyVolume10Day') or 0
-    volume       = info.get('volume') or 0
+    company_name = info.get("longName") or info.get("shortName") or ticker
+    avg_volume   = info.get("averageDailyVolume10Day") or 0
+    volume       = info.get("volume") or 0
 
-    hist_today = stock.history(period="1d", interval="1d")
-    if hist_today.empty:
-        return None, None  # market closed / no data
+    hist = stock.history(period="1d", interval="1d")
+    if hist.empty:
+        return None, None
 
-    today_str = hist_today.index[-1].strftime('%d-%m-%Y')
-
+    today_str = hist.index[-1].strftime("%d-%m-%Y")
     new_row = {
-        'Date':         today_str,
-        'Open':         round(float(hist_today['Open'].iloc[-1]),  2),
-        'High':         round(float(hist_today['High'].iloc[-1]),  2),
-        'Low':          round(float(hist_today['Low'].iloc[-1]),   2),
-        'Close':        round(float(hist_today['Close'].iloc[-1]), 2),
-        'Volume':       volume,
-        'Avg_Volume':   avg_volume,
-        'Dividends':    round(float(hist_today['Dividends'].iloc[-1]), 2),
-        'Stock Splits': round(float(hist_today['Stock Splits'].iloc[-1]), 2),
+        "Date":         today_str,
+        "Open":         round(float(hist["Open"].iloc[-1]),  2),
+        "High":         round(float(hist["High"].iloc[-1]),  2),
+        "Low":          round(float(hist["Low"].iloc[-1]),   2),
+        "Close":        round(float(hist["Close"].iloc[-1]), 2),
+        "Volume":       volume,
+        "Avg_Volume":   avg_volume,
+        "Dividends":    round(float(hist["Dividends"].iloc[-1]), 2),
+        "Stock Splits": round(float(hist["Stock Splits"].iloc[-1]), 2),
     }
 
     if not os.path.exists(csv_path):
         os.makedirs(os.path.dirname(csv_path), exist_ok=True)
-        df = pd.DataFrame([new_row])
-        df.to_csv(csv_path, index=False)
-        df = pd.read_csv(csv_path)
-        meta = {'company': company_name, 'ticker': ticker, 'date': today_str,
-                'volume': volume, 'avg_volume': avg_volume}
-        return df, meta
-
-    df = pd.read_csv(csv_path)
-    df = df.dropna(how='all').drop_duplicates(subset='Date', keep='last')
-    df.columns = df.columns.str.strip()
-
-    if today_str in df['Date'].values:
-        idx = df.index[df['Date'] == today_str][0]
-        for col in ['Open', 'High', 'Low', 'Close', 'Volume', 'Avg_Volume']:
-            df.loc[idx, col] = new_row[col]
+        pd.DataFrame([new_row]).to_csv(csv_path, index=False)
     else:
-        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+        df = pd.read_csv(csv_path)
+        df = df.dropna(how="all").drop_duplicates(subset="Date", keep="last")
+        df.columns = df.columns.str.strip()
+        if today_str in df["Date"].values:
+            idx = df.index[df["Date"] == today_str][0]
+            for col in ["Open", "High", "Low", "Close", "Volume", "Avg_Volume"]:
+                df.loc[idx, col] = new_row[col]
+        else:
+            df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+        df.to_csv(csv_path, index=False)
 
-    df.to_csv(csv_path, index=False)
     df = pd.read_csv(csv_path)
-
-    meta = {'company': company_name, 'ticker': ticker, 'date': today_str,
-            'volume': volume, 'avg_volume': avg_volume}
+    meta = {
+        "company":    company_name,
+        "ticker":     ticker,
+        "date":       today_str,
+        "volume":     volume,
+        "avg_volume": avg_volume,
+    }
     return df, meta
 
-# ─────────────────────────────────────────────
-# 2. COMPUTE INDICATORS FOR ONE STOCK
-# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────────
+# 2. COMPUTE INDICATORS
+# ─────────────────────────────────────────────────────────────────────────────
+
 def compute_indicators(df):
-    close  = np.array(df['Close'])
-    high   = np.array(df['High'])
-    low    = np.array(df['Low'])
-    open_  = np.array(df['Open'])
-    vol    = np.array(df['Volume'], dtype=float)
+    close = np.array(df["Close"], dtype=float)
+    high  = np.array(df["High"],  dtype=float)
+    low   = np.array(df["Low"],   dtype=float)
+    vol   = np.array(df["Volume"], dtype=float)
+    n     = len(close)
 
+    # MA50 and slope
+    ma50 = pd.Series(close).rolling(50).mean().values
+    ma50_slope = np.full(n, np.nan)
+    for i in range(20, n):
+        if not np.isnan(ma50[i]) and not np.isnan(ma50[i-20]) and ma50[i-20] != 0:
+            ma50_slope[i] = (ma50[i] - ma50[i-20]) / ma50[i-20] * 100
+
+    price_vs_ma50 = np.where(ma50 > 0, (close - ma50) / ma50 * 100, np.nan)
+
+    # ADX, DI+, DI-
+    adxi    = ta.trend.ADXIndicator(df["High"], df["Low"], df["Close"], window=14)
+    adx     = np.array(adxi.adx())
+    di_plus = np.array(adxi.adx_pos())
+    di_minus= np.array(adxi.adx_neg())
+
+    # Volume ratio vs 20d average
+    vol_ma20  = pd.Series(vol).rolling(20).mean().values
+    vol_ratio = np.where(vol_ma20 > 0, vol / vol_ma20, np.nan)
+
+    # 20d and 60d returns
+    ret20d = np.full(n, np.nan)
+    ret60d = np.full(n, np.nan)
+    for i in range(60, n):
+        if close[i-20] > 0: ret20d[i] = (close[i] - close[i-20]) / close[i-20] * 100
+        if close[i-60] > 0: ret60d[i] = (close[i] - close[i-60]) / close[i-60] * 100
+
+    # RSI for chart display only
     rsi14 = np.array(ta.momentum.RSIIndicator(df["Close"], window=14).rsi())
-    rsi7  = np.array(ta.momentum.RSIIndicator(df["Close"], window=7).rsi())
-    rsi21 = np.array(ta.momentum.RSIIndicator(df["Close"], window=21).rsi())
 
-    bb     = ta.volatility.BollingerBands(df["Close"], window=25, window_dev=2)
+    # BB for chart display only
+    bb     = ta.volatility.BollingerBands(df["Close"], window=20, window_dev=2)
     bb_up  = np.array(bb.bollinger_hband())
-    bb_mav = np.array(bb.bollinger_mavg())
     bb_low = np.array(bb.bollinger_lband())
+    bb_mid = np.array(bb.bollinger_mavg())
 
-    stoch = np.array(ta.momentum.StochasticOscillator(
-        df["High"], df["Low"], df["Close"], window=14, smooth_window=3).stoch())
-    willr = np.array(ta.momentum.WilliamsRIndicator(
-        df["High"], df["Low"], df["Close"], lbp=14).williams_r())
-
-    macd_i = ta.trend.MACD(df["Close"], window_slow=26, window_fast=12, window_sign=9)
-    macd_h = np.array(macd_i.macd_diff())
-
-    ema50    = np.array(ta.trend.EMAIndicator(df["Close"], window=50).ema_indicator())
-    vol_ma20 = np.array(df['Volume'].rolling(20).mean())
-    roc5     = np.array(df['Close'].pct_change(5) * 100)
-
-    return {
-        'close': close, 'high': high, 'low': low, 'open_': open_, 'vol': vol,
-        'rsi14': rsi14, 'rsi7': rsi7, 'rsi21': rsi21,
-        'bb_up': bb_up, 'bb_mav': bb_mav, 'bb_low': bb_low,
-        'stoch': stoch, 'willr': willr, 'macd_h': macd_h,
-        'ema50': ema50, 'vol_ma20': vol_ma20, 'roc5': roc5,
-    }
-
-# ─────────────────────────────────────────────
-# 3. PLOT — price+BB subplot, RSI subplot. Returns PNG bytes.
-# ─────────────────────────────────────────────
-def draw_candlesticks(ax, x_indices, open_, high, low, close):
-    """Draw candlestick bodies and wicks. Green = up candle, Red = down candle."""
-    width_body = 0.6
-    for xi, o, h, l, c in zip(x_indices, open_, high, low, close):
-        color  = '#26a69a' if c >= o else '#ef5350'   # teal up, red down
-        body_lo = min(o, c)
-        body_hi = max(o, c)
-        # Wick (high-low line)
-        ax.plot([xi, xi], [l, h], color=color, lw=0.8, zorder=2)
-        # Body (filled rectangle)
-        ax.add_patch(plt.Rectangle(
-            (xi - width_body / 2, body_lo),
-            width_body, body_hi - body_lo,
-            facecolor=color, edgecolor=color, lw=0.4, zorder=3
-        ))
-
-def build_plot(ind, company_name, ticker, date_label, lookback=120):
-    n = len(ind['close'])
-    start = max(0, n - lookback)
-    x = np.arange(start, n)
-
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 8),
-                                    gridspec_kw={'height_ratios': [2, 1]},
-                                    sharex=True)
-    fig.suptitle(f"{company_name} ({ticker}) - {date_label}", fontsize=12, fontweight='bold')
-
-    # Candlesticks
-    draw_candlesticks(
-        ax1, x,
-        ind['open_'][start:n], ind['high'][start:n],
-        ind['low'][start:n],   ind['close'][start:n]
+    return dict(
+        close=close, high=high, low=low, vol=vol,
+        ma50=ma50, ma50_slope=ma50_slope, price_vs_ma50=price_vs_ma50,
+        adx=adx, di_plus=di_plus, di_minus=di_minus,
+        vol_ratio=vol_ratio, vol_ma20=vol_ma20,
+        ret20d=ret20d, ret60d=ret60d,
+        rsi14=rsi14, bb_up=bb_up, bb_low=bb_low, bb_mid=bb_mid,
     )
 
-    # Bollinger Bands overlaid on candlesticks
-    ax1.plot(x, ind['bb_up'][start:n], color='green', lw=0.9, ls='--', label='BB Upper', zorder=4)
-    ax1.plot(x, ind['bb_low'][start:n], color='red', lw=0.9, ls='--', label='BB Lower', zorder=4)
-    ax1.plot(x, ind['bb_mav'][start:n], color='steelblue', lw=0.9, ls='--', label='BB Mid', zorder=4)
-    ax1.fill_between(x, ind['bb_low'][start:n], ind['bb_up'][start:n], alpha=0.05, color='steelblue')
-    ax1.set_xlim(start - 0.5, n - 0.5)
-    ax1.set_ylabel("Price")
-    ax1.legend(loc='upper left', fontsize=7, ncol=2)
-    ax1.grid(alpha=0.3, zorder=1)
+# ─────────────────────────────────────────────────────────────────────────────
+# 3. REGIME DETECTION
+# ─────────────────────────────────────────────────────────────────────────────
 
-    ax2.plot(x, ind['rsi14'][start:n], color='darkorange', lw=1.2, label='RSI(14)')
-    ax2.axhline(70, color='red', ls='--', lw=0.8)
-    ax2.axhline(35, color='green', ls='--', lw=0.8)
-    ax2.axhline(50, color='gray', ls=':', lw=0.6)
-    ax2.fill_between(x, ind['rsi14'][start:n], 35,
-                      where=(ind['rsi14'][start:n] < 35), alpha=0.2, color='green')
-    ax2.fill_between(x, ind['rsi14'][start:n], 70,
-                      where=(ind['rsi14'][start:n] > 70), alpha=0.2, color='red')
+def get_regime(ind, i):
+    """Returns 'UP', 'DOWN', or 'RANGE'."""
+    vals = [ind["ma50_slope"][i], ind["adx"][i],
+            ind["price_vs_ma50"][i], ind["di_plus"][i], ind["di_minus"][i]]
+    if any(np.isnan(v) for v in vals):
+        return "RANGE"  # default to RANGE if insufficient data
+
+    above = ind["price_vs_ma50"][i] > 0
+    slope = ind["ma50_slope"][i]
+    adv   = ind["adx"][i]
+    bull  = ind["di_plus"][i] > ind["di_minus"][i]
+
+    if above and slope > REG_MA_SLOPE and adv > REG_ADX and bull:
+        return "UP"
+    if not above and slope < -REG_MA_SLOPE and adv > REG_ADX and not bull:
+        return "DOWN"
+    return "RANGE"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 4. SIGNAL DEFINITIONS
+# ─────────────────────────────────────────────────────────────────────────────
+
+def check_rev(ind, i, cfg):
+    """
+    REV — Mean reversion entry. Fires in RANGE regime only.
+    Conditions:
+      1. 20d return below dd_thresh  → significant dislocation
+      2. Volume ratio above vol_thresh → real sellers, not drift
+      3. ADX below adx_ceil          → confirmed ranging, not hidden trend
+    """
+    vals = [ind["ret20d"][i], ind["vol_ratio"][i], ind["adx"][i]]
+    if any(np.isnan(v) for v in vals):
+        return False
+    return (ind["ret20d"][i]   < cfg["RevDD"] and
+            ind["vol_ratio"][i] > cfg["RevVol"] and
+            ind["adx"][i]       < cfg["RevADX"])
+
+
+def check_mom(ind, i, cfg):
+    """
+    MOM — Momentum entry. Fires in UP regime only.
+    Conditions:
+      1. 60d return above ret_thresh  → real medium-term momentum
+      2. Volume ratio above vol_thresh → participation behind the move
+      3. ADX above adx_floor          → confirmed trend strength
+      4. DI+ > DI-                    → direction is upward
+    """
+    vals = [ind["ret60d"][i], ind["vol_ratio"][i], ind["adx"][i]]
+    if any(np.isnan(v) for v in vals):
+        return False
+    return (ind["ret60d"][i]    > cfg["MomRet"] and
+            ind["vol_ratio"][i]  > cfg["MomVol"] and
+            ind["adx"][i]        > cfg["MomADX"] and
+            ind["di_plus"][i]    > ind["di_minus"][i])
+
+
+SIGNAL_DESCRIPTIONS = {
+    "REV": (
+        "REVERSAL ENTRY (RANGE regime)\n"
+        "  Stock is down meaningfully over 20 days on elevated volume,\n"
+        "  confirming a real dislocation in a ranging market — not a trend.\n"
+        "  Conditions: 20d return < {RevDD}%  |  Volume > {RevVol}x avg  |  ADX < {RevADX}\n"
+        "  Strategy: Hold 30 days."
+    ),
+    "MOM": (
+        "MOMENTUM ENTRY (UP regime)\n"
+        "  Stock has outperformed over 60 days with volume participation\n"
+        "  and a confirmed uptrend — trend continuation expected.\n"
+        "  Conditions: 60d return > {MomRet}%  |  Volume > {MomVol}x avg  |  ADX > {MomADX}  |  DI+ > DI-\n"
+        "  Strategy: Hold 30 days."
+    ),
+
+}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 5. PLOT — 2 subplots: price + BB + MA50, RSI + volume
+# ─────────────────────────────────────────────────────────────────────────────
+
+def build_plot(ind, company_name, ticker, date_label, regime, lookback=120):
+    n     = len(ind["close"])
+    start = max(0, n - lookback)
+    x     = np.arange(start, n)
+
+    close  = ind["close"][start:n]
+    bb_up  = ind["bb_up"][start:n]
+    bb_low = ind["bb_low"][start:n]
+    bb_mid = ind["bb_mid"][start:n]
+    ma50   = ind["ma50"][start:n]
+    rsi    = ind["rsi14"][start:n]
+    vol    = ind["vol"][start:n]
+    vol_ma = ind["vol_ma20"][start:n]
+
+    fig, (ax1, ax2) = plt.subplots(
+        2, 1, figsize=(13, 8),
+        gridspec_kw={"height_ratios": [2, 1]},
+        sharex=True,
+    )
+    regime_colour = {"UP": "#26a69a", "DOWN": "#ef5350", "RANGE": "#78909c"}
+    fig.suptitle(
+        f"{company_name} ({ticker})  —  {date_label}  |  Regime: {regime}",
+        fontsize=11, fontweight="bold",
+        color=regime_colour.get(regime, "black"),
+    )
+
+    # ── Price + BB + MA50 ────────────────────────────────────────────────
+    ax1.plot(x, close,  color="black",    lw=1.3, zorder=3, label="Close")
+    ax1.plot(x, bb_up,  color="#27ae60",  lw=0.9, ls="--", label="BB Upper")
+    ax1.plot(x, bb_low, color="#e74c3c",  lw=0.9, ls="--", label="BB Lower")
+    ax1.plot(x, bb_mid, color="steelblue",lw=0.7, ls=":",  alpha=0.7, label="BB Mid")
+    ax1.plot(x, ma50,   color="#f39c12",  lw=1.1, ls="-",  label="MA50")
+    ax1.fill_between(x, bb_low, bb_up, alpha=0.06, color="steelblue")
+    ax1.set_ylabel("Price")
+    ax1.legend(loc="upper left", fontsize=7, ncol=5, framealpha=0.7)
+    ax1.grid(alpha=0.25)
+
+    # ── RSI + Volume ─────────────────────────────────────────────────────
+    ax2.plot(x, rsi, color="darkorange", lw=1.2, label="RSI(14)")
+    ax2.axhline(70, color="#e74c3c", ls="--", lw=0.8)
+    ax2.axhline(30, color="#27ae60", ls="--", lw=0.8)
+    ax2.axhline(50, color="gray",    ls=":",  lw=0.6, alpha=0.5)
+    ax2.fill_between(x, rsi, 30, where=(rsi < 30), alpha=0.15, color="#27ae60")
+    ax2.fill_between(x, rsi, 70, where=(rsi > 70), alpha=0.15, color="#e74c3c")
     ax2.set_ylim(0, 100)
     ax2.set_ylabel("RSI")
+
+    # Volume bars on twin axis
+    ax3 = ax2.twinx()
+    bar_colors = ["#26a69a" if c >= o else "#ef5350"
+                  for c, o in zip(ind["close"][start:n], ind["close"][max(0,start-1):n-1])]
+    ax3.bar(x, vol, color=bar_colors, alpha=0.3, width=0.8)
+    ax3.plot(x, vol_ma, color="#78909c", lw=0.8, ls="--", alpha=0.7)
+    ax3.set_ylabel("Volume", fontsize=8)
+    ax3.tick_params(labelsize=7)
+
     ax2.set_xlabel("Bar index")
-    ax2.legend(loc='upper left', fontsize=7)
-    ax2.grid(alpha=0.3)
+    ax2.legend(loc="upper left", fontsize=7)
+    ax2.grid(alpha=0.25)
 
     plt.tight_layout()
-
     buf = io.BytesIO()
-    fig.savefig(buf, format='png', dpi=110)
+    fig.savefig(buf, format="png", dpi=110, bbox_inches="tight")
     plt.close(fig)
     buf.seek(0)
     return buf.read()
 
-# ─────────────────────────────────────────────
-# 4. EMAIL LOG — dedup so we don't re-send same-day alerts
-# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────────
+# 6. EMAIL LOG — dedup same-day alerts
+# ─────────────────────────────────────────────────────────────────────────────
+
 def load_log():
-    if os.path.exists(LOG_PATH):
-        with open(LOG_PATH, 'r') as f:
-            content = f.read().strip()
-            if not content:
-                return {}
-            try:
-                return json.loads(content)
-            except json.JSONDecodeError:
-                return {}
-    return {}
+    if not os.path.exists(LOG_PATH):
+        return {}
+    with open(LOG_PATH, "r") as f:
+        content = f.read().strip()
+    if not content:
+        return {}
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        return {}
 
 def save_log(log):
-    with open(LOG_PATH, 'w') as f:
-        json.dump(log, f)
+    with open(LOG_PATH, "w") as f:
+        json.dump(log, f, indent=2)
 
-def send_email_with_attachments(subject, body, attachments):
-    """attachments: list of (filename, png_bytes) tuples"""
+def send_email(subject, body, attachments):
+    """attachments: list of (filename, png_bytes)"""
     msg = MIMEMultipart()
-    msg['Subject'] = subject
-    msg['From']    = EMAIL_SENDER
-    msg['To']      = EMAIL_RECEIVER
-    msg.attach(MIMEText(body, 'plain'))
-
-    for filename, png_bytes in attachments:
-        img = MIMEImage(png_bytes, name=filename)
+    msg["Subject"] = subject
+    msg["From"]    = EMAIL_SENDER
+    msg["To"]      = EMAIL_RECEIVER
+    msg.attach(MIMEText(body, "plain"))
+    for fname, png_bytes in attachments:
+        img = MIMEImage(png_bytes, name=fname)
         msg.attach(img)
-
     try:
-        with smtplib.SMTP_SSL('smtp.gmail.com', 465) as server:
-            server.login(EMAIL_SENDER, EMAIL_PASSWORD)
-            server.send_message(msg)
-        print(f"Email sent: {subject} ({len(attachments)} attachment(s))")
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as srv:
+            srv.login(EMAIL_SENDER, EMAIL_PASSWORD)
+            srv.send_message(msg)
+        print(f"  Email sent: {subject}")
         return True
     except Exception as e:
-        print(f"Email failed: {e}")
+        print(f"  Email failed: {e}")
         return False
 
-# ─────────────────────────────────────────────
-# 5. MAIN LOOP — scan every stock for today's signals
-# ─────────────────────────────────────────────
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 8. MAIN LOOP
+# ─────────────────────────────────────────────────────────────────────────────
+
 def main():
-    log = load_log()
-    today_date_label = None
-    report_sections = []
+    log         = load_log()
+    today_label = None
+
+    report_sections  = []
     plot_attachments = []
 
     for stock_name, cfg in STOCKS.items():
-        print(f"\n--- {stock_name} ---")
+        print(f"\n── {stock_name} ──────────────────────────────────────")
+
         try:
             df, meta = fetch_and_update_csv(cfg["ticker"], cfg["csv_path"])
         except Exception as e:
-            print(f"Failed to fetch/update {stock_name}: {e}")
+            print(f"  Fetch failed: {e}")
             continue
 
         if df is None:
-            print(f"No data for {stock_name} (market may be closed).")
+            print("  No data (market closed?)")
             continue
 
-        today_date_label = meta['date']
+        today_label = meta["date"]
         ind = compute_indicators(df)
-        i_today = len(ind['close']) - 1
+        i   = len(ind["close"]) - 1  # today's bar
 
-        fired_entries = [name for name, fn in ENTRY_FUNCS.items() if fn(ind, i_today)]
-        fired_exits   = [name for name, fn in EXIT_FUNCS.items()  if fn(ind, i_today)]
+        # ── Regime ───────────────────────────────────────────────────────
+        regime = get_regime(ind, i)
 
-        for name in ENTRY_FUNCS:
-            print(f"  ENTRY {name}: {'TRIGGERED' if name in fired_entries else 'no'}")
-        for name in EXIT_FUNCS:
-            print(f"  EXIT  {name}: {'TRIGGERED' if name in fired_exits else 'no'}")
+        # ── Signals ──────────────────────────────────────────────────────
+        rev_fired = (regime == "RANGE") and check_rev(ind, i, cfg)
+        mom_fired = (regime == "UP")    and check_mom(ind, i, cfg)
 
-        if not fired_entries and not fired_exits:
+        # ── Print daily status ────────────────────────────────────────────
+        print(f"  Regime    : {regime}")
+        print(f"  Close     : {ind['close'][i]:.2f}")
+        print(f"  20d ret   : {ind['ret20d'][i]:.1f}%  |  60d ret: {ind['ret60d'][i]:.1f}%")
+        print(f"  Vol ratio : {ind['vol_ratio'][i]:.2f}x  |  ADX: {ind['adx'][i]:.1f}  |  DI+: {ind['di_plus'][i]:.1f}  DI-: {ind['di_minus'][i]:.1f}")
+        print(f"  REV fired : {'YES' if rev_fired else 'no'}  |  MOM fired: {'YES' if mom_fired else 'no'}")
+
+        if not rev_fired and not mom_fired:
             continue
 
-        lines = [f"\n{'='*60}", f"{meta['company']} ({meta['ticker']})  --  {meta['date']}", f"{'='*60}"]
-        lines.append(
-            f"Close: {ind['close'][i_today]:.2f}  RSI14: {ind['rsi14'][i_today]:.2f}  "
-            f"WillR: {ind['willr'][i_today]:.2f}  Stoch: {ind['stoch'][i_today]:.2f}  "
-            f"BB Up: {ind['bb_up'][i_today]:.2f}  BB Low: {ind['bb_low'][i_today]:.2f}"
-        )
+        # ── Build email section ───────────────────────────────────────────
+        lines = [
+            f"\n{'='*60}",
+            f"{meta['company']} ({meta['ticker']})  —  {meta['date']}",
+            f"{'='*60}",
+            f"Regime   : {regime}",
+            f"Close    : {ind['close'][i]:.2f}",
+            f"20d ret  : {ind['ret20d'][i]:.1f}%   60d ret: {ind['ret60d'][i]:.1f}%",
+            f"Vol ratio: {ind['vol_ratio'][i]:.2f}x   ADX: {ind['adx'][i]:.1f}   DI+: {ind['di_plus'][i]:.1f}  DI-: {ind['di_minus'][i]:.1f}",
+            f"MA50 slope (20d): {ind['ma50_slope'][i]:.2f}%",
+        ]
 
-        for name in fired_entries:
-            log_key = f"{stock_name}_ENTRY_{name}"
-            tag = " [already sent today]" if log.get(log_key) == today_date_label else ""
-            lines.append(f"\nENTRY: {name}{tag}")
-            lines.append(f"  {ENTRY_DESCRIPTIONS.get(name, '')}")
-            if not tag:
-                log[log_key] = today_date_label
-
-        for name in fired_exits:
-            log_key = f"{stock_name}_EXIT_{name}"
-            tag = " [already sent today]" if log.get(log_key) == today_date_label else ""
-            lines.append(f"\nEXIT: {name}{tag}")
-            lines.append(f"  {EXIT_DESCRIPTIONS.get(name, '')}")
-            if not tag:
-                log[log_key] = today_date_label
+        for sig_name, fired in [("REV", rev_fired), ("MOM", mom_fired)]:
+            if not fired:
+                continue
+            log_key = f"{stock_name}_{sig_name}"
+            already = log.get(log_key) == today_label
+            tag = "  [already sent today]" if already else ""
+            desc = SIGNAL_DESCRIPTIONS[sig_name].format(**cfg)
+            lines.append(f"\n{'─'*40}")
+            lines.append(f"SIGNAL: {sig_name}{tag}")
+            lines.append(desc)
+            if not already:
+                log[log_key] = today_label
 
         report_sections.append("\n".join(lines))
 
-        # Build plot only for stocks with a fresh (not-already-sent) trigger today
-        png_bytes = build_plot(ind, meta['company'], meta['ticker'], today_date_label)
-        plot_attachments.append((f"{stock_name}_{today_date_label}.png", png_bytes))
+        # ── Build chart ───────────────────────────────────────────────────
+        png = build_plot(ind, meta["company"], meta["ticker"], meta["date"], regime)
+        plot_attachments.append((f"{stock_name}_{today_label}.png", png))
 
+    # ── Save state ────────────────────────────────────────────────────────
     save_log(log)
 
     if not report_sections:
-        print("\nNo signals across any stock today — no email sent.")
+        print("\nNo signals today — no email sent.")
         return
 
-    full_body = (
-        f"DAILY SIGNAL SCAN — {today_date_label}\n"
+    # ── Send email ────────────────────────────────────────────────────────
+    n_stocks = len(report_sections)
+    subject  = f"[Signal Scanner] {n_stocks} stock(s) — {today_label}"
+    body = (
+        f"DAILY SIGNAL SCAN  —  {today_label}\n"
+        f"Strategy: REV (mean reversion, RANGE regime) + MOM (momentum, UP regime)\n"
+        f"Hold: 30 days\n"
         f"Stocks scanned: {len(STOCKS)}\n"
         + "\n".join(report_sections)
     )
-    send_email_with_attachments(
-        f"[Daily Scan] {len(report_sections)} stock(s) with signals — {today_date_label}",
-        full_body,
-        plot_attachments
-    )
+    send_email(subject, body, plot_attachments)
+
 
 if __name__ == "__main__":
     main()
