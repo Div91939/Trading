@@ -70,8 +70,7 @@ MOM_CROSS_LOG_PATH = "mom_cross_log.json"  # tracks last-alerted MA50-cross bar 
                                             # so MOM doesn't refire every day for up to 8 days
                                             # off a single crossing event
 EMAIL_SENDER   = "divyanshdewan@gmail.com"
-EMAIL_PASSWORD = 'osrp rtab jvyv rcvz'
-#EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
+EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
 EMAIL_RECEIVER = "divyanshdewan@gmail.com"
 
 # Regime detection — fixed across all stocks
