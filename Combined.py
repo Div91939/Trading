@@ -8,11 +8,17 @@ Two strategies, both regime-gated:
     DOWN  → price below falling MA50, ADX > threshold, DI- > DI+
     RANGE → everything else
 
-  REV signal  (fires in RANGE only):
-    - 20-day return < dd_thresh   (meaningful dislocation)
-    - Volume ratio  > vol_thresh  (real sellers, not drift)
-    - ADX           < adx_ceil    (confirmed ranging)
+  REV signal  (recall-optimized, no regime/ADX gate — v2, tuned per-stock):
+    - N-day return  < RevDD       (meaningful dislocation; N = RevWindow, per-stock)
+    - Volume ratio  > RevVol      (real participation, not drift)
+    NOTE: earlier versions also required RANGE regime + ADX ceiling. Both were
+    found to actively *hurt* recall AND return quality — the sharpest, most
+    tradeable part of a reversal often gets misclassified as DOWN regime /
+    high ADX, so gating on them threw out the best trades along with noise.
+    Dropped both gates after a ground-truth minima audit + per-stock grid
+    search (window/threshold sweep, 25% SL-capped forward returns).
     → Hold 30 days, 25% stop loss
+    (MomRet/MomVol/MomADX below are UNCHANGED — momentum redesign pending)
 
   MOM signal  (fires in UP only):
     - 60-day return > ret_thresh  (real momentum)
@@ -55,123 +61,139 @@ REG_ADX      = 20     # ADX threshold for trend confirmation
 # Per-stock config:
 #   ticker      — yfinance ticker string
 #   csv_path    — local CSV path
-#   RevDD       — max 20d return to trigger REV (negative %)
+#   RevWindow   — lookback (days) for REV's return check (per-stock tuned: 5-20)
+#   RevDD       — max RevWindow-day return to trigger REV (negative %)
 #   RevVol      — min volume ratio vs 20d avg to trigger REV
-#   RevADX      — max ADX to trigger REV (confirms ranging)
-#   MomRet      — min 60d return to trigger MOM (positive %)
-#   MomVol      — min volume ratio vs 20d avg to trigger MOM
-#   MomADX      — min ADX to trigger MOM (confirms trend)
+#   MomRet      — min 60d return to trigger MOM (positive %)   [unchanged, v1]
+#   MomVol      — min volume ratio vs 20d avg to trigger MOM   [unchanged, v1]
+#   MomADX      — min ADX to trigger MOM (confirms trend)      [unchanged, v1]
+#
+# REV params below come from a per-stock grid search (lookback window x
+# return threshold x volume threshold) maximizing 25%-SL-capped forward
+# return quality, cross-checked against a ground-truth local-minima audit
+# for BSE/EDELWEISS/EICHER/INDOTHAI/ORIRAIL/TITAGARH. E2E/HINDZINC/PARAS had
+# no combination clear a positive-return bar — left on a conservative
+# fallback and flagged; don't expect REV to fire much on those three.
 
 STOCKS = {
     "BSE": {
         "ticker":   "BSE.NS",
         "csv_path": "Data/bse.csv",
-        "RevDD": -8,  "RevVol": 1.2, "RevADX": 20,
+        "RevWindow": 20, "RevDD": -3,  "RevVol": 0.7,
         "MomRet": 10, "MomVol": 1.5, "MomADX": 30,
     },
     "CDSL": {
         "ticker":   "CDSL.NS",
         "csv_path": "Data/cdsl.csv",
-        "RevDD": -8,  "RevVol": 1.2, "RevADX": 25,
+        "RevWindow": 20, "RevDD": -3,  "RevVol": 0.7,
         "MomRet": 20, "MomVol": 1.2, "MomADX": 25,
     },
     "EDELWEISS": {
         "ticker":   "EDELWEISS.BO",
         "csv_path": "Data/edelweiss.csv",
-        "RevDD": -8,  "RevVol": 1.8, "RevADX": 30,
+        "RevWindow": 5,  "RevDD": -3,  "RevVol": 0.8,
         "MomRet": 10, "MomVol": 1.5, "MomADX": 30,
     },
     "EICHER": {
         "ticker":   "EICHERMOT.BO",
         "csv_path": "Data/eicher.csv",
-        "RevDD": -8,  "RevVol": 1.2, "RevADX": 20,
+        "RevWindow": 10, "RevDD": -3,  "RevVol": 0.8,
         "MomRet": 10, "MomVol": 1.2, "MomADX": 25,
     },
     "HINDCOPPER": {
         "ticker":   "HINDCOPPER.NS",
         "csv_path": "Data/hindcopper.csv",
-        "RevDD": -12, "RevVol": 1.2, "RevADX": 25,
+        "RevWindow": 10, "RevDD": -3,  "RevVol": 0.7,
         "MomRet": 10, "MomVol": 1.5, "MomADX": 30,
     },
     "HINDZINC": {
         "ticker":   "HINDZINC.BO",
         "csv_path": "Data/hindzinc.csv",
-        "RevDD": -8,  "RevVol": 1.2, "RevADX": 20,
+        # No REV combo cleared a positive-return bar in tuning — conservative
+        # fallback kept in place, flagged for manual review before trusting.
+        "RevWindow": 20, "RevDD": -15, "RevVol": 1.5,
         "MomRet": 10, "MomVol": 1.0, "MomADX": 25,
     },
     "INDOTHAI": {
         "ticker":   "INDOTHAI.NS",
         "csv_path": "Data/indothai.csv",
-        "RevDD": -8,  "RevVol": 1.8, "RevADX": 20,
+        "RevWindow": 5,  "RevDD": -3,  "RevVol": 0.8,
         "MomRet": 10, "MomVol": 1.0, "MomADX": 30,
     },
     "ORIRAIL": {
         "ticker":   "ORIRAIL.BO",
         "csv_path": "Data/orirail.csv",
-        "RevDD": -8,  "RevVol": 1.5, "RevADX": 25,
+        "RevWindow": 5,  "RevDD": -3,  "RevVol": 0.8,
         "MomRet": 10, "MomVol": 1.0, "MomADX": 25,
     },
     "PARAS": {
         "ticker":   "PARAS.NS",
         "csv_path": "Data/paras.csv",
-        "RevDD": -10, "RevVol": 1.2, "RevADX": 20,
+        # No REV combo cleared a positive-return bar in tuning — conservative
+        # fallback kept in place, flagged for manual review before trusting.
+        "RevWindow": 20, "RevDD": -15, "RevVol": 1.5,
         "MomRet": 10, "MomVol": 1.0, "MomADX": 30,
     },
     "RECLTD": {
         "ticker":   "RECLTD.NS",
         "csv_path": "Data/recltd.csv",
-        "RevDD": -10, "RevVol": 1.2, "RevADX": 25,
+        "RevWindow": 15, "RevDD": -3,  "RevVol": 0.7,
         "MomRet": 10, "MomVol": 1.5, "MomADX": 30,
     },
     "SBIN": {
         "ticker":   "SBIN.NS",
         "csv_path": "Data/sbin.csv",
-        "RevDD": -8,  "RevVol": 1.2, "RevADX": 20,
+        "RevWindow": 20, "RevDD": -3,  "RevVol": 0.7,
         "MomRet": 10, "MomVol": 1.0, "MomADX": 25,
     },
     "TITAGARH": {
         "ticker":   "TITAGARH.NS",
         "csv_path": "Data/titagarh.csv",
-        "RevDD": -12, "RevVol": 1.2, "RevADX": 25,
+        "RevWindow": 5,  "RevDD": -3,  "RevVol": 0.8,
         "MomRet": 10, "MomVol": 1.2, "MomADX": 30,
     },
     "TITAN": {
         "ticker":   "TITAN.NS",
         "csv_path": "Data/titan.csv",
-        "RevDD": -8,  "RevVol": 1.2, "RevADX": 25,
+        "RevWindow": 15, "RevDD": -3,  "RevVol": 0.7,
         "MomRet": 10, "MomVol": 1.0, "MomADX": 25,
     },
     "TRENT": {
         "ticker":   "TRENT.NS",
         "csv_path": "Data/trent.csv",
-        "RevDD": -8,  "RevVol": 1.2, "RevADX": 20,
+        "RevWindow": 10, "RevDD": -3,  "RevVol": 0.7,
         "MomRet": 10, "MomVol": 1.0, "MomADX": 30,
     },
     "DOLAT": {
         "ticker":   "DOLAT.BO",
         "csv_path": "Data/dolat.csv",
-        "RevDD": -10, "RevVol": 1.5, "RevADX": 25,
+        "RevWindow": 15, "RevDD": -3,  "RevVol": 0.7,
         "MomRet": 15, "MomVol": 1.2, "MomADX": 25,
     },
     "E2E": {
         "ticker":   "E2ENETWORKS.NS",
         "csv_path": "Data/e2e.csv",
-        "RevDD": -10, "RevVol": 1.5, "RevADX": 25,
+        # No REV combo cleared a positive-return bar in tuning — conservative
+        # fallback kept in place, flagged for manual review before trusting.
+        "RevWindow": 20, "RevDD": -15, "RevVol": 1.5,
         "MomRet": 15, "MomVol": 1.2, "MomADX": 25,
     },
     "EICHERMOT": {
         "ticker":   "EICHERMOT.NS",
         "csv_path": "Data/eichermot.csv",
-        "RevDD": -8,  "RevVol": 1.2, "RevADX": 20,
+        "RevWindow": 10, "RevDD": -3,  "RevVol": 0.7,
         "MomRet": 10, "MomVol": 1.2, "MomADX": 25,
     },
     "SARTHAK": {
         "ticker":   "SARTHAKGL.NS",
         "csv_path": "Data/sarthak.csv",
-        "RevDD": -10, "RevVol": 1.5, "RevADX": 25,
+        "RevWindow": 5,  "RevDD": -6,  "RevVol": 1.2,
         "MomRet": 15, "MomVol": 1.2, "MomADX": 25,
     },
-    # OGST removed — consistent underperformer on MOM
+    # OGST removed — consistent underperformer on MOM (v1 finding).
+    # NOTE: OGST's REV signal alone tested well in this session's audit
+    # (+18.8% avg, 80% win, window=10/ret<-3/vol>0.7) — worth reconsidering
+    # once MOM is rebuilt, since the original removal reason was MOM-specific.
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -309,20 +331,34 @@ def get_regime(ind, i):
 # 4. SIGNAL DEFINITIONS
 # ─────────────────────────────────────────────────────────────────────────────
 
+def rev_window_return(ind, i, window):
+    """N-day % return ending at bar i, using cfg['RevWindow'] (per-stock)."""
+    close = ind["close"]
+    if i < window:
+        return np.nan
+    prev = close[i - window]
+    if prev <= 0 or np.isnan(prev) or np.isnan(close[i]):
+        return np.nan
+    return (close[i] - prev) / prev * 100
+
+
 def check_rev(ind, i, cfg):
     """
-    REV — Mean reversion entry. Fires in RANGE regime only.
+    REV v2 — Mean reversion entry. NO regime or ADX gate (see module docstring
+    for why — both were found to hurt recall and quality in the ground-truth
+    minima audit).
     Conditions:
-      1. 20d return below dd_thresh  → significant dislocation
-      2. Volume ratio above vol_thresh → real sellers, not drift
-      3. ADX below adx_ceil          → confirmed ranging, not hidden trend
+      1. RevWindow-day return below RevDD → confirmed dislocation
+         (RevWindow is per-stock tuned, typically 5-20 days — most stocks in
+         this universe reverse fast, so a short window catches the move while
+         it's forming instead of waiting for it to accumulate)
+      2. Volume ratio above RevVol        → real participation, not drift
     """
-    vals = [ind["ret20d"][i], ind["vol_ratio"][i], ind["adx"][i]]
-    if any(np.isnan(v) for v in vals):
+    ret_w = rev_window_return(ind, i, cfg["RevWindow"])
+    vol_r = ind["vol_ratio"][i]
+    if np.isnan(ret_w) or np.isnan(vol_r):
         return False
-    return (ind["ret20d"][i]   < cfg["RevDD"] and
-            ind["vol_ratio"][i] > cfg["RevVol"] and
-            ind["adx"][i]       < cfg["RevADX"])
+    return ret_w < cfg["RevDD"] and vol_r > cfg["RevVol"]
 
 
 def check_mom(ind, i, cfg):
@@ -345,10 +381,12 @@ def check_mom(ind, i, cfg):
 
 SIGNAL_DESCRIPTIONS = {
     "REV": (
-        "REVERSAL ENTRY (RANGE regime)\n"
-        "  Stock is down meaningfully over 20 days on elevated volume,\n"
-        "  confirming a real dislocation in a ranging market — not a trend.\n"
-        "  Conditions: 20d return < {RevDD}%  |  Volume > {RevVol}x avg  |  ADX < {RevADX}\n"
+        "REVERSAL ENTRY (v2 — no regime/ADX gate, per-stock tuned window)\n"
+        "  Stock is down meaningfully over its tuned lookback window on\n"
+        "  elevated-for-it volume, confirming a real dislocation. No regime\n"
+        "  or ADX filter — dropped after ground-truth testing showed both\n"
+        "  were suppressing the sharpest, most tradeable reversals.\n"
+        "  Conditions: {RevWindow}d return < {RevDD}%  |  Volume > {RevVol}x avg\n"
         "  Strategy: Hold 30 days."
     ),
     "MOM": (
@@ -506,13 +544,16 @@ def main():
         regime = get_regime(ind, i)
 
         # ── Signals ──────────────────────────────────────────────────────
-        rev_fired = (regime == "RANGE") and check_rev(ind, i, cfg)
-        mom_fired = (regime == "UP")    and check_mom(ind, i, cfg)
+        # REV: no regime gate (v2 — dropped after ground-truth audit, see docstring)
+        # MOM: still regime-gated to UP only — unchanged, momentum redesign pending
+        rev_fired = check_rev(ind, i, cfg)
+        mom_fired = (regime == "UP") and check_mom(ind, i, cfg)
+        rev_w_ret = rev_window_return(ind, i, cfg["RevWindow"])
 
         # ── Print daily status ────────────────────────────────────────────
         print(f"  Regime    : {regime}")
         print(f"  Close     : {ind['close'][i]:.2f}")
-        print(f"  20d ret   : {ind['ret20d'][i]:.1f}%  |  60d ret: {ind['ret60d'][i]:.1f}%")
+        print(f"  {cfg['RevWindow']}d ret (REV): {rev_w_ret:.1f}%  |  60d ret (MOM): {ind['ret60d'][i]:.1f}%")
         print(f"  Vol ratio : {ind['vol_ratio'][i]:.2f}x  |  ADX: {ind['adx'][i]:.1f}  |  DI+: {ind['di_plus'][i]:.1f}  DI-: {ind['di_minus'][i]:.1f}")
         print(f"  REV fired : {'YES' if rev_fired else 'no'}  |  MOM fired: {'YES' if mom_fired else 'no'}")
 
@@ -526,7 +567,7 @@ def main():
             f"{'='*60}",
             f"Regime   : {regime}",
             f"Close    : {ind['close'][i]:.2f}",
-            f"20d ret  : {ind['ret20d'][i]:.1f}%   60d ret: {ind['ret60d'][i]:.1f}%",
+            f"{cfg['RevWindow']}d ret (REV): {rev_w_ret:.1f}%   60d ret (MOM): {ind['ret60d'][i]:.1f}%",
             f"Vol ratio: {ind['vol_ratio'][i]:.2f}x   ADX: {ind['adx'][i]:.1f}   DI+: {ind['di_plus'][i]:.1f}  DI-: {ind['di_minus'][i]:.1f}",
             f"MA50 slope (20d): {ind['ma50_slope'][i]:.2f}%",
         ]
