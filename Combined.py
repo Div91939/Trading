@@ -165,13 +165,13 @@ STOCKS = {
         "MomRet": 10, "MomVol": 1.0, "MomADX": 30,
     },
     "DOLAT": {
-        "ticker":   "DOLAT.BO",
+        "ticker":   "DOLATALGO.NS",
         "csv_path": "Data/dolat.csv",
         "RevWindow": 15, "RevDD": -3,  "RevVol": 0.7,
         "MomRet": 15, "MomVol": 1.2, "MomADX": 25,
     },
     "E2E": {
-        "ticker":   "E2ENETWORKS.NS",
+        "ticker":   "E2E.NS",
         "csv_path": "Data/e2e.csv",
         # No REV combo cleared a positive-return bar in tuning — conservative
         # fallback kept in place, flagged for manual review before trusting.
