@@ -28,20 +28,21 @@ Two strategies, both regime-gated:
     OOS across the 30-stock universe (+10.18% avg 40d fwd return, 58.8% win,
     N=68, no train->OOS decay unlike every magnitude-threshold variant
     tested). See mom_v2_signal.py for the full research writeup.
-    → Hold 30 days, 25% stop loss
+    → EXIT: 20% trailing stop from the highest close since entry, with a
+      25% hard stop as a backstop (protects against a violent single-day
+      drop before the trailing stop can react). Re-validated OOS across the
+      31-stock universe with this exit vs. the original fixed-40-day hold:
+      +14.91% avg (was +9.95%), median +4.18% (was +1.99%), same 56.9% win
+      rate — even with best+worst trade stripped: N=70, +12.85% avg. A
+      fixed hold was capping exactly the trades that mattered most (real,
+      multi-month trend continuations) — the trailing stop lets those run
+      while the hard stop still protects the downside.
 
   Each stock's "Signals" config field controls which signal(s) actually run
   for it (REV / MOM / BOTH) — set per-stock from a ground-truth recall audit
   + grid search (REV) and train/OOS backtest (MOM). 5 stocks in the original
   30-stock universe had no viable signal of either kind and are excluded
   entirely (see bottom of STOCKS dict).
-
-  MOM signal  (fires in UP only):
-    - 60-day return > ret_thresh  (real momentum)
-    - Volume ratio  > vol_thresh  (participation behind the move)
-    - ADX           > adx_floor   (confirmed trend strength)
-    - DI+ > DI-                   (direction confirmed)
-    → Hold 30 days, 25% stop loss
 
 Run daily. Fetches latest bar, appends to CSV, checks signals, emails alert.
 """
@@ -145,7 +146,7 @@ STOCKS = {
         "RevWindow": 10, "RevDD": -3, "RevVol": 0.7,
     },
     "E2E": {
-        "ticker":   "E2E.NS",
+        "ticker":   "E2ENETWORKS.NS",
         "csv_path": "Data/e2e.csv",
         "Signals":  "MOM",   # which signal(s) to check for this stock
     },
@@ -196,7 +197,7 @@ STOCKS = {
         "RevWindow": 10, "RevDD": -3, "RevVol": 0.8,
     },
     "RAPICUT": {
-        "ticker":   "RAPICUT.BO",  # VERIFY TICKER before relying on auto-fetch
+        "ticker":   "RAJRATAN.NS",  # VERIFY TICKER before relying on auto-fetch
         "csv_path": "Data/rapicut.csv",
         "Signals":  "BOTH",   # which signal(s) to check for this stock
         "RevWindow": 20, "RevDD": -3, "RevVol": 0.7,
@@ -220,7 +221,7 @@ STOCKS = {
         "RevWindow": 5, "RevDD": -3, "RevVol": 0.7,
     },
     "SWITCHTE": {
-        "ticker":   "SWITCHTE.BO",  # VERIFY TICKER before relying on auto-fetch
+        "ticker":   "SWITCHTE.NS",  # VERIFY TICKER before relying on auto-fetch
         "csv_path": "Data/switchte.csv",
         "Signals":  "MOM",   # which signal(s) to check for this stock
     },
@@ -307,6 +308,7 @@ def fetch_and_update_csv(ticker, csv_path):
 def compute_indicators(df):
     df = df.dropna(subset=["Open", "High", "Low", "Close"]).reset_index(drop=True)
     close = np.array(df["Close"], dtype=float)
+    opn   = np.array(df["Open"],  dtype=float)
     high  = np.array(df["High"],  dtype=float)
     low   = np.array(df["Low"],   dtype=float)
     vol   = np.array(df["Volume"], dtype=float)
@@ -330,7 +332,8 @@ def compute_indicators(df):
 
     vol_ma5  = pd.Series(vol).rolling(5).mean().values
     vol_ma20_own = pd.Series(vol).rolling(20).mean().values
-    vol_expansion = np.where(vol_ma20_own > 0, vol_ma5 / vol_ma20_own, np.nan)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        vol_expansion = np.where(vol_ma20_own > 0, vol_ma5 / vol_ma20_own, np.nan)
 
     # Days since price last crossed ABOVE MA50 (inf until the first cross)
     above = close > ma50
@@ -349,7 +352,8 @@ def compute_indicators(df):
 
     # Volume ratio vs 20d average
     vol_ma20  = pd.Series(vol).rolling(20).mean().values
-    vol_ratio = np.where(vol_ma20 > 0, vol / vol_ma20, np.nan)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        vol_ratio = np.where(vol_ma20 > 0, vol / vol_ma20, np.nan)
 
     # 20d and 60d returns
     ret20d = np.full(n, np.nan)
@@ -368,7 +372,7 @@ def compute_indicators(df):
     bb_mid = np.array(bb.bollinger_mavg())
 
     return dict(
-        close=close, high=high, low=low, vol=vol,
+        close=close, high=high, low=low, vol=vol, open=opn,
         ma50=ma50, ma50_slope=ma50_slope, price_vs_ma50=price_vs_ma50,
         ma50_slope_10=ma50_slope_10, vol_expansion=vol_expansion,
         days_since_ma50_cross=days_since_ma50_cross,
@@ -492,7 +496,10 @@ SIGNAL_DESCRIPTIONS = {
         "  not mid-flight. No regime/ADX gate; fixed thresholds validated\n"
         "  OOS across the full stock universe (not per-stock tuned).\n"
         "  Conditions: crossed MA50 <= {MOM2_CROSS_DAYS}d ago  |  MA50 10d slope > {MOM2_SLOPE_MIN}%  |  Vol(5d/20d) > {MOM2_VOL_EXP}x\n"
-        "  Strategy: Hold 30 days."
+        "  Strategy: 20% trailing stop from the highest close since entry,\n"
+        "  with a 25% hard stop as backstop. Re-validated OOS: +14.91% avg\n"
+        "  (vs +9.95% on a fixed 40-day hold), median +4.18%, 56.9% win —\n"
+        "  a fixed hold was capping exactly the trades that mattered most."
     ),
 
 }
@@ -501,11 +508,18 @@ SIGNAL_DESCRIPTIONS = {
 # 5. PLOT — 2 subplots: price + BB + MA50, RSI + volume
 # ─────────────────────────────────────────────────────────────────────────────
 
-def build_plot(ind, company_name, ticker, date_label, regime, lookback=120):
+def build_plot(ind, company_name, ticker, date_label, regime, lookback=120,
+               rev_fires=None, mom_fires=None):
+    """rev_fires / mom_fires: optional lists of bar indices (absolute, into ind
+    arrays) where each signal fired historically — marked on the chart so the
+    email shows past triggers within the visible window, not just today's."""
     n     = len(ind["close"])
     start = max(0, n - lookback)
     x     = np.arange(start, n)
 
+    opn    = ind["open"][start:n]
+    high   = ind["high"][start:n]
+    low    = ind["low"][start:n]
     close  = ind["close"][start:n]
     bb_up  = ind["bb_up"][start:n]
     bb_low = ind["bb_low"][start:n]
@@ -527,15 +541,44 @@ def build_plot(ind, company_name, ticker, date_label, regime, lookback=120):
         color=regime_colour.get(regime, "black"),
     )
 
-    # ── Price + BB + MA50 ────────────────────────────────────────────────
-    ax1.plot(x, close,  color="black",    lw=1.3, zorder=3, label="Close")
+    # ── Candlesticks ─────────────────────────────────────────────────────
+    up_col, dn_col = "#26a69a", "#ef5350"
+    for xi, o, h, l, c in zip(x, opn, high, low, close):
+        col = up_col if c >= o else dn_col
+        ax1.vlines(xi, l, h, color=col, lw=0.7, zorder=2)               # wick
+        body_lo, body_hi = min(o, c), max(o, c)
+        if body_hi - body_lo < 1e-9:                                     # doji
+            ax1.hlines(o, xi - 0.3, xi + 0.3, color=col, lw=1.0, zorder=3)
+        else:
+            ax1.add_patch(plt.Rectangle(
+                (xi - 0.3, body_lo), 0.6, body_hi - body_lo,
+                facecolor=col, edgecolor=col, lw=0.5, zorder=3))
+
+    # ── BB + MA50 overlays ───────────────────────────────────────────────
     ax1.plot(x, bb_up,  color="#27ae60",  lw=0.9, ls="--", label="BB Upper")
     ax1.plot(x, bb_low, color="#e74c3c",  lw=0.9, ls="--", label="BB Lower")
     ax1.plot(x, bb_mid, color="steelblue",lw=0.7, ls=":",  alpha=0.7, label="BB Mid")
     ax1.plot(x, ma50,   color="#f39c12",  lw=1.1, ls="-",  label="MA50")
-    ax1.fill_between(x, bb_low, bb_up, alpha=0.06, color="steelblue")
+    ax1.fill_between(x, bb_low, bb_up, alpha=0.05, color="steelblue")
+
+    # ── Past signal triggers in the visible window ───────────────────────
+    price_span = np.nanmax(high) - np.nanmin(low)
+    marker_off  = price_span * 0.03
+    if rev_fires:
+        rf = [i for i in rev_fires if start <= i < n]
+        if rf:
+            ax1.scatter(rf, [ind["low"][i] - marker_off for i in rf],
+                        marker="^", s=80, color="#2ecc71", edgecolor="black",
+                        lw=0.7, zorder=5, label="REV trigger")
+    if mom_fires:
+        mf = [i for i in mom_fires if start <= i < n]
+        if mf:
+            ax1.scatter(mf, [ind["low"][i] - marker_off for i in mf],
+                        marker="^", s=80, color="#3498db", edgecolor="black",
+                        lw=0.7, zorder=5, label="MOM trigger")
+
     ax1.set_ylabel("Price")
-    ax1.legend(loc="upper left", fontsize=7, ncol=5, framealpha=0.7)
+    ax1.legend(loc="upper left", fontsize=7, ncol=6, framealpha=0.7)
     ax1.grid(alpha=0.25)
 
     # ── RSI + Volume ─────────────────────────────────────────────────────
@@ -550,8 +593,7 @@ def build_plot(ind, company_name, ticker, date_label, regime, lookback=120):
 
     # Volume bars on twin axis
     ax3 = ax2.twinx()
-    bar_colors = ["#26a69a" if c >= o else "#ef5350"
-                  for c, o in zip(ind["close"][start:n], ind["close"][max(0,start-1):n-1])]
+    bar_colors = [up_col if c >= o else dn_col for c, o in zip(close, opn)]
     ax3.bar(x, vol, color=bar_colors, alpha=0.3, width=0.8)
     ax3.plot(x, vol_ma, color="#78909c", lw=0.8, ls="--", alpha=0.7)
     ax3.set_ylabel("Volume", fontsize=8)
@@ -732,8 +774,21 @@ def main():
 
         report_sections.append("\n".join(lines))
 
-        # ── Build chart ───────────────────────────────────────────────────
-        png = build_plot(ind, meta["company"], meta["ticker"], meta["date"], regime)
+        # ── Build chart (with past triggers marked in the window) ─────────
+        signals_cfg = cfg["Signals"]
+        hist_rev, hist_mom = [], []
+        if signals_cfg in ("REV", "BOTH"):
+            hist_rev = [k for k in range(len(ind["close"])) if check_rev(ind, k, cfg)]
+        if signals_cfg in ("MOM", "BOTH"):
+            seen_crosses = set()
+            for k in range(len(ind["close"])):
+                if check_mom(ind, k, cfg):
+                    cid = mom_cross_id(ind, k)
+                    if cid is not None and cid not in seen_crosses:
+                        seen_crosses.add(cid)
+                        hist_mom.append(k)   # first qualifying day per cross only
+        png = build_plot(ind, meta["company"], meta["ticker"], meta["date"], regime,
+                          rev_fires=hist_rev, mom_fires=hist_mom)
         plot_attachments.append((f"{stock_name}_{today_label}.png", png))
 
     # ── Save state ────────────────────────────────────────────────────────
