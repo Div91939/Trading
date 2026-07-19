@@ -140,13 +140,13 @@ STOCKS = {
         "RevWindow": 10, "RevDD": -3, "RevVol": 0.7,
     },
     "DOLATALGO": {
-        "ticker":   "DOLATALGO.NS",  # VERIFY TICKER before relying on auto-fetch
+        "ticker":   "DOLATALGO.BO",  # VERIFY TICKER before relying on auto-fetch
         "csv_path": "Data/dolatalgo.csv",
         "Signals":  "REV",   # which signal(s) to check for this stock
         "RevWindow": 10, "RevDD": -3, "RevVol": 0.7,
     },
     "E2E": {
-        "ticker":   "E2ENETWORKS.NS",
+        "ticker":   "E2E.NS",
         "csv_path": "Data/e2e.csv",
         "Signals":  "MOM",   # which signal(s) to check for this stock
     },
@@ -197,7 +197,7 @@ STOCKS = {
         "RevWindow": 10, "RevDD": -3, "RevVol": 0.8,
     },
     "RAPICUT": {
-        "ticker":   "RAJRATAN.NS",  # VERIFY TICKER before relying on auto-fetch
+        "ticker":   "RAPICUT.BO",  # VERIFY TICKER before relying on auto-fetch
         "csv_path": "Data/rapicut.csv",
         "Signals":  "BOTH",   # which signal(s) to check for this stock
         "RevWindow": 20, "RevDD": -3, "RevVol": 0.7,
@@ -221,7 +221,7 @@ STOCKS = {
         "RevWindow": 5, "RevDD": -3, "RevVol": 0.7,
     },
     "SWITCHTE": {
-        "ticker":   "SWITCHTE.NS",  # VERIFY TICKER before relying on auto-fetch
+        "ticker":   "SWITCHTE.BO",  # VERIFY TICKER before relying on auto-fetch
         "csv_path": "Data/switchte.csv",
         "Signals":  "MOM",   # which signal(s) to check for this stock
     },
