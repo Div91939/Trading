@@ -2,10 +2,10 @@ import pandas as pd
 import yfinance as yf
 import numpy as np
 
-TICKER         = "dolatalgo.bo"
+TICKER         = "netweb.ns"
 stock = yf.Ticker(TICKER)
 info  = stock.info
-csv_path='C:\\Users\\Divyansh\\OneDrive\\Desktop\\IISER\\Trading\\Data\\dolat.csv'
+csv_path='C:\\Users\\fourt\\OneDrive\\Desktop\\Finance\\Trading\\Data\\netweb.csv'
 
 
 company_name  = info.get('longName') or info.get('shortName') or TICKER
