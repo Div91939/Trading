@@ -11,7 +11,7 @@ csv_path='C:\\Users\\Divyansh\\OneDrive\\Desktop\\IISER\\Trading\\Data\\dolat.cs
 company_name  = info.get('longName') or info.get('shortName') or TICKER
 current_price = info.get('currentPrice') or info.get('regularMarketPrice', 0)
 
-df=pd.DataFrame((stock.history(period="1y", interval="1d")))
+df=pd.DataFrame((stock.history(period="5y", interval="1d")))
 avg_volume=np.array(info.get('averageDailyVolume10Day'))
 
 date=np.array(df.index)
