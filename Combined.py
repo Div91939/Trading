@@ -243,8 +243,59 @@ STOCKS = {
         "Signals":  "REV",   # which signal(s) to check for this stock
         "RevWindow": 15, "RevDD": -3, "RevVol": 0.7,
     },
+    "NETWEB": {
+        "ticker":   "NETWEBTECH.NS",  # VERIFY TICKER before relying on auto-fetch
+        "csv_path": "Data/netweb.csv",
+        "Signals":  "BOTH",
+        # REV: window=5,ret<-3%,vol>0.6x -> train N=5 +18.18%/80%win, OOS N=12 +9.26%/50%win
+        "RevWindow": 5, "RevDD": -3, "RevVol": 0.6,
+        # MOM (global thresholds): N=9 historical fires, caught two 60-90%+ moves
+        # against several -4..-18% losers -- classic MOM asymmetric payoff shape.
+    },
+    "PROZONER": {
+        "ticker":   "PROZONER.NS",  # VERIFY TICKER before relying on auto-fetch
+        "csv_path": "Data/prozoner.csv",
+        "Signals":  "BOTH",
+        # REV: window=5,ret<-10%,vol>0.6x -> train N=20 +3.64%/65%win, OOS N=8 +16.29%/75%win
+        "RevWindow": 5, "RevDD": -10, "RevVol": 0.6,
+        # MOM (global thresholds): explicitly validated this session -- 5 Mar 2025
+        # entry @ 31.51 rode a 20% trailing stop to +79.85% of a 127% underlying move.
+    },
+    "PARAS": {
+        "ticker":   "PARAS.NS",
+        "csv_path": "Data/paras.csv",
+        "Signals":  "REV",
+        # Re-included: wider grid search (window=5,ret<-3%,vol>0.6x) found N=13,
+        # +6.57% avg, but only 46.2% win -- moderate confidence, small sample.
+        "RevWindow": 5, "RevDD": -3, "RevVol": 0.6,
+    },
+    "SRMENERGY": {
+        "ticker":   "SRMENERGY.BO",  # confirmed from your existing Circuit_Check.py
+        "csv_path": "Data/srmenergy.csv",
+        "Signals":  "MOM",
+        # No viable REV config found (wide grid, window 5-60, ret -3 to -30%).
+        # MOM only: N=6, +3.64% avg, 50% win -- thin sample, low confidence.
+    },
+    "TATATECH": {
+        "ticker":   "TATATECH.NS",
+        "csv_path": "Data/tatatech.csv",
+        "Signals":  "REV",
+        # LOW CONFIDENCE: N=8 only (~2.5yr history). window=5,ret<-8%,vol>0.6x
+        # -> +4.15% avg, 50% win. Worth monitoring, not fully trusted yet.
+        "RevWindow": 5, "RevDD": -8, "RevVol": 0.6,
+    },
+    "ADANIENSOL": {
+        "ticker":   "ADANIENSOL.NS",
+        "csv_path": "Data/adaniensol.csv",
+        "Signals":  "REV",
+        # Re-included: wider grid (window=5,ret<-3%,vol>0.6x) found a much larger
+        # sample than the original tuning pass -- N=42, +4.38% avg, 50% win.
+        "RevWindow": 5, "RevDD": -3, "RevVol": 0.6,
+    },
     # Excluded — no viable signal found in tuning (REV grid search + MOM v2 both
-    # failed to clear a positive-return bar): ADANIENSOL, PARAS, RUDRA, SRMENERGY, TATATECH
+    # failed to clear a positive-return bar, or actively negative): RUDRA
+    # (only ~7 months of history; REV avg -5.80% win 20%; 0 MOM fires — revisit
+    # once it has a longer track record).
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
