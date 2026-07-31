@@ -26,10 +26,7 @@ jobs:
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
         run: python Combined.py
 
-      - name: Run Circuit
-        env:
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-        run: python Circuit_run.py
+      
 
       - name: Commit updated CSVs
         run: |
