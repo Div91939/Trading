@@ -54,13 +54,13 @@ import yfinance as yf
 
 # Which universes to pull. Add/remove lines here — never touch per-stock config.
 UNIVERSES_TO_FETCH = [
-    "NIFTY50",
+    #"NIFTY50",
     # "NIFTY_NEXT_50",
-    # "NIFTY_MIDCAP_50",
+     "NIFTY_SMALLCAP_250",
     # "NIFTY_MIDCAP_150",
 ]
 
-DATA_ROOT           = "Data"                    # sector-segregated CSVs land here
+DATA_ROOT           = "C:\\Users\\Divyansh\\OneDrive\\Desktop\\IISER\\Trading_git\\Smallcap"                    # sector-segregated CSVs land here
 TICKER_CACHE_PATH   = "ticker_cache.json"        # resolved .NS/.BO decisions, persisted
 MANIFEST_PATH       = "universe_manifest.csv"    # Label/Ticker/Sector/Universe/CSV/Resolved
 HISTORY_PERIOD      = "5y"                       # yfinance period for the backfill
