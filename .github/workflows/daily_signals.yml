@@ -26,10 +26,12 @@ jobs:
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
         run: python Combined.py
 
-      - name: Run Circuit
+      - name: Run Smallcap
         env:
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-        run: python Circuit_run.py
+        run: python Smallcap.py
+
+      
 
       - name: Commit updated CSVs
         run: |
