@@ -44,13 +44,17 @@ universe.
       On this horizon these names dip and recover inside the window, so
       exiting on weakness sells the dip. Hold the month.
 
-  MODELS
-    If bounce_model.pkl / leg_model.pkl are present AND scikit-learn imports
-    cleanly, the ML versions are used (better validated). Otherwise the
-    scanner falls back to the validated rule tiers automatically and says so
-    in the email. This keeps the file runnable in GitHub Actions even if
-    scikit-learn is absent or a pickle was written by another sklearn build.
-    To use the ML path, add `scikit-learn` to requirements.txt.
+  DESIGN
+    Deliberately self-contained: every threshold is hardcoded below, there are
+    no model files, no pickles and no scikit-learn dependency. Deps are just
+    pandas / numpy / scipy / matplotlib / yfinance. Nothing to keep in sync,
+    nothing that can silently fall out of date.
+
+  THRESHOLDS
+    REV uses the tier re-fit on the CORRECTED 8%-minima labels (the "v2"
+    parameters). Per-fold grid search picked this exact set in 3 of 4 folds.
+    MOM and SURGE thresholds are likewise walk-forward derived; see the
+    comment blocks at each constant for the validation numbers.
 
 Run daily. Same email/env conventions as Combined.py (EMAIL_PASSWORD secret).
 """
@@ -81,11 +85,13 @@ warnings.filterwarnings("ignore")
 MANIFEST_PATH  = "universe_manifest.csv"
 TICKER_CACHE   = "ticker_cache.json"
 DATA_ROOT      = "Smallcap"
+# universe_manifest.csv holds BOTH the microcap list and 50 NIFTY50 large-caps.
+# Without this filter the scanner would fetch RELIANCE/HDFCBANK/TCS into
+# Smallcap/ and apply microcap-tuned thresholds to large-caps.
+UNIVERSE_FILTER = "NIFTY_MICROCAP_250"
 LOG_PATH       = "smallcap_email_log.json"
 MOM_LOG_PATH   = "smallcap_mom_log.json"
-
-BOUNCE_MODEL   = "bounce_model.pkl"
-LEG_MODEL      = "leg_model.pkl"
+SURGE_LOG_PATH = "smallcap_surge_log.json"
 
 EMAIL_SENDER   = "divyanshdewan@gmail.com"
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
@@ -112,10 +118,34 @@ MIN_MEDIAN_TURNOVER_CR = 0.5   # skip untradeable names (Rs crore/day, median)
 REV_HOLD, REV_SL = 30, -25.0
 # MOM exit
 MOM_HOLD = 21
+# SURGE exit
+SURGE_HOLD = 30
+SURGE_SL   = -25.0
 
-# ── Rule-tier thresholds (used when models are unavailable) ─────────────────
-# REV "T3 moderate" tier from the validated recall/return frontier.
-REV_PX_MA10, REV_Z5, REV_DST, REV_UPL, REV_ATR, REV_RET60 = -5, -1.0, 10, 10, 3.5, -30
+# ── SURGE thresholds ───────────────────────────────────────────────────────
+# Walk-forward tuned: k in {1,2,3,4,5,7,10} days x threshold in {4..15}%, params
+# fit on TRAIN ONLY across 5 folds. (4 days, 15%) was selected in ALL 5 folds
+# independently -- the most stable convergence of any parameter in this project.
+#   4d>=15%                    : N=2432 avg +6.46% edge +2.51pp, 5/5 windows +
+#   4d>=15% AND near 52w high  : N=1617 avg +8.06% med +3.79% win 58.4%
+#                                P(>=10%) 38.7% edge +3.67pp, 5/5 windows +
+#   4d>=15% AND NOT near high  : edge +0.05pp, 3/5 -- WORTHLESS, hence the gate.
+# For reference, a looser 2d>=7% trigger gives only +1.55pp edge (4/5) and fires
+# 2.7x as often, so the tighter/longer window is doing real work.
+SURGE_DAYS    = 4      # lookback (trading days) for the move
+SURGE_PCT     = 15.0   # minimum % move over that window
+SURGE_NEAR52  = 85.0   # must be >= this % of its 52-week high
+SURGE_COOLOFF = 10     # bars before the same stock can re-fire SURGE
+
+# ── Signal thresholds (all hardcoded; this file has no external deps) ──────
+# REV tier re-fit on the CORRECTED 8%-minima labels ("v2"). Per-fold grid
+# search selected this exact set in 3 of 4 walk-forward folds.
+#   Pooled OOS: N=543, +10.90% avg, 65.4% win, 55.6% precision (base +3.06%)
+# NOTE days_since_trough <= 5, not 10. The corrected labels push entry CLOSER
+# to the confirmed trough -- the opposite of the old WTD filter, which required
+# >= 15 days since a trough and was demonstrably backwards on this data.
+# Previous (uncorrected-label) values were: -5, -1.0, 10, 10, 3.5, -30
+REV_PX_MA10, REV_Z5, REV_DST, REV_UPL, REV_ATR, REV_RET60 = -8, -1.5, 5, 20, 4.5, -40
 # MOM rule, grid-searched for leg-start precision.
 MOM_RET5, MOM_PCT250, MOM_EFF, MOM_ADX, MOM_DD60 = 8, 95, 0.25, 25, -8
 
@@ -147,6 +177,9 @@ def load_universe():
     for _, r in man.iterrows():
         if str(r.get("Resolved", "Y")).strip().upper() != "Y":
             continue
+        if UNIVERSE_FILTER and "Universe" in man.columns:
+            if str(r.get("Universe", "")).strip() != UNIVERSE_FILTER:
+                continue
         label = str(r["Label"]).strip()
         ticker = cache.get(label) or str(r.get("Ticker", "")).strip()
         if not ticker or ticker.lower() == "nan":
@@ -284,6 +317,15 @@ def compute_indicators(df):
     rmax250 = S.rolling(250, min_periods=20).max().values
     F["pct_of_250high"] = np.where(rmax250 > 0, c / rmax250 * 100, np.nan)
 
+    # SURGE: k-day return, and position vs the true 52-week HIGH (uses highs,
+    # not closes -- a surge is measured against the actual prior extreme)
+    rs = np.full(n, np.nan)
+    if n > SURGE_DAYS:
+        rs[SURGE_DAYS:] = (c[SURGE_DAYS:] - c[:-SURGE_DAYS]) / c[:-SURGE_DAYS] * 100
+    F["surge_ret"] = rs
+    hi52 = pd.Series(h).rolling(252, min_periods=120).max().values
+    F["pct_of_52whigh"] = np.where(hi52 > 0, c / hi52 * 100, np.nan)
+
     # trend efficiency (Kaufman): net move / total path travelled
     absd = np.abs(np.concatenate([[0.0], np.diff(c)]))
     path40 = pd.Series(absd).rolling(40).sum().values
@@ -344,28 +386,6 @@ def compute_indicators(df):
 # 4. SIGNALS
 # ─────────────────────────────────────────────────────────────────────────────
 
-MODELS = {"bounce": None, "leg": None, "ok": False}
-
-
-def try_load_models():
-    """ML path is optional. If sklearn or a pickle is missing/incompatible we
-    silently fall back to the validated rule tiers rather than crashing."""
-    try:
-        import pickle
-        import sklearn  # noqa: F401
-        if os.path.exists(BOUNCE_MODEL):
-            with open(BOUNCE_MODEL, "rb") as f:
-                MODELS["bounce"] = pickle.load(f)
-        if os.path.exists(LEG_MODEL):
-            with open(LEG_MODEL, "rb") as f:
-                MODELS["leg"] = pickle.load(f)
-        MODELS["ok"] = MODELS["bounce"] is not None
-    except Exception as e:
-        print(f"  [models] unavailable ({e}) — using validated rule tiers")
-        MODELS["ok"] = False
-    return MODELS["ok"]
-
-
 def check_rev(F, i):
     """REV / BOUNCE — rule tier (T3). Deep-but-recoverable dislocation, near a
     confirmed trough, already off the 52w low, volatile enough to bounce."""
@@ -394,6 +414,17 @@ def check_mom(F, i):
             F["ma_aligned"][i] == 1)
 
 
+def check_surge(F, i):
+    """SURGE -- a sharp multi-day thrust, but ONLY near the 52-week high.
+    The near-high gate is not cosmetic: walk-forward, surges away from the high
+    carry an edge of +0.05pp (3/5 windows) versus +3.67pp (5/5) near it."""
+    for k in ("surge_ret", "pct_of_52whigh"):
+        if np.isnan(F[k][i]):
+            return False
+    return (F["surge_ret"][i] >= SURGE_PCT and
+            F["pct_of_52whigh"][i] >= SURGE_NEAR52)
+
+
 SIGNAL_DESCRIPTIONS = {
     "REV": (
         "REVERSAL ENTRY — 'BOUNCE'\n"
@@ -404,8 +435,21 @@ SIGNAL_DESCRIPTIONS = {
         "  disjoint -- this uses both.\n"
         "  Conditions: px vs MA10 < {a}%  |  5d z-score < {b}  |  <= {c}d since trough\n"
         "              |  >= {d}% off 52w low  |  ATR >= {e}%  |  60d ret >= {f}%\n"
-        "  Validated OOS: +7.67% avg, 63.3% win (base +3.06%).\n"
+        "  Validated OOS (corrected labels): +10.90% avg, 65.4% win, 55.6% prec.\n"
         "  EXIT: 30-day hold, 25% hard stop."
+    ),
+    "SURGE": (
+        "SURGE ENTRY (sharp thrust near the 52-week high)\n"
+        "  A {a}-day move of >= {b}% while trading at >= {c}% of the 52-week\n"
+        "  high. Walk-forward tuned; (4d, 15%) was chosen in all 5 folds.\n"
+        "  The near-high gate is the signal: surges FAR from the high carry\n"
+        "  essentially no edge (+0.05pp, 3/5 windows) while surges near it\n"
+        "  give +3.67pp over base in 5/5 windows.\n"
+        "  Validated OOS: N=1617, avg +8.06%, median +3.79%, win 58.4%,\n"
+        "  P(>=10%) 38.7% (base +3.07%).\n"
+        "  EXIT: 30-day hold, 25% hard stop (same as REV).\n"
+        "  NOTE: expect drawdown first -- historical mean worst-case inside\n"
+        "  20 days for this setup is about -8%."
     ),
     "MOM": (
         "MOMENTUM LEG ENTRY — 'LEG'\n"
@@ -429,7 +473,7 @@ SIGNAL_DESCRIPTIONS = {
 # ─────────────────────────────────────────────────────────────────────────────
 
 def build_plot(F, company, ticker, date_label, kinds, lookback=PLOT_LOOKBACK,
-               rev_fires=None, mom_fires=None):
+               rev_fires=None, mom_fires=None, surge_fires=None):
     n = len(F["close"]); start = max(0, n - lookback); x = np.arange(start, n)
     o, h, l, c = (F["open"][start:n], F["high"][start:n],
                   F["low"][start:n], F["close"][start:n])
@@ -457,11 +501,15 @@ def build_plot(F, company, ticker, date_label, kinds, lookback=PLOT_LOOKBACK,
     ax1.plot(x, F["ma20"][start:n], color="steelblue", lw=0.8, ls="--", alpha=0.7, label="MA20")
 
     span = np.nanmax(h) - np.nanmin(l); off = span * 0.035
-    for fires, col, lab in ((rev_fires, "#2ecc71", "REV"), (mom_fires, "#8e44ad", "MOM")):
+    for fires, col, lab, mk, side in ((rev_fires, "#2ecc71", "REV", "^", "lo"),
+                                       (mom_fires, "#8e44ad", "MOM", "^", "lo"),
+                                       (surge_fires, "#e67e22", "SURGE", "v", "hi")):
         vis = [i for i in (fires or []) if start <= i < n]
         if vis:
-            ax1.scatter(vis, [F["low"][i] - off for i in vis], marker="^", s=95,
-                        color=col, edgecolor="black", lw=0.7, zorder=6, label=f"{lab} fire")
+            ys = ([F["low"][i] - off for i in vis] if side == "lo"
+                  else [F["high"][i] + off for i in vis])
+            ax1.scatter(vis, ys, marker=mk, s=95, color=col, edgecolor="black",
+                        lw=0.7, zorder=6, label=f"{lab} fire")
 
     ax1.set_ylabel("Price"); ax1.legend(loc="upper left", fontsize=7, ncol=4, framealpha=0.75)
     ax1.grid(alpha=0.25)
@@ -528,13 +576,12 @@ def send_email(subject, body, attachments):
 def main():
     universe = load_universe()
     print(f"Universe: {len(universe)} stocks")
-    using_ml = try_load_models()
-    print(f"Signal engine: {'ML models' if using_ml else 'validated rule tiers'}")
 
     log = _load(LOG_PATH); mom_log = _load(MOM_LOG_PATH)
+    surge_log = _load(SURGE_LOG_PATH)
     today_label = None
     sections, charts = [], []
-    rev_hits, mom_hits = [], []
+    rev_hits, mom_hits, surge_hits = [], [], []
 
     skipped_quality = []
     for name, cfg in universe.items():
@@ -573,6 +620,14 @@ def main():
 
         rev = check_rev(F, i)
         mom = check_mom(F, i)
+        surge = check_surge(F, i)
+
+        # SURGE de-dup: one alert per thrust, not every day it stays elevated
+        if surge:
+            if i - surge_log.get(name, -10**9) < SURGE_COOLOFF:
+                surge = False
+            else:
+                surge_log[name] = i
 
         # MOM de-dup: don't refire on consecutive days of the same leg
         if mom:
@@ -584,14 +639,17 @@ def main():
 
         print(f"── {name:12s} close={F['close'][i]:9.2f}  z5={F['z5'][i]:6.2f}  "
               f"dd60={F['dd60'][i]:7.2f}%  ADX={F['adx'][i]:5.1f}  "
-              f"REV={'YES' if rev else 'no':3s}  MOM={'YES' if mom else 'no'}")
+              f"{SURGE_DAYS}d={F['surge_ret'][i]:6.2f}%  52wH={F['pct_of_52whigh'][i]:5.1f}%  "
+              f"REV={'YES' if rev else 'no':3s}  MOM={'YES' if mom else 'no':3s}  "
+              f"SURGE={'YES' if surge else 'no'}")
 
-        if not (rev or mom):
+        if not (rev or mom or surge):
             continue
         if rev: rev_hits.append(name)
         if mom: mom_hits.append(name)
+        if surge: surge_hits.append(name)
 
-        kinds = [k for k, on in (("REV", rev), ("MOM", mom)) if on]
+        kinds = [k for k, on in (("REV", rev), ("MOM", mom), ("SURGE", surge)) if on]
         lines = [
             f"\n{'='*64}",
             f"{meta['company']} ({meta['ticker']})  —  {meta['date']}   [{cfg['sector']}]",
@@ -602,6 +660,7 @@ def main():
             f"dd from 60dH : {F['dd60'][i]:+.2f}%   % of 250d high: {F['pct_of_250high'][i]:.1f}%",
             f"off 52w low  : {F['up_from_low252'][i]:+.2f}%   days since trough: {F['days_since_trough'][i]:.0f}",
             f"ATR          : {F['atr_pct'][i]:.2f}%   ADX: {F['adx'][i]:.1f}   vol: {F['vol_r'][i]:.2f}x",
+            f"{SURGE_DAYS}d move      : {F['surge_ret'][i]:+.2f}%   % of 52w high: {F['pct_of_52whigh'][i]:.1f}%",
         ]
         for k in kinds:
             key = f"{name}_{k}"
@@ -609,9 +668,12 @@ def main():
             if k == "REV":
                 desc = SIGNAL_DESCRIPTIONS["REV"].format(
                     a=REV_PX_MA10, b=REV_Z5, c=REV_DST, d=REV_UPL, e=REV_ATR, f=REV_RET60)
-            else:
+            elif k == "MOM":
                 desc = SIGNAL_DESCRIPTIONS["MOM"].format(
                     a=MOM_RET5, b=MOM_PCT250, c=MOM_EFF, d=MOM_ADX, e=MOM_DD60)
+            else:
+                desc = SIGNAL_DESCRIPTIONS["SURGE"].format(
+                    a=SURGE_DAYS, b=SURGE_PCT, c=SURGE_NEAR52)
             lines.append(f"\n{'-'*44}")
             lines.append(f"SIGNAL: {k}" + ("   [already sent today]" if already else ""))
             lines.append(desc)
@@ -622,14 +684,17 @@ def main():
         if len(charts) < MAX_CHARTS:
             hist_rev = [k for k in range(len(F["close"])) if check_rev(F, k)]
             hist_mom = [k for k in range(len(F["close"])) if check_mom(F, k)]
+            hist_surge = [k for k in range(len(F["close"])) if check_surge(F, k)]
             try:
                 png = build_plot(F, meta["company"], meta["ticker"], meta["date"], kinds,
-                                 rev_fires=hist_rev, mom_fires=hist_mom)
+                                 rev_fires=hist_rev, mom_fires=hist_mom,
+                                 surge_fires=hist_surge)
                 charts.append((f"{name}_{today_label}.png", png))
             except Exception as e:
                 print(f"   chart failed: {e}")
 
     _save(LOG_PATH, log); _save(MOM_LOG_PATH, mom_log)
+    _save(SURGE_LOG_PATH, surge_log)
 
     if not sections:
         print("\nNo signals today — no email sent.")
@@ -637,11 +702,13 @@ def main():
 
     body = (
         f"SMALLCAP DAILY SCAN  —  {today_label}\n"
-        f"Engine   : {'ML models' if MODELS['ok'] else 'validated rule tiers'}\n"
+        f"Engine   : hardcoded rule thresholds (self-contained, no model files)\n"
         f"Universe : {len(universe)} stocks\n"
         f"REV fires: {len(rev_hits)}  ({', '.join(rev_hits) if rev_hits else '-'})\n"
         f"MOM fires: {len(mom_hits)}  ({', '.join(mom_hits) if mom_hits else '-'})\n"
+        f"SURGE    : {len(surge_hits)}  ({', '.join(surge_hits) if surge_hits else '-'})\n"
         f"\nEXITS — REV: 30-day hold, 25% hard stop.  MOM: hold 21 trading days.\n"
+        f"        SURGE: 30-day hold, 25% hard stop (expect ~-8% drawdown first).\n"
         f"MOM reminder: do NOT cut early on weakness — every trailing-stop\n"
         f"variant tested underperformed the plain 1-month hold.\n"
         + (f"\nDATA-QUALITY SKIPS ({len(skipped_quality)}): "
@@ -650,7 +717,8 @@ def main():
            if len(sections) > MAX_CHARTS else "")
         + "\n".join(sections)
     )
-    subject = f"[Smallcap Scanner] {len(rev_hits)} REV / {len(mom_hits)} MOM — {today_label}"
+    subject = (f"[Smallcap Scanner] {len(rev_hits)} REV / {len(mom_hits)} MOM / "
+               f"{len(surge_hits)} SURGE — {today_label}")
     send_email(subject, body, charts)
 
 
