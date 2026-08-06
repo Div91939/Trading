@@ -56,7 +56,7 @@ import yfinance as yf
 UNIVERSES_TO_FETCH = [
     #"NIFTY50",
     # "NIFTY_NEXT_50",
-     "NIFTY_SMALLCAP_250",
+     "NIFTY_MICROCAP_250",
     # "NIFTY_MIDCAP_150",
 ]
 
@@ -73,6 +73,7 @@ INDEX_CSV_URLS = {
     "NIFTY_NEXT_50":     "https://nsearchives.nseindia.com/content/indices/ind_niftynext50list.csv",
     "NIFTY_MIDCAP_50":   "https://nsearchives.nseindia.com/content/indices/ind_niftymidcap50list.csv",
     "NIFTY_MIDCAP_150":  "https://nsearchives.nseindia.com/content/indices/ind_niftymidcap150list.csv",
+    "NIFTY_MICROCAP_250":"https://nsearchives.nseindia.com/content/indices/ind_niftymicrocap250list.csv",
 }
 
 # NSE rejects requests that don't look like a browser
@@ -95,21 +96,21 @@ def fetch_index_constituents(universe_key):
     """Returns a DataFrame with columns: Symbol, Company, Sector — pulled
     live from NSE's own index CSV. Raises with a clear message if NSE
     blocks/changes the format, rather than failing silently."""
-    url = INDEX_CSV_URLS.get(universe_key)
-    if url is None:
-        raise ValueError(f"Unknown universe '{universe_key}'. "
-                          f"Known: {list(INDEX_CSV_URLS)}")
+   # url = INDEX_CSV_URLS.get(universe_key)
+    #if url is None:
+    #    raise ValueError(f"Unknown universe '{universe_key}'. "
+     #                     f"Known: {list(INDEX_CSV_URLS)}")
 
-    resp = requests.get(url, headers=NSE_HEADERS, timeout=15)
-    if resp.status_code != 200:
-        raise RuntimeError(
-            f"NSE returned HTTP {resp.status_code} for {universe_key} ({url}). "
-            f"NSE sometimes blocks non-browser requests or moves this file — "
-            f"if this persists, download the CSV manually from nseindia.com's "
-            f"'Indices' > 'Historical Data' page and load it with pd.read_csv() instead."
-        )
+    #resp = requests.get(url, headers=NSE_HEADERS, timeout=15)
+    #if resp.status_code != 200:
+     #   raise RuntimeError(
+      #      f"NSE returned HTTP {resp.status_code} for {universe_key} ({url}). "
+       #     f"NSE sometimes blocks non-browser requests or moves this file — "
+        #    f"if this persists, download the CSV manually from nseindia.com's "
+         #   f"'Indices' > 'Historical Data' page and load it with pd.read_csv() instead."
+        #)
 
-    df = pd.read_csv(io.StringIO(resp.text))
+    df = pd.read_csv('C:\\Users\\Divyansh\\OneDrive\\Desktop\\IISER\\Trading_git\\ind_niftymicrocap250_list.csv')
     df.columns = df.columns.str.strip()
 
     # NSE's column naming has some variance across index files historically —

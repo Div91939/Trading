@@ -1,56 +1,4 @@
 Label,Ticker,Sector,Universe,CSV_Path,Resolved
-<<<<<<< HEAD
-ADANIENT,ADANIENT.NS,Metals & Mining,NIFTY50,Data\Metals___Mining\adanient.csv,Y
-ADANIPORTS,ADANIPORTS.NS,Services,NIFTY50,Data\Services\adaniports.csv,Y
-APOLLOHOSP,APOLLOHOSP.NS,Healthcare,NIFTY50,Data\Healthcare\apollohosp.csv,Y
-ASIANPAINT,ASIANPAINT.NS,Consumer Durables,NIFTY50,Data\Consumer_Durables\asianpaint.csv,Y
-AXISBANK,AXISBANK.NS,Financial Services,NIFTY50,Data\Financial_Services\axisbank.csv,Y
-BAJAJ-AUTO,BAJAJ-AUTO.NS,Automobile and Auto Components,NIFTY50,Data\Automobile_and_Auto_Components\bajaj-auto.csv,Y
-BAJFINANCE,BAJFINANCE.NS,Financial Services,NIFTY50,Data\Financial_Services\bajfinance.csv,Y
-BAJAJFINSV,BAJAJFINSV.NS,Financial Services,NIFTY50,Data\Financial_Services\bajajfinsv.csv,Y
-BEL,BEL.NS,Capital Goods,NIFTY50,Data\Capital_Goods\bel.csv,Y
-BHARTIARTL,BHARTIARTL.NS,Telecommunication,NIFTY50,Data\Telecommunication\bhartiartl.csv,Y
-CIPLA,CIPLA.NS,Healthcare,NIFTY50,Data\Healthcare\cipla.csv,Y
-COALINDIA,COALINDIA.NS,Oil Gas & Consumable Fuels,NIFTY50,Data\Oil_Gas___Consumable_Fuels\coalindia.csv,Y
-DRREDDY,DRREDDY.NS,Healthcare,NIFTY50,Data\Healthcare\drreddy.csv,Y
-EICHERMOT,EICHERMOT.NS,Automobile and Auto Components,NIFTY50,Data\Automobile_and_Auto_Components\eichermot.csv,Y
-ETERNAL,ETERNAL.NS,Consumer Services,NIFTY50,Data\Consumer_Services\eternal.csv,Y
-GRASIM,GRASIM.NS,Construction Materials,NIFTY50,Data\Construction_Materials\grasim.csv,Y
-HCLTECH,HCLTECH.NS,Information Technology,NIFTY50,Data\Information_Technology\hcltech.csv,Y
-HDFCBANK,HDFCBANK.NS,Financial Services,NIFTY50,Data\Financial_Services\hdfcbank.csv,Y
-HDFCLIFE,HDFCLIFE.NS,Financial Services,NIFTY50,Data\Financial_Services\hdfclife.csv,Y
-HINDALCO,HINDALCO.NS,Metals & Mining,NIFTY50,Data\Metals___Mining\hindalco.csv,Y
-HINDUNILVR,HINDUNILVR.NS,Fast Moving Consumer Goods,NIFTY50,Data\Fast_Moving_Consumer_Goods\hindunilvr.csv,Y
-ICICIBANK,ICICIBANK.NS,Financial Services,NIFTY50,Data\Financial_Services\icicibank.csv,Y
-ITC,ITC.NS,Fast Moving Consumer Goods,NIFTY50,Data\Fast_Moving_Consumer_Goods\itc.csv,Y
-INFY,INFY.NS,Information Technology,NIFTY50,Data\Information_Technology\infy.csv,Y
-INDIGO,INDIGO.NS,Services,NIFTY50,Data\Services\indigo.csv,Y
-JSWSTEEL,JSWSTEEL.NS,Metals & Mining,NIFTY50,Data\Metals___Mining\jswsteel.csv,Y
-JIOFIN,JIOFIN.NS,Financial Services,NIFTY50,Data\Financial_Services\jiofin.csv,Y
-KOTAKBANK,KOTAKBANK.NS,Financial Services,NIFTY50,Data\Financial_Services\kotakbank.csv,Y
-LT,LT.NS,Construction,NIFTY50,Data\Construction\lt.csv,Y
-M&M,M&M.NS,Automobile and Auto Components,NIFTY50,Data\Automobile_and_Auto_Components\m&m.csv,Y
-MARUTI,MARUTI.NS,Automobile and Auto Components,NIFTY50,Data\Automobile_and_Auto_Components\maruti.csv,Y
-MAXHEALTH,MAXHEALTH.NS,Healthcare,NIFTY50,Data\Healthcare\maxhealth.csv,Y
-NTPC,NTPC.NS,Power,NIFTY50,Data\Power\ntpc.csv,Y
-NESTLEIND,NESTLEIND.NS,Fast Moving Consumer Goods,NIFTY50,Data\Fast_Moving_Consumer_Goods\nestleind.csv,Y
-ONGC,ONGC.NS,Oil Gas & Consumable Fuels,NIFTY50,Data\Oil_Gas___Consumable_Fuels\ongc.csv,Y
-POWERGRID,POWERGRID.NS,Power,NIFTY50,Data\Power\powergrid.csv,Y
-RELIANCE,RELIANCE.NS,Oil Gas & Consumable Fuels,NIFTY50,Data\Oil_Gas___Consumable_Fuels\reliance.csv,Y
-SBILIFE,SBILIFE.NS,Financial Services,NIFTY50,Data\Financial_Services\sbilife.csv,Y
-SHRIRAMFIN,SHRIRAMFIN.NS,Financial Services,NIFTY50,Data\Financial_Services\shriramfin.csv,Y
-SBIN,SBIN.NS,Financial Services,NIFTY50,Data\Financial_Services\sbin.csv,Y
-SUNPHARMA,SUNPHARMA.NS,Healthcare,NIFTY50,Data\Healthcare\sunpharma.csv,Y
-TCS,TCS.NS,Information Technology,NIFTY50,Data\Information_Technology\tcs.csv,Y
-TATACONSUM,TATACONSUM.NS,Fast Moving Consumer Goods,NIFTY50,Data\Fast_Moving_Consumer_Goods\tataconsum.csv,Y
-TMPV,TMPV.NS,Automobile and Auto Components,NIFTY50,Data\Automobile_and_Auto_Components\tmpv.csv,Y
-TATASTEEL,TATASTEEL.NS,Metals & Mining,NIFTY50,Data\Metals___Mining\tatasteel.csv,Y
-TECHM,TECHM.NS,Information Technology,NIFTY50,Data\Information_Technology\techm.csv,Y
-TITAN,TITAN.NS,Consumer Durables,NIFTY50,Data\Consumer_Durables\titan.csv,Y
-TRENT,TRENT.NS,Consumer Services,NIFTY50,Data\Consumer_Services\trent.csv,Y
-ULTRACEMCO,ULTRACEMCO.NS,Construction Materials,NIFTY50,Data\Construction_Materials\ultracemco.csv,Y
-WIPRO,WIPRO.NS,Information Technology,NIFTY50,Data\Information_Technology\wipro.csv,Y
-=======
 ASKAUTOLTD,ASKAUTOLTD.NS,Automobile and Auto Components,NIFTY_MICROCAP_250,C:\Users\Divyansh\OneDrive\Desktop\IISER\Trading_git\Smallcap\Automobile_and_Auto_Components\askautoltd.csv,Y
 AXISCADES,AXISCADES.NS,Capital Goods,NIFTY_MICROCAP_250,C:\Users\Divyansh\OneDrive\Desktop\IISER\Trading_git\Smallcap\Capital_Goods\axiscades.csv,Y
 AARTIDRUGS,AARTIDRUGS.NS,Healthcare,NIFTY_MICROCAP_250,C:\Users\Divyansh\OneDrive\Desktop\IISER\Trading_git\Smallcap\Healthcare\aartidrugs.csv,Y
@@ -303,4 +251,3 @@ WELENT,WELENT.NS,Construction,NIFTY_MICROCAP_250,C:\Users\Divyansh\OneDrive\Desk
 WESTLIFE,WESTLIFE.NS,Consumer Services,NIFTY_MICROCAP_250,C:\Users\Divyansh\OneDrive\Desktop\IISER\Trading_git\Smallcap\Consumer_Services\westlife.csv,Y
 YATHARTH,YATHARTH.NS,Healthcare,NIFTY_MICROCAP_250,C:\Users\Divyansh\OneDrive\Desktop\IISER\Trading_git\Smallcap\Healthcare\yatharth.csv,Y
 ZAGGLE,ZAGGLE.NS,Information Technology,NIFTY_MICROCAP_250,C:\Users\Divyansh\OneDrive\Desktop\IISER\Trading_git\Smallcap\Information_Technology\zaggle.csv,Y
->>>>>>> db21f1f2cd00fcff2b90bc53682e819d8075007a
