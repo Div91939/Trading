@@ -1,0 +1,80 @@
+name: Daily Stock Signals
+
+on:
+  workflow_dispatch:
+  # Uncomment to run automatically after NSE close (17:00 IST = 11:30 UTC), Mon-Fri:
+  # schedule:
+  #   - cron: '30 11 * * 1-5'
+
+permissions:
+  contents: write
+
+jobs:
+  run-signals:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Combined
+        env:
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        run: python Combined.py
+
+      # continue-on-error so a failure in the smallcap scan can never block the
+      # commit step below. Previously a mid-run crash left CSVs updated on disk
+      # but never pushed.
+      - name: Run Smallcap
+        env:
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        continue-on-error: true
+        run: python Smallcap.py
+
+      - name: Commit updated CSVs
+        if: always()
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # THE FIX: Smallcap/ was never staged, so those CSVs stayed frozen
+          # while Data/ kept updating. Logs are committed too so the e-mail
+          # de-duplication actually persists between runs.
+          git add Data/ Smallcap/
+          git add -A -- '*.json'
+
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+          else
+            git commit -m "Auto: update Data + Smallcap $(date +'%d-%m-%Y %H:%M UTC')"
+            git pull --rebase --autostash origin ${GITHUB_REF_NAME}
+            git push
+          fi
+
+      - name: Report freshness
+        if: always()
+        run: |
+          python - <<'EOF'
+          import glob, os, pandas as pd
+          for root in ("Data", "Smallcap"):
+              files = glob.glob(os.path.join(root, "**", "*.csv"), recursive=True)
+              latest = {}
+              for f in files:
+                  try:
+                      d = pd.read_csv(f, usecols=["Date"])
+                      m = pd.to_datetime(d["Date"], format="%d-%m-%Y", errors="coerce").max()
+                      if pd.notna(m):
+                          latest[m] = latest.get(m, 0) + 1
+                  except Exception:
+                      pass
+              print(f"{root}: {len(files)} files")
+              for k in sorted(latest, reverse=True)[:3]:
+                  print(f"   {k.date()} : {latest[k]} files")
+          EOF
