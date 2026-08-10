@@ -92,6 +92,8 @@ UNIVERSE_FILTER = "NIFTY_MICROCAP_250"
 LOG_PATH       = "smallcap_email_log.json"
 MOM_LOG_PATH   = "smallcap_mom_log.json"
 SURGE_LOG_PATH = "smallcap_surge_log.json"
+SPRED_LOG_PATH = "smallcap_spred_log.json"
+ALERT_LOG_PATH = "smallcap_alert_log.json"
 
 EMAIL_SENDER   = "divyanshdewan@gmail.com"
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
@@ -121,6 +123,9 @@ MOM_HOLD = 21
 # SURGE exit
 SURGE_HOLD = 30
 SURGE_SL   = -25.0
+# A1 / A5 exit — same convention as REV
+ALERT_HOLD = 30
+ALERT_SL   = -25.0
 
 # ── SURGE thresholds ───────────────────────────────────────────────────────
 # Walk-forward tuned: k in {1,2,3,4,5,7,10} days x threshold in {4..15}%, params
@@ -136,6 +141,46 @@ SURGE_DAYS    = 4      # lookback (trading days) for the move
 SURGE_PCT     = 15.0   # minimum % move over that window
 SURGE_NEAR52  = 85.0   # must be >= this % of its 52-week high
 SURGE_COOLOFF = 10     # bars before the same stock can re-fire SURGE
+
+# ── SPRED: surge-PREDICTION thresholds ─────────────────────────────────────
+# Built against a ground-truth set of "price rises >=10% over the NEXT 2 days"
+# (2.20% of all bars; a labelled bar returns +13.42% over 2d vs +0.20% for a
+# random bar). Discovery on the train window found volatility STATE to be the
+# dominant precursor -- bb_width AUC 0.652, atr_pct 0.652, rv20 0.642 -- then
+# trough proximity and volume expansion.
+#   Walk-forward: hit rate 12.29% vs 2.54% base = +9.75pp lift, 6/6 windows,
+#   params converged in 5 of 6 folds. Fires on 0.40% of bars (~2 alerts/day).
+# Checks it passed:
+#   - not concentrated: 615 fires across 125 stocks, top-5 only 13%
+#   - NOT merely a volatility proxy: all high-vol bars (ATR>=5.5 & rv20>=35)
+#     hit only 4.81%; adding the trough/volume/off-low conditions takes it to
+#     12.68%, i.e. +7.88pp comes from the NON-volatility conditions
+#   - misses are cheap: the 537 non-surge fires still averaged +1.95% over 2d,
+#     only 6.3% fell below -5%. Hits averaged +14.18%.
+# NOTE the target is a 2-DAY move, so this is a short-horizon signal. The 30-day
+# hold used below is a conservative default, not what was validated.
+SPRED_ATR   = 5.5    # ATR% floor
+SPRED_RV20  = 35.0   # 20d realised vol (annualised %) floor
+SPRED_DST   = 3      # days since last confirmed trough (max)
+SPRED_VOLZ  = 0.5    # 60d volume z-score floor
+SPRED_UPL   = 50.0   # min % above the 52-week low
+
+# ── A1 / A5 alerts ─────────────────────────────────────────────────────────
+# A1: below the lower Bollinger band AND still falling, but only in names
+# already well off their 52-week low and volatile enough to snap back.
+#   Raw (no filter): +0.86pp edge, 3/5 windows -- weak.
+#   With the off-low + ATR filter: +4.47pp edge, 5/5 windows, +6.15% avg.
+#   CAVEAT: median is -0.65% and win rate 48% -- a fat-tailed signal. Roughly
+#   half of these lose; it needs many fires to pay out.
+A1_UPL = 20.0
+A1_ATR = 4.5
+# A5: a >=5% single day, but ONLY near the 52-week high.
+#   Near the high: +1.80pp edge, 5/5 windows, +5.63% avg, 57% win, med +2.25%.
+#   Away from the high: +0.18pp edge with a NEGATIVE median -- hence the gate.
+#   Volume barely matters either way (3x+ gives +1.91pp vs +1.72pp below 3x).
+A5_DAY     = 5.0
+A5_NEAR52  = 85.0
+ALERT_COOLOFF = 5    # bars before the same stock can re-fire A1/A5/SPRED
 
 # ── Signal thresholds (all hardcoded; this file has no external deps) ──────
 # REV tier re-fit on the CORRECTED 8%-minima labels ("v2"). Per-fold grid
@@ -367,6 +412,17 @@ def compute_indicators(df):
         if lt >= 0: dst[i] = i - lt
     F["days_since_trough"] = dst
 
+    # realised vol + volume z-score + 1-day return (SPRED / A1 / A5)
+    logr = np.concatenate([[np.nan], np.diff(np.log(np.maximum(c, 1e-9)))])
+    F["rv20"] = pd.Series(logr).rolling(20).std().values * np.sqrt(252) * 100
+    vs = pd.Series(v)
+    F["vol_z"] = ((vs - vs.rolling(60, min_periods=20).mean())
+                  / vs.rolling(60, min_periods=20).std()).values
+    dayret = np.full(n, np.nan)
+    dayret[1:] = (c[1:] - c[:-1]) / c[:-1] * 100
+    F["day_ret"] = dayret
+    F["falling"] = np.concatenate([[False], c[1:] < c[:-1]])
+
     # volume + RSI (RSI/BB for the chart)
     vma20 = pd.Series(v).rolling(20).mean().values
     F["vol_r"] = np.where(vma20 > 0, v / vma20, np.nan)
@@ -425,6 +481,40 @@ def check_surge(F, i):
             F["pct_of_52whigh"][i] >= SURGE_NEAR52)
 
 
+def check_spred(F, i):
+    """SPRED — predicts a >=10% move over the NEXT 2 days. Volatility state is
+    the precursor; the trough/volume/off-low conditions are what lift it from
+    4.81% (any high-vol bar) to 12.68%."""
+    for k in ("atr_pct", "rv20", "days_since_trough", "vol_z", "up_from_low252"):
+        if np.isnan(F[k][i]):
+            return False
+    return (F["atr_pct"][i]          >= SPRED_ATR and
+            F["rv20"][i]             >= SPRED_RV20 and
+            F["days_since_trough"][i] <= SPRED_DST and
+            F["vol_z"][i]            >= SPRED_VOLZ and
+            F["up_from_low252"][i]   >= SPRED_UPL)
+
+
+def check_a1(F, i):
+    """A1 — punctured the lower Bollinger band and still falling, but only in a
+    name already off its 52w low and volatile enough to bounce."""
+    if np.isnan(F["bb_low"][i]) or np.isnan(F["up_from_low252"][i]) or np.isnan(F["atr_pct"][i]):
+        return False
+    return (F["close"][i] < F["bb_low"][i] and
+            bool(F["falling"][i]) and
+            F["up_from_low252"][i] >= A1_UPL and
+            F["atr_pct"][i]        >= A1_ATR)
+
+
+def check_a5(F, i):
+    """A5 — a >=5% single day NEAR the 52-week high. The gate is the signal:
+    the same jump far from the high has essentially no edge."""
+    if np.isnan(F["day_ret"][i]) or np.isnan(F["pct_of_52whigh"][i]):
+        return False
+    return (F["day_ret"][i]        >= A5_DAY and
+            F["pct_of_52whigh"][i] >= A5_NEAR52)
+
+
 SIGNAL_DESCRIPTIONS = {
     "REV": (
         "REVERSAL ENTRY — 'BOUNCE'\n"
@@ -451,6 +541,38 @@ SIGNAL_DESCRIPTIONS = {
         "  NOTE: expect drawdown first -- historical mean worst-case inside\n"
         "  20 days for this setup is about -8%."
     ),
+    "SPRED": (
+        "SURGE PREDICTION (>=10% expected over the NEXT 2 days)\n"
+        "  Volatility state is the precursor -- wide bands, high ATR, elevated\n"
+        "  realised vol -- combined with trough proximity, a volume push and\n"
+        "  being well off the 52-week low.\n"
+        "  Conditions: ATR >= {a}%  |  20d realised vol >= {b}%  |  <= {c}d since trough\n"
+        "              |  volume z-score >= {d}  |  >= {e}% above 52w low\n"
+        "  Validated OOS: 12.29% hit vs 2.54% base (+9.75pp), 6/6 windows.\n"
+        "  Not just a volatility proxy: high-vol bars alone hit only 4.81%.\n"
+        "  Misses are cheap -- non-surge fires still averaged +1.95% over 2d.\n"
+        "  SHORT HORIZON: the target is a 2-day move. Consider taking profit\n"
+        "  quickly rather than holding the full 30 days."
+    ),
+    "A1": (
+        "A1 ALERT (oversold snap-back candidate)\n"
+        "  Closed below the lower Bollinger band and still falling, but only in\n"
+        "  a name already well off its 52-week low with enough volatility to\n"
+        "  actually rebound.\n"
+        "  Conditions: close < lower BB  |  falling today  |  >= {a}% off 52w low  |  ATR >= {b}%\n"
+        "  Validated OOS: +6.15% avg, +4.47pp edge, 5/5 windows.\n"
+        "  WARNING: median is -0.65% and win rate only 48%. This is a\n"
+        "  fat-tailed signal -- about half of these lose money, and it relies\n"
+        "  on a minority of large winners. Size accordingly."
+    ),
+    "A5": (
+        "A5 ALERT (>=5% day near the 52-week high)\n"
+        "  A single-day jump of {a}%+ while trading at >= {b}% of the 52-week\n"
+        "  high. The near-high gate IS the signal: the same jump far from the\n"
+        "  high carries an edge of only +0.18pp with a negative median.\n"
+        "  Validated OOS: +5.63% avg, median +2.25%, 57% win, +1.80pp edge,\n"
+        "  5/5 windows. Volume barely matters here (3x+ adds ~0.2pp)."
+    ),
     "MOM": (
         "MOMENTUM LEG ENTRY — 'LEG'\n"
         "  Start of a >=10%-within-10-days leg, but only legs originating from\n"
@@ -473,7 +595,7 @@ SIGNAL_DESCRIPTIONS = {
 # ─────────────────────────────────────────────────────────────────────────────
 
 def build_plot(F, company, ticker, date_label, kinds, lookback=PLOT_LOOKBACK,
-               rev_fires=None, mom_fires=None, surge_fires=None):
+               rev_fires=None, mom_fires=None, surge_fires=None, alert_fires=None):
     n = len(F["close"]); start = max(0, n - lookback); x = np.arange(start, n)
     o, h, l, c = (F["open"][start:n], F["high"][start:n],
                   F["low"][start:n], F["close"][start:n])
@@ -503,7 +625,8 @@ def build_plot(F, company, ticker, date_label, kinds, lookback=PLOT_LOOKBACK,
     span = np.nanmax(h) - np.nanmin(l); off = span * 0.035
     for fires, col, lab, mk, side in ((rev_fires, "#2ecc71", "REV", "^", "lo"),
                                        (mom_fires, "#8e44ad", "MOM", "^", "lo"),
-                                       (surge_fires, "#e67e22", "SURGE", "v", "hi")):
+                                       (surge_fires, "#e67e22", "SURGE", "v", "hi"),
+                                       (alert_fires, "#2980b9", "ALERT", "v", "hi")):
         vis = [i for i in (fires or []) if start <= i < n]
         if vis:
             ys = ([F["low"][i] - off for i in vis] if side == "lo"
@@ -579,9 +702,11 @@ def main():
 
     log = _load(LOG_PATH); mom_log = _load(MOM_LOG_PATH)
     surge_log = _load(SURGE_LOG_PATH)
+    spred_log = _load(SPRED_LOG_PATH); alert_log = _load(ALERT_LOG_PATH)
     today_label = None
     sections, charts = [], []
     rev_hits, mom_hits, surge_hits = [], [], []
+    spred_hits, a1_hits, a5_hits = [], [], []
 
     skipped_quality = []
     for name, cfg in universe.items():
@@ -622,12 +747,27 @@ def main():
         mom = check_mom(F, i)
         surge = check_surge(F, i)
 
+        spred = check_spred(F, i)
+        a1    = check_a1(F, i)
+        a5    = check_a5(F, i)
+
         # SURGE de-dup: one alert per thrust, not every day it stays elevated
         if surge:
             if i - surge_log.get(name, -10**9) < SURGE_COOLOFF:
                 surge = False
             else:
                 surge_log[name] = i
+        # same idea for the three new alerts, tracked independently
+        for _k, _on in (("SPRED", spred), ("A1", a1), ("A5", a5)):
+            if not _on:
+                continue
+            _key = f"{name}_{_k}"
+            if i - alert_log.get(_key, -10**9) < ALERT_COOLOFF:
+                if _k == "SPRED": spred = False
+                elif _k == "A1":  a1 = False
+                else:             a5 = False
+            else:
+                alert_log[_key] = i
 
         # MOM de-dup: don't refire on consecutive days of the same leg
         if mom:
@@ -641,15 +781,20 @@ def main():
               f"dd60={F['dd60'][i]:7.2f}%  ADX={F['adx'][i]:5.1f}  "
               f"{SURGE_DAYS}d={F['surge_ret'][i]:6.2f}%  52wH={F['pct_of_52whigh'][i]:5.1f}%  "
               f"REV={'YES' if rev else 'no':3s}  MOM={'YES' if mom else 'no':3s}  "
-              f"SURGE={'YES' if surge else 'no'}")
+              f"SURGE={'YES' if surge else 'no':3s}  SPRED={'YES' if spred else 'no':3s}  "
+              f"A1={'YES' if a1 else 'no':3s}  A5={'YES' if a5 else 'no'}")
 
-        if not (rev or mom or surge):
+        if not (rev or mom or surge or spred or a1 or a5):
             continue
         if rev: rev_hits.append(name)
         if mom: mom_hits.append(name)
         if surge: surge_hits.append(name)
+        if spred: spred_hits.append(name)
+        if a1: a1_hits.append(name)
+        if a5: a5_hits.append(name)
 
-        kinds = [k for k, on in (("REV", rev), ("MOM", mom), ("SURGE", surge)) if on]
+        kinds = [k for k, on in (("REV", rev), ("MOM", mom), ("SURGE", surge),
+                                 ("SPRED", spred), ("A1", a1), ("A5", a5)) if on]
         lines = [
             f"\n{'='*64}",
             f"{meta['company']} ({meta['ticker']})  —  {meta['date']}   [{cfg['sector']}]",
@@ -661,6 +806,8 @@ def main():
             f"off 52w low  : {F['up_from_low252'][i]:+.2f}%   days since trough: {F['days_since_trough'][i]:.0f}",
             f"ATR          : {F['atr_pct'][i]:.2f}%   ADX: {F['adx'][i]:.1f}   vol: {F['vol_r'][i]:.2f}x",
             f"{SURGE_DAYS}d move      : {F['surge_ret'][i]:+.2f}%   % of 52w high: {F['pct_of_52whigh'][i]:.1f}%",
+            f"1d move      : {F['day_ret'][i]:+.2f}%   20d real vol: {F['rv20'][i]:.1f}%   vol z: {F['vol_z'][i]:+.2f}",
+            f"off 52w low  : {F['up_from_low252'][i]:+.1f}%   days since trough: {F['days_since_trough'][i]:.0f}",
         ]
         for k in kinds:
             key = f"{name}_{k}"
@@ -671,9 +818,16 @@ def main():
             elif k == "MOM":
                 desc = SIGNAL_DESCRIPTIONS["MOM"].format(
                     a=MOM_RET5, b=MOM_PCT250, c=MOM_EFF, d=MOM_ADX, e=MOM_DD60)
-            else:
+            elif k == "SURGE":
                 desc = SIGNAL_DESCRIPTIONS["SURGE"].format(
                     a=SURGE_DAYS, b=SURGE_PCT, c=SURGE_NEAR52)
+            elif k == "SPRED":
+                desc = SIGNAL_DESCRIPTIONS["SPRED"].format(
+                    a=SPRED_ATR, b=SPRED_RV20, c=SPRED_DST, d=SPRED_VOLZ, e=SPRED_UPL)
+            elif k == "A1":
+                desc = SIGNAL_DESCRIPTIONS["A1"].format(a=A1_UPL, b=A1_ATR)
+            else:
+                desc = SIGNAL_DESCRIPTIONS["A5"].format(a=A5_DAY, b=A5_NEAR52)
             lines.append(f"\n{'-'*44}")
             lines.append(f"SIGNAL: {k}" + ("   [already sent today]" if already else ""))
             lines.append(desc)
@@ -685,16 +839,19 @@ def main():
             hist_rev = [k for k in range(len(F["close"])) if check_rev(F, k)]
             hist_mom = [k for k in range(len(F["close"])) if check_mom(F, k)]
             hist_surge = [k for k in range(len(F["close"])) if check_surge(F, k)]
+            hist_alert = [k for k in range(len(F["close"]))
+                          if check_spred(F, k) or check_a1(F, k) or check_a5(F, k)]
             try:
                 png = build_plot(F, meta["company"], meta["ticker"], meta["date"], kinds,
                                  rev_fires=hist_rev, mom_fires=hist_mom,
-                                 surge_fires=hist_surge)
+                                 surge_fires=hist_surge, alert_fires=hist_alert)
                 charts.append((f"{name}_{today_label}.png", png))
             except Exception as e:
                 print(f"   chart failed: {e}")
 
     _save(LOG_PATH, log); _save(MOM_LOG_PATH, mom_log)
     _save(SURGE_LOG_PATH, surge_log)
+    _save(SPRED_LOG_PATH, spred_log); _save(ALERT_LOG_PATH, alert_log)
 
     if not sections:
         print("\nNo signals today — no email sent.")
@@ -707,8 +864,13 @@ def main():
         f"REV fires: {len(rev_hits)}  ({', '.join(rev_hits) if rev_hits else '-'})\n"
         f"MOM fires: {len(mom_hits)}  ({', '.join(mom_hits) if mom_hits else '-'})\n"
         f"SURGE    : {len(surge_hits)}  ({', '.join(surge_hits) if surge_hits else '-'})\n"
+        f"SPRED    : {len(spred_hits)}  ({', '.join(spred_hits) if spred_hits else '-'})\n"
+        f"A1       : {len(a1_hits)}  ({', '.join(a1_hits) if a1_hits else '-'})\n"
+        f"A5       : {len(a5_hits)}  ({', '.join(a5_hits) if a5_hits else '-'})\n"
         f"\nEXITS — REV: 30-day hold, 25% hard stop.  MOM: hold 21 trading days.\n"
-        f"        SURGE: 30-day hold, 25% hard stop (expect ~-8% drawdown first).\n"
+        f"        SURGE/A1/A5: 30-day hold, 25% hard stop.\n"
+        f"        SPRED targets a 2-DAY move -- consider taking profit early.\n"
+        f"        A1 is fat-tailed: ~half these lose, median -0.65%. Size small.\n"
         f"MOM reminder: do NOT cut early on weakness — every trailing-stop\n"
         f"variant tested underperformed the plain 1-month hold.\n"
         + (f"\nDATA-QUALITY SKIPS ({len(skipped_quality)}): "
@@ -717,8 +879,8 @@ def main():
            if len(sections) > MAX_CHARTS else "")
         + "\n".join(sections)
     )
-    subject = (f"[Smallcap Scanner] {len(rev_hits)} REV / {len(mom_hits)} MOM / "
-               f"{len(surge_hits)} SURGE — {today_label}")
+    subject = (f"[Smallcap Scanner] {len(rev_hits)}R/{len(mom_hits)}M/{len(surge_hits)}S/"
+               f"{len(spred_hits)}P/{len(a1_hits)}A1/{len(a5_hits)}A5 — {today_label}")
     send_email(subject, body, charts)
 
 
