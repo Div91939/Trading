@@ -908,7 +908,7 @@ def main():
                     a=SURGE_DAYS, b=SURGE_PCT, c=SURGE_NEAR52)
             elif k == "SPRED":
                 desc = SIGNAL_DESCRIPTIONS["SPRED"].format(
-                    a=SPRED_ATR, b=SPRED_RV20, c=SPRED_DST, d=SPRED_VOLZ, e=SPRED_UPL)
+                    a=SPRED_ATR, b=SPRED_RV20, c=SPRED_ATR, d=SPRED_VOLZ, e=SPRED_UPL)
             elif k == "A1":
                 desc = SIGNAL_DESCRIPTIONS["A1"].format(a=A1_UPL, b=A1_ATR)
             else:
