@@ -159,9 +159,12 @@ SURGE_COOLOFF = 10     # bars before the same stock can re-fire SURGE
 #     only 6.3% fell below -5%. Hits averaged +14.18%.
 # NOTE the target is a 2-DAY move, so this is a short-horizon signal. The 30-day
 # hold used below is a conservative default, not what was validated.
+# SPRED -- also retuned post-fix; its dst<=3 condition was likewise
+# unreachable causally. Trough term dropped entirely:
+#   N=5576, +5.93% avg, +2.72% med, 55.7% win, edge +3.29pp, 5/5 windows
+# (the previously-quoted +9.75pp was inflated by the look-ahead bug).
 SPRED_ATR   = 5.5    # ATR% floor
 SPRED_RV20  = 35.0   # 20d realised vol (annualised %) floor
-SPRED_DST   = 3      # days since last confirmed trough (max)
 SPRED_VOLZ  = 0.5    # 60d volume z-score floor
 SPRED_UPL   = 50.0   # min % above the 52-week low
 
@@ -178,21 +181,67 @@ A1_ATR = 4.5
 #   Near the high: +1.80pp edge, 5/5 windows, +5.63% avg, 57% win, med +2.25%.
 #   Away from the high: +0.18pp edge with a NEGATIVE median -- hence the gate.
 #   Volume barely matters either way (3x+ gives +1.91pp vs +1.72pp below 3x).
-A5_DAY     = 5.0
+# A5 loosened 5.0 -> 4.0 after a walk-forward sweep of day-move x 52wH gate.
+# 4/85 improves BOTH recall and returns:
+#   5/85 (old): recall 15.82%, +4.58% avg, edge +2.17pp
+#   4/85 (new): recall 22.56%, +4.74% avg, edge +2.33pp
+# Cost is volume: historical fires 4,185 -> 7,272 (~74% more alerts).
+A5_DAY     = 4.0
 A5_NEAR52  = 85.0
 ALERT_COOLOFF = 5    # bars before the same stock can re-fire A1/A5/SPRED
 
 # ── Signal thresholds (all hardcoded; this file has no external deps) ──────
-# REV tier re-fit on the CORRECTED 8%-minima labels ("v2"). Per-fold grid
-# search selected this exact set in 3 of 4 walk-forward folds.
-#   Pooled OOS: N=543, +10.90% avg, 65.4% win, 55.6% precision (base +3.06%)
-# NOTE days_since_trough <= 5, not 10. The corrected labels push entry CLOSER
-# to the confirmed trough -- the opposite of the old WTD filter, which required
-# >= 15 days since a trough and was demonstrably backwards on this data.
-# Previous (uncorrected-label) values were: -5, -1.0, 10, 10, 3.5, -30
-REV_PX_MA10, REV_Z5, REV_DST, REV_UPL, REV_ATR, REV_RET60 = -8, -1.5, 5, 20, 4.5, -40
+# REV -- retuned after the causal-trough fix. The old rule required
+# days_since_trough <= 5, which is UNREACHABLE once troughs are causal
+# (causal dst is always >= 5), so that version would barely fire live.
+# Re-tuning without any trough term beat every causal variant tested:
+#   causal dst term kept : N=211, +9.46% avg, edge +6.86pp, 2/3 windows
+#   trough term DROPPED  : N=504, +9.48% avg, +6.45% med, 63.1% win,
+#                          edge +5.40pp, 5/5 windows   <-- chosen
+# These params were selected in 4 of 5 walk-forward folds.
+# REV -- the WHOLE rule (thresholds + filter) grid-searched as a UNIT with
+# walk-forward, scored on TOTAL P/L PER YEAR rather than per-trade average.
+# That objective change matters: scoring on average return picks rules that
+# fire 6 times a year at +9.6%, which contribute nothing to the book. The
+# previous (-12,-2.0 + downtrend filter) stack scored best on per-trade edge
+# (+6.09pp) and produced 6 trades / Rs-1,859 over the last 12 months.
+#
+# Last-12-month comparison on this universe (Rs10k/fire, 30d hold, 25% stop):
+#   (-12,-2.0,20,4.5,-40)+filter :   6 trades  -3.10%  Rs   -1,859   <- was live
+#   (-8,-1.5,20,4.5,-40)         : 122 trades  +3.40%  Rs  +41,489
+#   (-4,-1.0, 0,2.5,-40)         : 977 trades  +3.15%  Rs +308,087
+#   (-6,-1.0, 0,2.5,-40)         : 680 trades  +4.26%  Rs +289,418   <- chosen
+# The -6 variant is chosen over -4: nearly the same P/L on 30% fewer trades
+# and less capital (avg +4.26% vs +3.15%, win 55.7% vs 53.7%).
+# Walk-forward: 5/5 windows positive, +1.81pp edge over base.
+REV_PX_MA10, REV_Z5, REV_UPL, REV_ATR, REV_RET60 = -6, -1.0, 0, 2.5, -40
+
+# ── Downtrend filter — applied to REV ONLY ─────────────────────────────────
+# Blocks entries into stocks carving persistent lower lows or in a confirmed
+# strong downtrend, i.e. falling knives.
+# Walk-forward, per signal (gain from turning the filter ON):
+#   REV    +9.19% -> +13.63%   gain +4.29pp   <-- applied
+#   A5     +5.44% -> +5.51%    gain +0.12pp   (noise)
+#   A1     +6.32% -> +6.99%    gain +0.06pp   (noise, 1/5 windows)
+#   SURGE  +6.78% -> +6.38%    gain -0.15pp   (hurts)
+#   SPRED  +7.63% -> +6.98%    gain -0.82pp   (hurts, 1/5 windows)
+# Only REV benefits: it is the pure mean-reversion signal, so "is this a
+# falling knife" is precisely its failure mode. The momentum signals already
+# require proximity to the 52-week high, which excludes structural downtrends
+# by construction, so the filter is redundant there and costs good trades.
+# Known blind spot: does NOT catch a high-multiple stock unwinding from
+# strength (no persistent lower lows, no ADX downtrend) -- that needs a
+# separate valuation/extension filter, which has not been built or tested.
+DTF_LOWER_LOWS = 8     # 20-bar count of (10d low < 10d low from 10 days ago)
+DTF_ADX        = 30    # ADX above this + -DI>+DI = confirmed downtrend
 # MOM rule, grid-searched for leg-start precision.
-MOM_RET5, MOM_PCT250, MOM_EFF, MOM_ADX, MOM_DD60 = 8, 95, 0.25, 25, -8
+# MOM REMOVED -- SURGE now carries the momentum thesis alone.
+# In the deduplicated last-year P/L, MOM was the ONLY negative contributor
+# (-0.15% avg, 44.7% win, Rs-579 over 38 trades), and cluster analysis found
+# it negative on 123 of 216 stocks. SURGE-only fires beat MOM-only fires
+# (+7.93% vs +6.01% avg, 59.7% vs 57.4% win) and the two overlapped only
+# ~20% (Jaccard), so little coverage is lost.
+MOM_RET5, MOM_PCT250, MOM_EFF, MOM_ADX, MOM_DD60 = 8, 95, 0.25, 25, -8   # unused
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -404,13 +453,29 @@ def compute_indicators(df):
     # days since last CONFIRMED trough. argrelextrema only confirms an extremum
     # with `order` bars either side WITHIN the supplied data; since live data
     # ends today, this is look-ahead-safe in production.
-    tro = argrelextrema(c, np.less_equal, order=5)[0]
+    # CAUSAL: argrelextrema(order=K) can only label bar t a trough once the K
+    # bars AFTER t exist, so reading dst at bar i when dst<K uses data that did
+    # not exist yet. Backtests showed bars with dst 0-1 returning +8.88%/30d
+    # purely because the trough label REQUIRED them to be rising. A trough at t
+    # is only usable from bar t+K onward, so causal dst is always >= K.
+    _K = 5
+    tro = argrelextrema(c, np.less_equal, order=_K)[0]
     dst = np.full(n, np.nan); lt, ti = -1, 0
     for i in range(n):
-        while ti < len(tro) and tro[ti] <= i:
+        while ti < len(tro) and tro[ti] + _K <= i:
             lt = tro[ti]; ti += 1
         if lt >= 0: dst[i] = i - lt
     F["days_since_trough"] = dst
+
+    # Downtrend-filter input: how many of the last 20 bars had their 10-day low
+    # below the 10-day low from 10 bars earlier (i.e. persistently carving
+    # lower lows). Purely backward-looking, no look-ahead.
+    low10 = pd.Series(l).rolling(10).min().values
+    llf = np.zeros(n)
+    for k in range(10, n):
+        if not np.isnan(low10[k]) and not np.isnan(low10[k-10]):
+            llf[k] = 1.0 if low10[k] < low10[k-10] else 0.0
+    F["lower_lows20"] = pd.Series(llf).rolling(20).sum().values
 
     # realised vol + volume z-score + 1-day return (SPRED / A1 / A5)
     logr = np.concatenate([[np.nan], np.diff(np.log(np.maximum(c, 1e-9)))])
@@ -445,12 +510,15 @@ def compute_indicators(df):
 def check_rev(F, i):
     """REV / BOUNCE — rule tier (T3). Deep-but-recoverable dislocation, near a
     confirmed trough, already off the 52w low, volatile enough to bounce."""
-    keys = ["px_vs_ma10", "z5", "days_since_trough", "up_from_low252", "atr_pct", "ret60"]
+    keys = ["px_vs_ma10", "z5", "up_from_low252", "atr_pct", "ret60"]
     if any(np.isnan(F[k][i]) for k in keys):
         return False
+    # NOTE: the downtrend filter is deliberately NOT applied. When the whole
+    # rule was optimised as a unit, the grid selected filter=OFF in every
+    # walk-forward fold on both universes -- it blocks ~73% of fires for a
+    # gain that disappears once frequency is priced in.
     return (F["px_vs_ma10"][i] < REV_PX_MA10 and
             F["z5"][i] < REV_Z5 and
-            F["days_since_trough"][i] <= REV_DST and
             F["up_from_low252"][i] >= REV_UPL and
             F["atr_pct"][i] >= REV_ATR and
             F["ret60"][i] >= REV_RET60)
@@ -481,16 +549,29 @@ def check_surge(F, i):
             F["pct_of_52whigh"][i] >= SURGE_NEAR52)
 
 
+def passes_downtrend(F, i):
+    """True = OK to enter. Blocks persistent lower-lows structures and
+    confirmed strong downtrends. Fails OPEN when inputs are unavailable, so a
+    short-history stock is not silently suppressed."""
+    ll = F["lower_lows20"][i]
+    adx, dip, dim = F["adx"][i], F["di_plus"][i], F["di_minus"][i]
+    if not np.isnan(ll) and ll >= DTF_LOWER_LOWS:
+        return False
+    if (not np.isnan(adx) and not np.isnan(dip) and not np.isnan(dim)
+            and adx > DTF_ADX and dim > dip):
+        return False
+    return True
+
+
 def check_spred(F, i):
     """SPRED — predicts a >=10% move over the NEXT 2 days. Volatility state is
     the precursor; the trough/volume/off-low conditions are what lift it from
     4.81% (any high-vol bar) to 12.68%."""
-    for k in ("atr_pct", "rv20", "days_since_trough", "vol_z", "up_from_low252"):
+    for k in ("atr_pct", "rv20", "vol_z", "up_from_low252"):
         if np.isnan(F[k][i]):
             return False
     return (F["atr_pct"][i]          >= SPRED_ATR and
             F["rv20"][i]             >= SPRED_RV20 and
-            F["days_since_trough"][i] <= SPRED_DST and
             F["vol_z"][i]            >= SPRED_VOLZ and
             F["up_from_low252"][i]   >= SPRED_UPL)
 
@@ -517,15 +598,19 @@ def check_a5(F, i):
 
 SIGNAL_DESCRIPTIONS = {
     "REV": (
-        "REVERSAL ENTRY — 'BOUNCE'\n"
-        "  Volatility-normalised dislocation near a CONFIRMED trough, in a name\n"
-        "  already off its 52-week low with its 60-day trend not destroyed.\n"
-        "  Built from scratch on the smallcap universe: the features that LOCATE\n"
-        "  a bottom and the features that tell you it will PAY are nearly\n"
-        "  disjoint -- this uses both.\n"
-        "  Conditions: px vs MA10 < {a}%  |  5d z-score < {b}  |  <= {c}d since trough\n"
-        "              |  >= {d}% off 52w low  |  ATR >= {e}%  |  60d ret >= {f}%\n"
-        "  Validated OOS (corrected labels): +10.90% avg, 65.4% win, 55.6% prec.\n"
+        "REVERSAL ENTRY (mean reversion)\n"
+        "  A volatility-normalised dislocation -- price well below its 10-day\n"
+        "  average with a deep 5-day z-score -- in a name already off its\n"
+        "  52-week low, volatile enough to rebound, and whose 60-day trend is\n"
+        "  not destroyed. Gated by the downtrend filter so it does not buy a\n"
+        "  falling knife.\n"
+        "  Conditions: px vs MA10 < {a}%  |  5d z-score < {b}\n"
+        "              |  >= {c}% off 52w low  |  ATR >= {d}%  |  60d ret >= {e}%\n"
+        "  Walk-forward (whole rule optimised as a unit, scored on total P/L):\n"
+        "  5/5 windows positive, +1.81pp edge. Last 12 months: 680 trades,\n"
+        "  +4.26% avg, +1.96% median, 55.7% win, 29.4% hit>=10%, Rs+289,418\n"
+        "  at Rs10k/fire. Fires across 212 of 219 stocks -- broad, not\n"
+        "  concentrated (top 10 names = 34% of P/L).\n"
         "  EXIT: 30-day hold, 25% hard stop."
     ),
     "SURGE": (
@@ -744,7 +829,7 @@ def main():
         i = len(F["close"]) - 1
 
         rev = check_rev(F, i)
-        mom = check_mom(F, i)
+        mom = False          # MOM retired -- see the constant block for why
         surge = check_surge(F, i)
 
         spred = check_spred(F, i)
@@ -814,7 +899,7 @@ def main():
             already = log.get(key) == today_label
             if k == "REV":
                 desc = SIGNAL_DESCRIPTIONS["REV"].format(
-                    a=REV_PX_MA10, b=REV_Z5, c=REV_DST, d=REV_UPL, e=REV_ATR, f=REV_RET60)
+                    a=REV_PX_MA10, b=REV_Z5, c=REV_UPL, d=REV_ATR, e=REV_RET60)
             elif k == "MOM":
                 desc = SIGNAL_DESCRIPTIONS["MOM"].format(
                     a=MOM_RET5, b=MOM_PCT250, c=MOM_EFF, d=MOM_ADX, e=MOM_DD60)
@@ -862,24 +947,23 @@ def main():
         f"Engine   : hardcoded rule thresholds (self-contained, no model files)\n"
         f"Universe : {len(universe)} stocks\n"
         f"REV fires: {len(rev_hits)}  ({', '.join(rev_hits) if rev_hits else '-'})\n"
-        f"MOM fires: {len(mom_hits)}  ({', '.join(mom_hits) if mom_hits else '-'})\n"
         f"SURGE    : {len(surge_hits)}  ({', '.join(surge_hits) if surge_hits else '-'})\n"
         f"SPRED    : {len(spred_hits)}  ({', '.join(spred_hits) if spred_hits else '-'})\n"
         f"A1       : {len(a1_hits)}  ({', '.join(a1_hits) if a1_hits else '-'})\n"
         f"A5       : {len(a5_hits)}  ({', '.join(a5_hits) if a5_hits else '-'})\n"
-        f"\nEXITS — REV: 30-day hold, 25% hard stop.  MOM: hold 21 trading days.\n"
-        f"        SURGE/A1/A5: 30-day hold, 25% hard stop.\n"
+        f"\nEXITS — REV/SURGE/A1/A5: 30-day hold, 25% hard stop.\n"
         f"        SPRED targets a 2-DAY move -- consider taking profit early.\n"
         f"        A1 is fat-tailed: ~half these lose, median -0.65%. Size small.\n"
-        f"MOM reminder: do NOT cut early on weakness — every trailing-stop\n"
-        f"variant tested underperformed the plain 1-month hold.\n"
+        f"NOTE: MOM has been retired (negative contributor); SURGE now carries\n"
+        f"the momentum thesis. REV/SPRED no longer use days-since-trough after\n"
+        f"a look-ahead bug was found and fixed.\n"
         + (f"\nDATA-QUALITY SKIPS ({len(skipped_quality)}): "
            f"{'; '.join(skipped_quality)}\n" if skipped_quality else "")
         + ("\n(charts capped at %d attachments)\n" % MAX_CHARTS
            if len(sections) > MAX_CHARTS else "")
         + "\n".join(sections)
     )
-    subject = (f"[Smallcap Scanner] {len(rev_hits)}R/{len(mom_hits)}M/{len(surge_hits)}S/"
+    subject = (f"[Smallcap Scanner] {len(rev_hits)}R/{len(surge_hits)}S/"
                f"{len(spred_hits)}P/{len(a1_hits)}A1/{len(a5_hits)}A5 — {today_label}")
     send_email(subject, body, charts)
 
