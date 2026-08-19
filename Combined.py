@@ -72,7 +72,7 @@ MOM_CROSS_LOG_PATH = "mom_cross_log.json"  # tracks last-alerted MA50-cross bar 
                                             # off a single crossing event
 EMAIL_SENDER   = "divyanshdewan@gmail.com"
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
-EMAIL_RECEIVER = "divyanshdewan@gmail.com"
+EMAIL_RECEIVER = "divyanshdewan@gmail.com,mohanchirag.26@gmail.com,prateeksinha2026@gmail.com"
 
 # Regime detection — fixed across all stocks
 REG_MA_SLOPE = 0.3    # MA50 slope threshold (% over 20 bars)
