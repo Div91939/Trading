@@ -97,7 +97,7 @@ ALERT_LOG_PATH = "smallcap_alert_log.json"
 
 EMAIL_SENDER   = "divyanshdewan@gmail.com"
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
-EMAIL_RECEIVER = "divyanshdewan@gmail.com,mohanchirag.26@gmail.com,prateeksinha2026@gmail.com"
+EMAIL_RECEIVER = "divyanshdewan@gmail.com,mohanchirag.26@gmail.com,prateeksinha2026@gmail.com, nishant02206@gmail.com"
 
 MIN_ROWS       = 260      # z-scores/252d ranks need ~1yr; below this signals are unreliable
 PLOT_LOOKBACK  = 200
