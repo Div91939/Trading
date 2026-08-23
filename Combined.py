@@ -1036,10 +1036,13 @@ def main():
             continue
 
         # ── Build email section ───────────────────────────────────────────
+        kinds = [k for k, on in (("REV", rev_fired), ("MOM", mom_fired),
+                                 ("REBOUND", rebound_fired)) if on]
         lines = [
             f"\n{'='*60}",
             f"{meta['company']} ({meta['ticker']})  —  {meta['date']}",
             f"{'='*60}",
+            f"Signals  : {', '.join(kinds)}",
             f"Regime   : {regime}  (informational only)",
             f"Close    : {ind['close'][i]:.2f}",
             f"Vol ratio: {ind['vol_ratio'][i]:.2f}x   ADX: {ind['adx'][i]:.1f}   DI+: {ind['di_plus'][i]:.1f}  DI-: {ind['di_minus'][i]:.1f}",
@@ -1052,21 +1055,9 @@ def main():
                 f"universe -- see REBOUND_ENABLED in the constants block]"
             )
 
-        for sig_name, fired in [("REV", rev_fired), ("MOM", mom_fired), ("REBOUND", rebound_fired)]:
-            if not fired:
-                continue
+        for sig_name in kinds:
             log_key = f"{stock_name}_{sig_name}"
-            already = log.get(log_key) == today_label
-            tag = "  [already sent today]" if already else ""
-            fmt_vals = dict(cfg)
-            fmt_vals.update(MOM2_CROSS_DAYS=MOM2_CROSS_DAYS, MOM2_SLOPE_MIN=MOM2_SLOPE_MIN, MOM2_VOL_EXP=MOM2_VOL_EXP,
-                            REV_PX_MA10=REV_PX_MA10, REV_Z5=REV_Z5, REV_ATR=REV_ATR, REV_RET60=REV_RET60)
-            desc = SIGNAL_DESCRIPTIONS[sig_name].format(**fmt_vals)
-            lines.append(f"\n{'─'*40}")
-            lines.append(f"SIGNAL: {sig_name}{tag}")
-            lines.append(desc)
-            if not already:
-                log[log_key] = today_label
+            log[log_key] = today_label
 
         report_sections.append("\n".join(lines))
 
