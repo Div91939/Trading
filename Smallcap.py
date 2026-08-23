@@ -802,7 +802,8 @@ SIGNAL_DESCRIPTIONS = {
 # ─────────────────────────────────────────────────────────────────────────────
 
 def build_plot(F, company, ticker, date_label, kinds, lookback=PLOT_LOOKBACK,
-               rev_fires=None, mom_fires=None, surge_fires=None, alert_fires=None):
+               rev_fires=None, mom_fires=None, surge_fires=None,
+               spred_fires=None, a1_fires=None, a5_fires=None, rebound_fires=None):
     n = len(F["close"]); start = max(0, n - lookback); x = np.arange(start, n)
     o, h, l, c = (F["open"][start:n], F["high"][start:n],
                   F["low"][start:n], F["close"][start:n])
@@ -833,7 +834,10 @@ def build_plot(F, company, ticker, date_label, kinds, lookback=PLOT_LOOKBACK,
     for fires, col, lab, mk, side in ((rev_fires, "#2ecc71", "REV", "^", "lo"),
                                        (mom_fires, "#8e44ad", "MOM", "^", "lo"),
                                        (surge_fires, "#e67e22", "SURGE", "v", "hi"),
-                                       (alert_fires, "#2980b9", "ALERT", "v", "hi")):
+                                       (spred_fires, "#2980b9", "SPRED", "v", "hi"),
+                                       (a1_fires, "#f1c40f", "A1", "s", "lo"),
+                                       (a5_fires, "#e91e63", "A5", "v", "hi"),
+                                       (rebound_fires, "#16a085", "REBOUND", "D", "lo")):
         vis = [i for i in (fires or []) if start <= i < n]
         if vis:
             ys = ([F["low"][i] - off for i in vis] if side == "lo"
@@ -1022,6 +1026,7 @@ def main():
             f"\n{'='*64}",
             f"{meta['company']} ({meta['ticker']})  —  {meta['date']}   [{cfg['sector']}]",
             f"{'='*64}",
+            f"Signals      : {', '.join(kinds)}",
             f"Close        : {F['close'][i]:.2f}",
             f"5d ret       : {F['ret5'][i]:+.2f}%    5d z-score: {F['z5'][i]:+.2f}",
             f"vs MA10      : {F['px_vs_ma10'][i]:+.2f}%   vs MA50: {F['px_vs_ma50'][i]:+.2f}%",
@@ -1040,41 +1045,23 @@ def main():
             )
         for k in kinds:
             key = f"{name}_{k}"
-            already = log.get(key) == today_label
-            if k == "REV":
-                desc = SIGNAL_DESCRIPTIONS["REV"].format(
-                    a=REV_PX_MA10, b=REV_Z5, c=REV_UPL, d=REV_ATR, e=REV_RET60)
-            elif k == "MOM":
-                desc = SIGNAL_DESCRIPTIONS["MOM"].format(
-                    a=MOM_RET5, b=MOM_PCT250, c=MOM_EFF, d=MOM_ADX, e=MOM_DD60)
-            elif k == "SURGE":
-                desc = SIGNAL_DESCRIPTIONS["SURGE"].format(
-                    a=SURGE_DAYS, b=SURGE_PCT, c=SURGE_NEAR52)
-            elif k == "SPRED":
-                desc = SIGNAL_DESCRIPTIONS["SPRED"].format(
-                    a=SPRED_ATR, b=SPRED_RV20, c=SPRED_ATR, d=SPRED_VOLZ, e=SPRED_UPL)
-            elif k == "A1":
-                desc = SIGNAL_DESCRIPTIONS["A1"].format(a=A1_UPL, b=A1_ATR)
-            else:
-                desc = SIGNAL_DESCRIPTIONS["A5"].format(a=A5_DAY, b=A5_NEAR52)
-            lines.append(f"\n{'-'*44}")
-            lines.append(f"SIGNAL: {k}" + ("   [already sent today]" if already else ""))
-            lines.append(desc)
-            if not already:
-                log[key] = today_label
+            log[key] = today_label
         sections.append("\n".join(lines))
 
         if len(charts) < MAX_CHARTS:
             hist_rev = [k for k in range(len(F["close"])) if check_rev(F, k)]
             hist_mom = [k for k in range(len(F["close"])) if check_mom(F, k)]
             hist_surge = [k for k in range(len(F["close"])) if check_surge(F, k)]
-            hist_alert = [k for k in range(len(F["close"]))
-                          if check_spred(F, k) or check_a1(F, k) or check_a5(F, k)
-                          or check_rebound(F, k)[0]]
+            hist_spred = [k for k in range(len(F["close"])) if check_spred(F, k)]
+            hist_a1 = [k for k in range(len(F["close"])) if check_a1(F, k)]
+            hist_a5 = [k for k in range(len(F["close"])) if check_a5(F, k)]
+            hist_rebound = [k for k in range(len(F["close"])) if check_rebound(F, k)[0]]
             try:
                 png = build_plot(F, meta["company"], meta["ticker"], meta["date"], kinds,
                                  rev_fires=hist_rev, mom_fires=hist_mom,
-                                 surge_fires=hist_surge, alert_fires=hist_alert)
+                                 surge_fires=hist_surge, spred_fires=hist_spred,
+                                 a1_fires=hist_a1, a5_fires=hist_a5,
+                                 rebound_fires=hist_rebound)
                 charts.append((f"{name}_{today_label}.png", png))
             except Exception as e:
                 print(f"   chart failed: {e}")
@@ -1098,19 +1085,6 @@ def main():
         f"A1       : {len(a1_hits)}  ({', '.join(a1_hits) if a1_hits else '-'})\n"
         f"A5       : {len(a5_hits)}  ({', '.join(a5_hits) if a5_hits else '-'})\n"
         f"REBOUND  : {len(rebound_hits)}  ({', '.join(rebound_hits) if rebound_hits else '-'})\n"
-        f"\nEXITS — REV/SURGE/A1/A5: 30-day hold, 25% hard stop.\n"
-        f"        SPRED targets a 2-DAY move -- consider taking profit early.\n"
-        f"        A1 is fat-tailed: ~half these lose, median -0.65%. Size small.\n"
-        f"        REBOUND: tuned against a 25% TRAILING stop, 60-bar max hold --\n"
-        f"        NOT a fixed target. Walk-forward: positive mean P/L all 5\n"
-        f"        windows, but median was negative in 2/5 (choppy stretches).\n"
-        f"        This is a fitted score, not a hand-tuned rule -- retrain\n"
-        f"        periodically rather than treating the coefficients as fixed.\n"
-        f"NOTE: MOM has been retired (negative contributor); SURGE now carries\n"
-        f"the momentum thesis. REV/SPRED no longer use days-since-trough after\n"
-        f"a look-ahead bug was found and fixed.\n"
-        + (f"\nDATA-QUALITY SKIPS ({len(skipped_quality)}): "
-           f"{'; '.join(skipped_quality)}\n" if skipped_quality else "")
         + ("\n(charts capped at %d attachments)\n" % MAX_CHARTS
            if len(sections) > MAX_CHARTS else "")
         + "\n".join(sections)
