@@ -19,24 +19,17 @@ Two strategies, both regime-gated:
     search (window/threshold sweep, 25% SL-capped forward returns).
     → Hold 30 days, 25% stop loss
 
-  MOM signal (v2 — momentum INCEPTION, replaces v1 entirely):
-    - Crossed above MA50 within last 8 trading days (catches the trend at
-      birth, not mid-flight — structurally anti-peak)
-    - MA50 10-bar slope > 0.5%     (the base itself has turned)
-    - 5d/20d volume ratio > 1.1x   (sustained participation)
-    No regime/ADX gate. Same fixed thresholds for every stock — validated
-    OOS across the 30-stock universe (+10.18% avg 40d fwd return, 58.8% win,
-    N=68, no train->OOS decay unlike every magnitude-threshold variant
-    tested). See mom_v2_signal.py for the full research writeup.
-    → EXIT: 20% trailing stop from the highest close since entry, with a
-      25% hard stop as a backstop (protects against a violent single-day
-      drop before the trailing stop can react). Re-validated OOS across the
-      31-stock universe with this exit vs. the original fixed-40-day hold:
-      +14.91% avg (was +9.95%), median +4.18% (was +1.99%), same 56.9% win
-      rate — even with best+worst trade stripped: N=70, +12.85% avg. A
-      fixed hold was capping exactly the trades that mattered most (real,
-      multi-month trend continuations) — the trailing stop lets those run
-      while the hard stop still protects the downside.
+  MOM signal (2-day momentum streak — redefined; same name, new rule):
+    - Two consecutive daily gains >= 3% each
+    - >= 90% of the 250-day high (not a deep-drawdown bounce)
+    - ATR% >= 4.5 (real volatility, not a flat grind)
+    - Day-2 opening gap >= 0.5% (continuation, not a slow crawl)
+    Backtest (n=632/4yr pooled across a broader universe): 89.4% target /
+    9.8% stop / 0.8% timeout, avg +4.04%, median +3.66%, win 76.4%, avg hold
+    12.1 bars. Fixed thresholds, not per-stock tuned.
+    → EXIT: next local high >= entry+5% (order=1: high[k] > both neighbours),
+      sell at the CLOSE one bar after confirmation. 25% hard stop as
+      backstop, 120-bar cap. Manual — this scanner alerts entries only.
 
   Each stock's "Signals" config field controls which signal(s) actually run
   for it (REV / MOM / BOTH) — set per-stock from a ground-truth recall audit
@@ -67,9 +60,6 @@ from email.mime.image import MIMEImage
 # ─────────────────────────────────────────────────────────────────────────────
 
 LOG_PATH       = "email_log.json"
-MOM_CROSS_LOG_PATH = "mom_cross_log.json"  # tracks last-alerted MA50-cross bar index per stock,
-                                            # so MOM doesn't refire every day for up to 8 days
-                                            # off a single crossing event
 EMAIL_SENDER   = "divyanshdewan@gmail.com"
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
 EMAIL_RECEIVER = "divyanshdewan@gmail.com,mohanchirag.26@gmail.com,prateeksinha2026@gmail.com,nishant02206@gmail.com,reuel.amin123@gmail.com"
@@ -133,7 +123,7 @@ REBOUND_ENABLED = False
 #   RevDD       — max RevWindow-day return to trigger REV (negative %)
 #   RevVol      — min volume ratio vs 20d avg to trigger REV
 #   Signals     — "REV", "MOM", or "BOTH" — which signal(s) run for this stock
-#                 (MOM v2's thresholds are fixed/global — see MOM2_* constants
+#                 (MOM's thresholds are fixed/global — see the MOM_* constants
 #                 near check_mom — not per-stock, since they generalized well
 #                 across the whole universe without per-stock tuning)
 #
@@ -147,8 +137,6 @@ REBOUND_ENABLED = False
 REBOUND_TRIGGER_DD20 = -5.0
 REBOUND_TRAIL   = 0.25
 REBOUND_MAXHOLD = 60
-REBOUND_COOLOFF = 5
-REBOUND_LOG_PATH = "combined_rebound_log.json"
 
 # Feature keys use ind[] naming (price_vs_ma10 not px_vs_ma10, etc.) to match
 # this file's existing compute_indicators() convention rather than Smallcap.py's.
@@ -390,7 +378,7 @@ STOCKS = {
         # sample than the original tuning pass -- N=42, +4.38% avg, 50% win.
         "RevWindow": 5, "RevDD": -3, "RevVol": 0.6,
     },
-    # Excluded — no viable signal found in tuning (REV grid search + MOM v2 both
+    # Excluded — no viable signal found in tuning (REV grid search + MOM both
     # failed to clear a positive-return bar, or actively negative): RUDRA
     # (only ~7 months of history; REV avg -5.80% win 20%; 0 MOM fires — revisit
     # once it has a longer track record).
@@ -472,7 +460,9 @@ def compute_indicators(df):
 
     price_vs_ma50 = np.where(ma50 > 0, (close - ma50) / ma50 * 100, np.nan)
 
-    # ── MOM v2 features (momentum inception — see check_mom_v2) ──────────
+    # ── Legacy features (no longer used by MOM, which was redefined to a
+    # 2-day streak rule below) — left computed in case anything downstream
+    # still reads them; harmless if unused. ──────────────────────────────
     # 10-bar MA50 slope (distinct from the 20-bar ma50_slope used by regime/v1)
     ma50_slope_10 = np.full(n, np.nan)
     for i in range(10, n):
@@ -538,6 +528,10 @@ def compute_indicators(df):
         tr_v3[i] = max(high[i]-low[i], abs(high[i]-close[i-1]), abs(low[i]-close[i-1]))
     atr_pct = np.where(close > 0, pd.Series(tr_v3).rolling(14).mean().values / close * 100, np.nan)
 
+    # ── MOM input (2-day momentum streak — see check_mom) ───────────────
+    rmax250 = pd.Series(close).rolling(250, min_periods=60).max().values
+    pct_of_250high = np.where(rmax250 > 0, close / rmax250 * 100, np.nan)
+
     # ── extra fields needed only by REBOUND (everything above this line is
     #    unchanged from the original file) ──────────────────────────────────
     ret1 = np.full(n, np.nan); ret1[1:] = (close[1:]-close[:-1])/close[:-1]*100
@@ -585,6 +579,7 @@ def compute_indicators(df):
         dd_20d=dd_20d, rv20=rv20_reb, rv5=rv5_reb, rv_ratio=rv_ratio,
         bb_width=bb_width, pctB=pctB, vol_z=vol_z, consec_down=consec_down,
         clspos=clspos, gap=gap, stoch_k=stoch_k,
+        pct_of_250high=pct_of_250high,
     )
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -647,45 +642,57 @@ def check_rev(ind, i, cfg=None):
             ind["ret60d"][i]          >= REV_RET60)
 
 
-MOM2_CROSS_DAYS = 8     # must have crossed above MA50 within this many trading days
-MOM2_SLOPE_MIN  = 0.5   # MA50 10-bar slope must exceed this (%) — base itself has turned
-MOM2_VOL_EXP    = 1.1   # 5d avg volume vs 20d avg volume — sustained participation
+MOM_DAYPCT  = 3.0    # each of 2 consecutive days must be >= this (%)
+MOM_NEAR250 = 90.0   # must be >= this % of the 250-day high
+MOM_ATR     = 4.5    # ATR% floor
+MOM_GAP     = 0.5    # day-2 opening gap vs prior close, minimum (%)
+# NOTE: no cooloff — MOM fires on every bar the condition is true, including
+# on consecutive days if the streak keeps re-qualifying. Removed on request;
+# previously suppressed refires within MOM_COOLOFF=10 bars.
 
-def check_mom(ind, i, cfg):
+def check_mom(ind, i, cfg=None):
     """
-    MOM v2 — Momentum INCEPTION entry (replaces v1's regime/ADX-gated design).
-    Validated OOS (last 12mo, 30-stock universe): +10.18% avg 40d fwd return,
-    58.8% win rate, N=68 — the only momentum definition tested that did NOT
-    decay OOS vs train (train: +8.56%, 55.6%). See mom_v2_signal.py for the
-    full research writeup.
+    MOM — 2-day momentum streak (replaces the earlier MA50-cross INCEPTION
+    definition entirely; kept the name, changed the rule). `cfg` accepted
+    for call-site compatibility but unused.
 
-    Conditions (all fixed, NOT per-stock — generalized well across the universe):
-      1. Crossed ABOVE MA50 within the last MOM2_CROSS_DAYS trading days
-         → anti-peak by construction: entry only possible near the base,
-           structurally cannot be deep into an extended move
-      2. MA50 10-bar slope > MOM2_SLOPE_MIN  → the base itself has turned up
-      3. 5d/20d volume ratio > MOM2_VOL_EXP  → sustained participation
+    Two consecutive daily gains >= MOM_DAYPCT% each, kept only if the stock
+    is near its 250-day high, volatile enough, and day 2 opened with a real
+    gap (a flat grind up on day 2 is a much weaker event than one that opens
+    strong — this is what separates continuation from noise).
 
-    No regime/ADX gate — dropped in favor of the direct MA50-cross timing,
-    which carries the "is this a real new trend" signal more directly.
+    Research thread: a run of consecutive +X% days is monotonically
+    predictive of the next 30 days -- 1 day: +4.35% avg / 54.1% win, 2 days:
+    +5.51%/59.7%, 3 days: +7.49%/61.0%, 4+: +16.74%/65.4%, vs +3.05%/44.3%
+    for a random bar. Effect strengthens under ATR-normalisation (not just a
+    volatility proxy). Adding near-250d-high + ATR + gap filters on top of
+    the 2-day streak:
+      raw 2-day streak                              n=1380/4yr +5.55% 30d-hold  54.9% win
+      + near250>=90, atr>=4.5, gap>=0.5 (4% trigger) n= 313/4yr +8.70% 30d-hold  60.4% win
+      SAME filters, 3% trigger (looser, CHOSEN)      n= 517/4yr +4.70% 30d-hold  68.7% win,
+                                                      most consistent win-rate across years
+    EXIT (validated separately -- order=1 local-maximum target, decidable
+    live): next local high >= entry+5%, confirmed when high[k] > both
+    neighbours (order=1), sold at the CLOSE one bar after confirmation. 25%
+    hard stop as backstop, 120-bar cap if neither hits first.
+      Backtest (this filter set, 3% trigger, order=1, exit+1 bar): n=632/4yr,
+      89.4% target / 9.8% stop / 0.8% timeout, avg +4.04%, median +3.66%,
+      win 76.4%, avg hold 12.1 bars.
+    NOTE: this scanner only ALERTS entries, same as REV -- it does not
+    manage the exit live. The exit rule above is what the backtest numbers
+    assume; apply it manually or extend the scanner with an open-position
+    tracker if you want it automated.
     """
-    if np.isnan(ind["ma50_slope_10"][i]) or np.isnan(ind["vol_expansion"][i]):
+    if i < 1:
         return False
-    if not np.isfinite(ind["days_since_ma50_cross"][i]):
+    keys = ("ret1", "pct_of_250high", "atr_pct", "gap")
+    if any(np.isnan(ind[k][i]) for k in keys) or np.isnan(ind["ret1"][i - 1]):
         return False
-    return (ind["days_since_ma50_cross"][i] <= MOM2_CROSS_DAYS and
-            ind["ma50_slope_10"][i]         >  MOM2_SLOPE_MIN and
-            ind["vol_expansion"][i]         >  MOM2_VOL_EXP)
-
-
-def mom_cross_id(ind, i):
-    """Identifies which MA50-cross 'cycle' bar i belongs to, for de-duplication —
-    without this, MOM would refire every day for up to MOM2_CROSS_DAYS days
-    straight off a single crossing event."""
-    d = ind["days_since_ma50_cross"][i]
-    if not np.isfinite(d):
-        return None
-    return int(i - d)  # bar index of the actual cross
+    return (ind["ret1"][i]            >= MOM_DAYPCT and
+            ind["ret1"][i - 1]        >= MOM_DAYPCT and
+            ind["pct_of_250high"][i]  >= MOM_NEAR250 and
+            ind["atr_pct"][i]         >= MOM_ATR and
+            ind["gap"][i]             >= MOM_GAP)
 
 
 def rebound_probability(ind, i):
@@ -704,10 +711,9 @@ def check_rebound(ind, i):
     """REBOUND -- fitted logistic score on top of an observable >=5% fall
     from the 20-day high. GATED OFF BY DEFAULT on this universe -- see the
     REBOUND_ENABLED note in the constants block for the walk-forward
-    evidence (median P/L negative in 4/5 windows here, unlike Smallcap where
-    the identical construction holds up). Always returns (False, nan) while
-    REBOUND_ENABLED is False, regardless of the underlying score, so flipping
-    the flag is the only thing that changes behaviour."""
+    evidence. Always returns (False, nan) while REBOUND_ENABLED is False,
+    regardless of the underlying score, so flipping the flag is the only
+    thing that changes behaviour."""
     if not REBOUND_ENABLED:
         return False, np.nan
     if ind["dd_20d"][i] > REBOUND_TRIGGER_DD20:
@@ -733,16 +739,18 @@ SIGNAL_DESCRIPTIONS = {
         "  Strategy: Hold 30 days, 25% hard stop."
     ),
     "MOM": (
-        "MOMENTUM INCEPTION ENTRY (v2 — replaces v1 entirely)\n"
-        "  Price crossed above MA50 recently, the base itself has turned up,\n"
-        "  and volume is expanding — catches a new trend near its start,\n"
-        "  not mid-flight. No regime/ADX gate; fixed thresholds validated\n"
-        "  OOS across the full stock universe (not per-stock tuned).\n"
-        "  Conditions: crossed MA50 <= {MOM2_CROSS_DAYS}d ago  |  MA50 10d slope > {MOM2_SLOPE_MIN}%  |  Vol(5d/20d) > {MOM2_VOL_EXP}x\n"
-        "  Strategy: 20% trailing stop from the highest close since entry,\n"
-        "  with a 25% hard stop as backstop. Re-validated OOS: +14.91% avg\n"
-        "  (vs +9.95% on a fixed 40-day hold), median +4.18%, 56.9% win —\n"
-        "  a fixed hold was capping exactly the trades that mattered most."
+        "MOMENTUM ENTRY (2-day streak — redefined)\n"
+        "  Two consecutive days each up >= {MOM_DAYPCT}%, only kept near the\n"
+        "  250-day high with real volatility and a gap-up continuation on day\n"
+        "  2 (a flat grind up on day 2 is a much weaker event than one that\n"
+        "  opens strong).\n"
+        "  Conditions: 2 consecutive days >= {MOM_DAYPCT}%  |  >= {MOM_NEAR250}% of 250d high  |  "
+        "ATR >= {MOM_ATR}%  |  day-2 gap >= {MOM_GAP}%\n"
+        "  Backtest: n=632/4yr, 89.4% target / 9.8% stop / 0.8% timeout,\n"
+        "  avg +4.04%, median +3.66%, win 76.4%, avg hold 12.1 bars.\n"
+        "  EXIT (manual — this scanner alerts entries only): next local high\n"
+        "  >= entry+5% (order=1: high[k] > both neighbours), sell at the CLOSE\n"
+        "  one bar after confirmation. 25% hard stop as backstop, 120-bar cap."
     ),
     "REBOUND": (
         "REBOUND (fitted logistic score) -- GATED OFF BY DEFAULT\n"
@@ -889,38 +897,6 @@ def save_log(log):
     with open(LOG_PATH, "w") as f:
         json.dump(log, f, indent=2)
 
-def load_mom_cross_log():
-    if not os.path.exists(MOM_CROSS_LOG_PATH):
-        return {}
-    with open(MOM_CROSS_LOG_PATH, "r") as f:
-        content = f.read().strip()
-    if not content:
-        return {}
-    try:
-        return json.loads(content)
-    except json.JSONDecodeError:
-        return {}
-
-def save_mom_cross_log(log):
-    with open(MOM_CROSS_LOG_PATH, "w") as f:
-        json.dump(log, f, indent=2)
-
-def load_rebound_log():
-    if not os.path.exists(REBOUND_LOG_PATH):
-        return {}
-    with open(REBOUND_LOG_PATH, "r") as f:
-        content = f.read().strip()
-    if not content:
-        return {}
-    try:
-        return json.loads(content)
-    except json.JSONDecodeError:
-        return {}
-
-def save_rebound_log(log):
-    with open(REBOUND_LOG_PATH, "w") as f:
-        json.dump(log, f, indent=2)
-
 def send_email(subject, body, attachments):
     """attachments: list of (filename, png_bytes)"""
     msg = MIMEMultipart()
@@ -949,8 +925,6 @@ def send_email(subject, body, attachments):
 
 def main():
     log          = load_log()
-    mom_cross_log = load_mom_cross_log()
-    rebound_log   = load_rebound_log()
     today_label  = None
 
     report_sections  = []
@@ -984,7 +958,7 @@ def main():
             continue
         i   = len(ind["close"]) - 1  # today's bar
 
-        # ── Regime (informational only — neither REV v2 nor MOM v2 gate on it) ──
+        # ── Regime (informational only — neither REV nor MOM gate on it) ──
         regime = get_regime(ind, i)
 
         signals_to_run = cfg["Signals"]  # "REV", "MOM", or "BOTH"
@@ -996,37 +970,27 @@ def main():
             rev_fired = check_rev(ind, i, cfg)
             rev_w_ret = rev_window_return(ind, i, cfg["RevWindow"])
 
-        # ── MOM v2 — with cross-event dedup (don't refire the same cross) ──
+        # ── MOM — no cooloff; fires on every bar the condition is true ─────
         mom_fired = False
         if signals_to_run in ("MOM", "BOTH"):
-            mom_condition_true = check_mom(ind, i, cfg)
-            if mom_condition_true:
-                cross_id = mom_cross_id(ind, i)
-                already_alerted = mom_cross_log.get(stock_name) == cross_id
-                if not already_alerted:
-                    mom_fired = True
-                    mom_cross_log[stock_name] = cross_id
+            mom_fired = check_mom(ind, i, cfg)
 
         # ── REBOUND — runs on every stock regardless of the Signals config
         # (it is independent of REV/MOM). Returns (False, nan) unconditionally
         # while REBOUND_ENABLED is False, so this is inert until that flag
-        # is flipped. Bar-based cooloff, same idea as MOM's cross dedup. ────
+        # is flipped. No cooloff — fires on every bar the score clears the
+        # threshold. ─────────────────────────────────────────────────────
         rebound_fired, rebound_p = check_rebound(ind, i)
-        if rebound_fired:
-            if i - rebound_log.get(stock_name, -10**9) < REBOUND_COOLOFF:
-                rebound_fired = False
-            else:
-                rebound_log[stock_name] = i
 
         # ── Print daily status ────────────────────────────────────────────
-        print(f"  Regime    : {regime}   (informational — REV/MOM v2 do not gate on this)")
+        print(f"  Regime    : {regime}   (informational — REV/MOM do not gate on this)")
         print(f"  Close     : {ind['close'][i]:.2f}")
         if signals_to_run in ("REV", "BOTH"):
             print(f"  {cfg['RevWindow']}d ret (REV): {rev_w_ret:.1f}%")
         if signals_to_run in ("MOM", "BOTH"):
-            print(f"  MOM: {ind['days_since_ma50_cross'][i]:.0f}d since MA50 cross  |  "
-                  f"MA50 10d slope: {ind['ma50_slope_10'][i]:.2f}%  |  "
-                  f"Vol(5d/20d): {ind['vol_expansion'][i]:.2f}x")
+            print(f"  MOM: day-1 {ind['ret1'][i-1]:+.2f}%  day-2 {ind['ret1'][i]:+.2f}%  |  "
+                  f"% of 250d high: {ind['pct_of_250high'][i]:.1f}%  |  "
+                  f"ATR: {ind['atr_pct'][i]:.2f}%  |  gap: {ind['gap'][i]:+.2f}%")
         print(f"  Vol ratio : {ind['vol_ratio'][i]:.2f}x  |  ADX: {ind['adx'][i]:.1f}  |  DI+: {ind['di_plus'][i]:.1f}  DI-: {ind['di_minus'][i]:.1f}")
         print(f"  REV fired : {'YES' if rev_fired else 'no'}  |  MOM fired: {'YES' if mom_fired else 'no'}  |  "
               f"REBOUND: {'YES' if rebound_fired else ('off' if not REBOUND_ENABLED else 'no')}"
@@ -1054,6 +1018,13 @@ def main():
                 f"dd_20d: {ind['dd_20d'][i]:+.2f}%   [fitted score, gated on this "
                 f"universe -- see REBOUND_ENABLED in the constants block]"
             )
+        if mom_fired:
+            lines.append(
+                f"MOM: 2-day streak {ind['ret1'][i-1]:+.2f}% / {ind['ret1'][i]:+.2f}%   "
+                f"% of 250d high: {ind['pct_of_250high'][i]:.1f}%   "
+                f"ATR: {ind['atr_pct'][i]:.2f}%   day-2 gap: {ind['gap'][i]:+.2f}%   "
+                f"[manual exit -- see MOM in SIGNAL_DESCRIPTIONS]"
+            )
 
         for sig_name in kinds:
             log_key = f"{stock_name}_{sig_name}"
@@ -1067,13 +1038,7 @@ def main():
         if signals_cfg in ("REV", "BOTH"):
             hist_rev = [k for k in range(len(ind["close"])) if check_rev(ind, k, cfg)]
         if signals_cfg in ("MOM", "BOTH"):
-            seen_crosses = set()
-            for k in range(len(ind["close"])):
-                if check_mom(ind, k, cfg):
-                    cid = mom_cross_id(ind, k)
-                    if cid is not None and cid not in seen_crosses:
-                        seen_crosses.add(cid)
-                        hist_mom.append(k)   # first qualifying day per cross only
+            hist_mom = [k for k in range(len(ind["close"])) if check_mom(ind, k, cfg)]
         hist_rebound = ([k for k in range(len(ind["close"])) if check_rebound(ind, k)[0]]
                         if REBOUND_ENABLED else [])
         png = build_plot(ind, meta["company"], meta["ticker"], meta["date"], regime,
@@ -1083,8 +1048,6 @@ def main():
 
     # ── Save state ────────────────────────────────────────────────────────
     save_log(log)
-    save_mom_cross_log(mom_cross_log)
-    save_rebound_log(rebound_log)
 
     if not report_sections:
         print("\nNo signals today — no email sent.")
@@ -1095,8 +1058,8 @@ def main():
     subject  = f"[Signal Scanner] {n_stocks} stock(s) — {today_label}"
     body = (
         f"DAILY SIGNAL SCAN  —  {today_label}\n"
-        f"Strategy: REV (mean reversion, RANGE regime) + MOM (momentum, UP regime)\n"
-        f"Hold: 30 days\n"
+        f"Strategy: REV (mean reversion) + MOM (2-day momentum streak, manual exit)\n"
+        f"REV hold: 30 days, 25% stop. MOM exit: see SIGNAL_DESCRIPTIONS.\n"
         f"Stocks scanned: {len(STOCKS)}\n"
         + (f"REBOUND: gated OFF on this universe (see constants block) -- "
            f"validated and live on Smallcap.py instead\n" if not REBOUND_ENABLED
