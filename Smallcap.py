@@ -24,25 +24,22 @@ universe.
     Rule fallback (T3 tier): N=4338, +7.67% avg, 63.3% win vs +3.06% base.
     → EXIT: 30-day hold, 25% hard stop.
 
-  MOM — "LEG" (momentum-leg inception)
-    Targets the START of a >=10%-within-10-days leg, but only legs
-    originating from STRENGTH. This distinction is the whole signal: legs
-    from near 60d highs continue (+7.08% after the leg peak, 56.7%
-    follow-through, -13.75% MAE) while legs off deep drawdowns mean-revert
-    (+3.27%, 50.1%, -16.39% MAE) -- i.e. a reversal bounce gives it back, a
-    real momentum leg does not.
-      NOTE: "no local minima before the rise" was tested as a discriminator
-      and REJECTED -- after-leg return is flat across trough-proximity
-      buckets (5.24 / 5.30 / 5.80). Proximity to highs is what matters.
-    Rule fallback: 3.4x lift on leg-start rate (38.7% vs 11.4% base).
-    → EXIT: 21 trading days (~1 month), plain hold.
-      Early-cut variants were explicitly tested and ALL underperformed:
-        raw 21d hold  +5.50%  (50.0% win)
-        trail 10/-12  +4.44%  (41.1% win)   <-- cutting on weakness LOSES
-        trail 15/-15  +5.01%  (44.6% win)
-        trail 25/-25  +5.31%  (49.1% win)
-      On this horizon these names dip and recover inside the window, so
-      exiting on weakness sells the dip. Hold the month.
+  MOM — 2-day momentum streak (REDEFINED; replaces the earlier "LEG" rule,
+  keeps the name)
+    The old leg-inception MOM was retired: in the deduplicated last-year P/L
+    it was the only negative contributor (-0.15% avg, 44.7% win) and
+    negative on 123 of 216 stocks. This is a different rule in the same
+    slot, not a tweak.
+    Two consecutive daily gains >= 3% each, kept only if near the 250-day
+    high, volatile enough (ATR% >= 4.5), and day 2 opened with a real gap
+    (>= 0.5%) rather than a flat grind higher.
+      Backtest (n=632/4yr pooled across a broader universe): 89.4% target /
+      9.8% stop / 0.8% timeout, avg +4.04%, median +3.66%, win 76.4%, avg
+      hold 12.1 bars. Fixed thresholds, not per-stock tuned.
+    → EXIT: next local high >= entry+5% (order=1: high[k] > both
+      neighbours), sell at the CLOSE one bar after confirmation. 25% hard
+      stop as backstop, 120-bar cap. Manual — this scanner alerts entries
+      only, same as REV/SURGE.
 
   DESIGN
     Deliberately self-contained: every threshold is hardcoded below, there are
@@ -90,11 +87,6 @@ DATA_ROOT      = "Smallcap"
 # Smallcap/ and apply microcap-tuned thresholds to large-caps.
 UNIVERSE_FILTER = "NIFTY_MICROCAP_250"
 LOG_PATH       = "smallcap_email_log.json"
-MOM_LOG_PATH   = "smallcap_mom_log.json"
-SURGE_LOG_PATH = "smallcap_surge_log.json"
-SPRED_LOG_PATH = "smallcap_spred_log.json"
-ALERT_LOG_PATH = "smallcap_alert_log.json"
-REBOUND_LOG_PATH = "smallcap_rebound_log.json"
 
 EMAIL_SENDER   = "divyanshdewan@gmail.com"
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
@@ -119,8 +111,8 @@ MIN_MEDIAN_TURNOVER_CR = 0.5   # skip untradeable names (Rs crore/day, median)
 
 # REV exit
 REV_HOLD, REV_SL = 30, -25.0
-# MOM exit
-MOM_HOLD = 21
+# MOM exit: manual, see the MOM_* constants block below check_rev for the
+# order=1 local-max target rule (no longer a fixed-day hold).
 # SURGE exit
 SURGE_HOLD = 30
 SURGE_SL   = -25.0
@@ -141,7 +133,6 @@ ALERT_SL   = -25.0
 SURGE_DAYS    = 4      # lookback (trading days) for the move
 SURGE_PCT     = 15.0   # minimum % move over that window
 SURGE_NEAR52  = 85.0   # must be >= this % of its 52-week high
-SURGE_COOLOFF = 10     # bars before the same stock can re-fire SURGE
 
 # ── SPRED: surge-PREDICTION thresholds ─────────────────────────────────────
 # Built against a ground-truth set of "price rises >=10% over the NEXT 2 days"
@@ -189,7 +180,6 @@ A1_ATR = 4.5
 # Cost is volume: historical fires 4,185 -> 7,272 (~74% more alerts).
 A5_DAY     = 4.0
 A5_NEAR52  = 85.0
-ALERT_COOLOFF = 5    # bars before the same stock can re-fire A1/A5/SPRED
 
 # ── REBOUND: fitted logistic score, NOT a hand-tuned threshold rule ────────
 # Trigger: dd_20d <= -5% (a >=5% fall from the 20-day high is already
@@ -216,7 +206,6 @@ ALERT_COOLOFF = 5    # bars before the same stock can re-fire A1/A5/SPRED
 REBOUND_TRIGGER_DD20 = -5.0
 REBOUND_TRAIL   = 0.25   # trailing-stop fraction used for the P/L this was tuned against
 REBOUND_MAXHOLD = 60     # bars
-REBOUND_COOLOFF = 5      # bars before the same stock can re-fire REBOUND
 
 REBOUND_FEATS = ["ret1", "ret5", "ret10", "ret20", "ret60", "z5", "px_vs_ma10",
                  "px_vs_ma20", "px_vs_ma50", "ma50_slope", "up_from_low252",
@@ -304,14 +293,45 @@ REV_PX_MA10, REV_Z5, REV_UPL, REV_ATR, REV_RET60 = -6, -1.0, 0, 2.5, -40
 # separate valuation/extension filter, which has not been built or tested.
 DTF_LOWER_LOWS = 8     # 20-bar count of (10d low < 10d low from 10 days ago)
 DTF_ADX        = 30    # ADX above this + -DI>+DI = confirmed downtrend
-# MOM rule, grid-searched for leg-start precision.
-# MOM REMOVED -- SURGE now carries the momentum thesis alone.
-# In the deduplicated last-year P/L, MOM was the ONLY negative contributor
-# (-0.15% avg, 44.7% win, Rs-579 over 38 trades), and cluster analysis found
-# it negative on 123 of 216 stocks. SURGE-only fires beat MOM-only fires
-# (+7.93% vs +6.01% avg, 59.7% vs 57.4% win) and the two overlapped only
-# ~20% (Jaccard), so little coverage is lost.
-MOM_RET5, MOM_PCT250, MOM_EFF, MOM_ADX, MOM_DD60 = 8, 95, 0.25, 25, -8   # unused
+
+# ── MOM: 2-day momentum streak — REDEFINED (was "LEG", now reuses the name) ─
+# The old leg-inception MOM ("LEG") was retired -- in the deduplicated
+# last-year P/L it was the only negative contributor (-0.15% avg, 44.7% win,
+# Rs-579 over 38 trades) and negative on 123 of 216 stocks. This is a
+# different rule occupying the same name/slot in the scanner, not a tweak of
+# the old one.
+#
+# Two consecutive daily gains >= MOM_DAYPCT each, kept only if near the
+# 250-day high, volatile enough, and day 2 opened with a real gap up (a flat
+# grind higher on day 2 is a much weaker event than one that opens strong).
+#
+# Research thread: a run of consecutive +X% days is monotonically predictive
+# of the next 30 days -- 1 day: +4.35% avg / 54.1% win, 2 days: +5.51%/59.7%,
+# 3 days: +7.49%/61.0%, 4+: +16.74%/65.4%, vs +3.05%/44.3% for a random bar.
+# Effect strengthens under ATR-normalisation (not just a volatility proxy).
+# Adding near-250d-high + ATR + gap filters on top of the 2-day streak:
+#   raw 2-day streak                              n=1380/4yr +5.55% 30d-hold  54.9% win
+#   + near250>=90, atr>=4.5, gap>=0.5 (4% trigger) n= 313/4yr +8.70% 30d-hold  60.4% win
+#   SAME filters, 3% trigger (looser, CHOSEN)      n= 517/4yr +4.70% 30d-hold  68.7% win,
+#                                                   most consistent win-rate across years
+# EXIT (validated separately -- order=1 local-maximum target, decidable
+# live): next local high >= entry+5%, confirmed when high[k] > both
+# neighbours (order=1), sold at the CLOSE one bar after confirmation. 25%
+# hard stop as backstop, 120-bar cap if neither hits first.
+#   Backtest (this filter set, 3% trigger, order=1, exit+1 bar): n=632/4yr,
+#   89.4% target / 9.8% stop / 0.8% timeout, avg +4.04%, median +3.66%,
+#   win 76.4%, avg hold 12.1 bars.
+# NOTE: this scanner only ALERTS entries, same as REV/SURGE -- it does not
+# manage the exit live. The exit rule above is what the backtest numbers
+# assume; apply it manually or extend the scanner with an open-position
+# tracker if you want it automated.
+# Reuses day_ret / pct_of_250high / atr_pct / gap -- all already computed
+# above for A5/REV/SPRED, so no new indicator loop is needed.
+MOM_DAYPCT  = 3.0    # each of 2 consecutive days must be >= this (%)
+MOM_NEAR250 = 90.0   # must be >= this % of the 250-day high
+MOM_ATR     = 4.5    # ATR% floor
+MOM_GAP     = 0.5    # day-2 opening gap vs prior close, minimum (%)
+# NOTE: no cooloff — MOM fires on every bar the condition is true.
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -621,17 +641,22 @@ def check_rev(F, i):
 
 
 def check_mom(F, i):
-    """MOM / LEG — rule tier. Leg inception FROM STRENGTH: pushing up, near its
-    250d high, clean/efficient trend, MAs stacked, ADX confirming."""
-    keys = ["ret5", "pct_of_250high", "eff_ratio40", "adx", "dd60", "ma_aligned"]
-    if any(np.isnan(F[k][i]) for k in keys):
+    """MOM — 2-day momentum streak (redefined; the old leg-inception rule was
+    retired for being the only negative contributor in the last-year P/L —
+    see the MOM_* constants block). Two consecutive days each up >=
+    MOM_DAYPCT%, kept only near the 250d high with real volatility and a
+    gap-up continuation on day 2. Reuses day_ret / pct_of_250high / atr_pct
+    / gap -- all already computed above for A5/REV/SPRED."""
+    if i < 1:
         return False
-    return (F["ret5"][i] >= MOM_RET5 and
-            F["pct_of_250high"][i] >= MOM_PCT250 and
-            F["eff_ratio40"][i] >= MOM_EFF and
-            F["adx"][i] >= MOM_ADX and
-            F["dd60"][i] >= MOM_DD60 and
-            F["ma_aligned"][i] == 1)
+    keys = ("day_ret", "pct_of_250high", "atr_pct", "gap")
+    if any(np.isnan(F[k][i]) for k in keys) or np.isnan(F["day_ret"][i - 1]):
+        return False
+    return (F["day_ret"][i]        >= MOM_DAYPCT and
+            F["day_ret"][i - 1]    >= MOM_DAYPCT and
+            F["pct_of_250high"][i] >= MOM_NEAR250 and
+            F["atr_pct"][i]        >= MOM_ATR and
+            F["gap"][i]            >= MOM_GAP)
 
 
 def check_surge(F, i):
@@ -781,18 +806,18 @@ SIGNAL_DESCRIPTIONS = {
         "  5/5 windows. Volume barely matters here (3x+ adds ~0.2pp)."
     ),
     "MOM": (
-        "MOMENTUM LEG ENTRY — 'LEG'\n"
-        "  Start of a >=10%-within-10-days leg, but only legs originating from\n"
-        "  STRENGTH. Legs from near 60d highs CONTINUE (+7.08% after the leg\n"
-        "  peak, 56.7% follow-through); legs off deep drawdowns mean-revert\n"
-        "  (+3.27%, 50.1%) -- that is the bounce-vs-real-leg distinction.\n"
-        "  Conditions: 5d ret >= {a}%  |  >= {b}% of 250d high  |  trend efficiency >= {c}\n"
-        "              |  ADX >= {d}  |  dd from 60d high >= {e}%  |  MA10>MA20>MA50>MA200\n"
-        "  Validated OOS: 38.7% become real legs vs 11.4% base (3.4x lift).\n"
-        "  EXIT: hold 21 trading days (~1 month). Do NOT cut early on weakness --\n"
-        "  every trailing-stop variant tested UNDERPERFORMED the plain hold\n"
-        "  (trail10 +4.44% vs hold +5.50%); these names dip and recover inside\n"
-        "  the month."
+        "MOMENTUM ENTRY (2-day streak — redefined, replaces the old 'LEG' rule)\n"
+        "  Two consecutive days each up >= {a}%, only kept near the 250-day\n"
+        "  high with real volatility and a gap-up continuation on day 2 (a\n"
+        "  flat grind up on day 2 is a much weaker event than one that opens\n"
+        "  strong).\n"
+        "  Conditions: 2 consecutive days >= {a}%  |  >= {b}% of 250d high  |  "
+        "ATR >= {c}%  |  day-2 gap >= {d}%\n"
+        "  Backtest: n=632/4yr, 89.4% target / 9.8% stop / 0.8% timeout,\n"
+        "  avg +4.04%, median +3.66%, win 76.4%, avg hold 12.1 bars.\n"
+        "  EXIT (manual — this scanner alerts entries only): next local high\n"
+        "  >= entry+5% (order=1: high[k] > both neighbours), sell at the CLOSE\n"
+        "  one bar after confirmation. 25% hard stop as backstop, 120-bar cap."
     ),
 }
 
@@ -911,10 +936,7 @@ def main():
     universe = load_universe()
     print(f"Universe: {len(universe)} stocks")
 
-    log = _load(LOG_PATH); mom_log = _load(MOM_LOG_PATH)
-    surge_log = _load(SURGE_LOG_PATH)
-    spred_log = _load(SPRED_LOG_PATH); alert_log = _load(ALERT_LOG_PATH)
-    rebound_log = _load(REBOUND_LOG_PATH)
+    log = _load(LOG_PATH)
     today_label = None
     sections, charts = [], []
     rev_hits, mom_hits, surge_hits = [], [], []
@@ -957,7 +979,7 @@ def main():
         i = len(F["close"]) - 1
 
         rev = check_rev(F, i)
-        mom = False          # MOM retired -- see the constant block for why
+        mom = check_mom(F, i)
         surge = check_surge(F, i)
 
         spred = check_spred(F, i)
@@ -965,40 +987,12 @@ def main():
         a5    = check_a5(F, i)
         rebound, rebound_p = check_rebound(F, i)
 
-        # SURGE de-dup: one alert per thrust, not every day it stays elevated
-        if surge:
-            if i - surge_log.get(name, -10**9) < SURGE_COOLOFF:
-                surge = False
-            else:
-                surge_log[name] = i
-        # same idea for the three new alerts, tracked independently
-        for _k, _on in (("SPRED", spred), ("A1", a1), ("A5", a5)):
-            if not _on:
-                continue
-            _key = f"{name}_{_k}"
-            if i - alert_log.get(_key, -10**9) < ALERT_COOLOFF:
-                if _k == "SPRED": spred = False
-                elif _k == "A1":  a1 = False
-                else:             a5 = False
-            else:
-                alert_log[_key] = i
+        # SURGE: no cooloff — fires on every bar the condition is true
+        # SPRED/A1/A5: no cooloff — fire on every bar the condition is true
 
-        # REBOUND de-dup: tracked separately from ALERT_COOLOFF since it uses
-        # its own log file (keeps a clean retrain history independent of the
-        # other alerts' fire log)
-        if rebound:
-            if i - rebound_log.get(name, -10**9) < REBOUND_COOLOFF:
-                rebound = False
-            else:
-                rebound_log[name] = i
+        # REBOUND: no cooloff — fires on every bar the score clears threshold
 
-        # MOM de-dup: don't refire on consecutive days of the same leg
-        if mom:
-            last_bar = mom_log.get(name, -10**9)
-            if i - last_bar < 10:
-                mom = False
-            else:
-                mom_log[name] = i
+        # MOM: no cooloff — fires on every bar the condition is true
 
         print(f"── {name:12s} close={F['close'][i]:9.2f}  z5={F['z5'][i]:6.2f}  "
               f"dd60={F['dd60'][i]:7.2f}%  ADX={F['adx'][i]:5.1f}  "
@@ -1043,6 +1037,13 @@ def main():
                 f"dd_20d: {F['dd_20d'][i]:+.2f}%   [fitted score -- see constants "
                 f"block for walk-forward evidence and retraining caveat]"
             )
+        if mom:
+            lines.append(
+                f"MOM: 2-day streak {F['day_ret'][i-1]:+.2f}% / {F['day_ret'][i]:+.2f}%   "
+                f"% of 250d high: {F['pct_of_250high'][i]:.1f}%   ATR: {F['atr_pct'][i]:.2f}%   "
+                f"day-2 gap: {F['gap'][i]:+.2f}%   [manual exit -- see MOM in "
+                f"SIGNAL_DESCRIPTIONS]"
+            )
         for k in kinds:
             key = f"{name}_{k}"
             log[key] = today_label
@@ -1066,10 +1067,7 @@ def main():
             except Exception as e:
                 print(f"   chart failed: {e}")
 
-    _save(LOG_PATH, log); _save(MOM_LOG_PATH, mom_log)
-    _save(SURGE_LOG_PATH, surge_log)
-    _save(SPRED_LOG_PATH, spred_log); _save(ALERT_LOG_PATH, alert_log)
-    _save(REBOUND_LOG_PATH, rebound_log)
+    _save(LOG_PATH, log)
 
     if not sections:
         print("\nNo signals today — no email sent.")
@@ -1080,6 +1078,8 @@ def main():
         f"Engine   : hardcoded rule thresholds (self-contained, no model files)\n"
         f"Universe : {len(universe)} stocks\n"
         f"REV fires: {len(rev_hits)}  ({', '.join(rev_hits) if rev_hits else '-'})\n"
+        f"MOM      : {len(mom_hits)}  ({', '.join(mom_hits) if mom_hits else '-'})  "
+        f"[redefined — manual exit, see SIGNAL_DESCRIPTIONS]\n"
         f"SURGE    : {len(surge_hits)}  ({', '.join(surge_hits) if surge_hits else '-'})\n"
         f"SPRED    : {len(spred_hits)}  ({', '.join(spred_hits) if spred_hits else '-'})\n"
         f"A1       : {len(a1_hits)}  ({', '.join(a1_hits) if a1_hits else '-'})\n"
@@ -1089,7 +1089,7 @@ def main():
            if len(sections) > MAX_CHARTS else "")
         + "\n".join(sections)
     )
-    subject = (f"[Smallcap Scanner] {len(rev_hits)}R/{len(surge_hits)}S/"
+    subject = (f"[Smallcap Scanner] {len(rev_hits)}R/{len(mom_hits)}M/{len(surge_hits)}S/"
                f"{len(spred_hits)}P/{len(a1_hits)}A1/{len(a5_hits)}A5/"
                f"{len(rebound_hits)}RB — {today_label}")
     send_email(subject, body, charts)
