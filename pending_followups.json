@@ -5,5 +5,12 @@
     "fire_bar": 1262,
     "fire_date": "03-09-2026",
     "entry_close": 1387.7
+  },
+  {
+    "stock": "ADANIENSOL",
+    "signal": "REV",
+    "fire_bar": 1262,
+    "fire_date": "03-09-2026",
+    "entry_close": 1388.9
   }
 ]
