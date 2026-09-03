@@ -229,5 +229,152 @@
     "fire_bar": 1258,
     "fire_date": "03-09-2026",
     "entry_close": 63.37
+  },
+  {
+    "stock": "AHLUCONT",
+    "signal": "REV",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 595.45
+  },
+  {
+    "stock": "ALOKINDS",
+    "signal": "REV",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 7.53
+  },
+  {
+    "stock": "ALOKINDS",
+    "signal": "REBOUND",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 7.53
+  },
+  {
+    "stock": "AVALON",
+    "signal": "REBOUND",
+    "fire_bar": 839,
+    "fire_date": "03-09-2026",
+    "entry_close": 2248.6
+  },
+  {
+    "stock": "BALUFORGE",
+    "signal": "REV",
+    "fire_bar": 586,
+    "fire_date": "03-09-2026",
+    "entry_close": 570.35
+  },
+  {
+    "stock": "BALUFORGE",
+    "signal": "REBOUND",
+    "fire_bar": 586,
+    "fire_date": "03-09-2026",
+    "entry_close": 570.35
+  },
+  {
+    "stock": "CUPID",
+    "signal": "REBOUND",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 279.95
+  },
+  {
+    "stock": "EPL",
+    "signal": "REBOUND",
+    "fire_bar": 1257,
+    "fire_date": "03-09-2026",
+    "entry_close": 246.55
+  },
+  {
+    "stock": "HAPPSTMNDS",
+    "signal": "REV",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 353.95
+  },
+  {
+    "stock": "HAPPSTMNDS",
+    "signal": "REBOUND",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 353.95
+  },
+  {
+    "stock": "HCC",
+    "signal": "REBOUND",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 23.13
+  },
+  {
+    "stock": "ICIL",
+    "signal": "REBOUND",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 437.35
+  },
+  {
+    "stock": "KRN",
+    "signal": "REBOUND",
+    "fire_bar": 479,
+    "fire_date": "03-09-2026",
+    "entry_close": 1505.9
+  },
+  {
+    "stock": "MTARTECH",
+    "signal": "REBOUND",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 6820.0
+  },
+  {
+    "stock": "PNCINFRA",
+    "signal": "REV",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 182.97
+  },
+  {
+    "stock": "PRUDENT",
+    "signal": "REBOUND",
+    "fire_bar": 1063,
+    "fire_date": "03-09-2026",
+    "entry_close": 3328.5
+  },
+  {
+    "stock": "RATEGAIN",
+    "signal": "REV",
+    "fire_bar": 1167,
+    "fire_date": "03-09-2026",
+    "entry_close": 869.75
+  },
+  {
+    "stock": "RTNINDIA",
+    "signal": "REV",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 27.43
+  },
+  {
+    "stock": "SKYGOLD",
+    "signal": "REV",
+    "fire_bar": 905,
+    "fire_date": "03-09-2026",
+    "entry_close": 742.0
+  },
+  {
+    "stock": "RENUKA",
+    "signal": "REBOUND",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 24.27
+  },
+  {
+    "stock": "UJJIVANSFB",
+    "signal": "REV",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 62.99
   }
 ]
