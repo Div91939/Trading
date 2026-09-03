@@ -1,0 +1,100 @@
+[
+  {
+    "stock": "ALOKINDS",
+    "signal": "REV",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 8.01
+  },
+  {
+    "stock": "ALOKINDS",
+    "signal": "REBOUND",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 8.01
+  },
+  {
+    "stock": "AVALON",
+    "signal": "REBOUND",
+    "fire_bar": 839,
+    "fire_date": "03-09-2026",
+    "entry_close": 2177.0
+  },
+  {
+    "stock": "EPL",
+    "signal": "REBOUND",
+    "fire_bar": 1257,
+    "fire_date": "03-09-2026",
+    "entry_close": 247.55
+  },
+  {
+    "stock": "HAPPSTMNDS",
+    "signal": "REV",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 354.9
+  },
+  {
+    "stock": "HAPPSTMNDS",
+    "signal": "REBOUND",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 354.9
+  },
+  {
+    "stock": "HCC",
+    "signal": "REBOUND",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 23.26
+  },
+  {
+    "stock": "ICIL",
+    "signal": "REBOUND",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 441.25
+  },
+  {
+    "stock": "KRN",
+    "signal": "REBOUND",
+    "fire_bar": 479,
+    "fire_date": "03-09-2026",
+    "entry_close": 1510.5
+  },
+  {
+    "stock": "MTARTECH",
+    "signal": "REBOUND",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 6864.5
+  },
+  {
+    "stock": "PNCINFRA",
+    "signal": "REV",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 182.46
+  },
+  {
+    "stock": "PRUDENT",
+    "signal": "REBOUND",
+    "fire_bar": 1063,
+    "fire_date": "03-09-2026",
+    "entry_close": 3313.8
+  },
+  {
+    "stock": "QPOWER",
+    "signal": "REBOUND",
+    "fire_bar": 379,
+    "fire_date": "03-09-2026",
+    "entry_close": 1404.9
+  },
+  {
+    "stock": "RENUKA",
+    "signal": "REBOUND",
+    "fire_bar": 1258,
+    "fire_date": "03-09-2026",
+    "entry_close": 24.48
+  }
+]
