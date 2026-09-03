@@ -929,6 +929,84 @@ def send_email(subject, body, attachments):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# 6b. DAY-1 FOLLOW-UP
+# ─────────────────────────────────────────────────────────────────────────────
+# When REV or MOM fires on a stock, an entry is recorded here. On the very
+# next run (one bar later in THAT stock's own series — bar-index math, so
+# weekends/holidays are skipped automatically), a STANDALONE email goes out
+# showing price change since the fire and whether the original condition
+# still holds. If a run is ever missed and the exact next-bar check is
+# skipped, the pending entry is dropped silently — no "send late" fallback.
+PENDING_LOG_PATH = "smallcap_pending_followups.json"
+
+
+def load_pending_log():
+    if not os.path.exists(PENDING_LOG_PATH):
+        return []
+    with open(PENDING_LOG_PATH, "r") as f:
+        content = f.read().strip()
+    if not content:
+        return []
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        return []
+
+
+def save_pending_log(pending):
+    with open(PENDING_LOG_PATH, "w") as f:
+        json.dump(pending, f, indent=2)
+
+
+def process_followups(pending, resolved, name, F, i, meta, sector):
+    """Runs once per stock per day, BEFORE today's own signal check. For any
+    pending entry on this stock that is exactly one bar old, builds a
+    day-1 update (price change + condition re-check + chart) and appends it
+    to `resolved` — the caller batches everything into ONE email at the end
+    of main(), rather than one email per stock. Entries older than one bar
+    are dropped silently (a missed run is not retried, no late send).
+    Returns the pending list with this stock's resolved/stale entries
+    removed; `resolved` is mutated in place."""
+    keep = []
+    for e in pending:
+        if e["stock"] != name:
+            keep.append(e)
+            continue
+        age = i - e["fire_bar"]
+        if age == 1:
+            entry_close = e["entry_close"]
+            now_close = float(F["close"][i])
+            pct = (now_close / entry_close - 1) * 100 if entry_close else float("nan")
+            sig = e["signal"]
+            if sig == "REV":
+                still_holds = check_rev(F, i)
+                fire_kwargs = dict(rev_fires=[e["fire_bar"]])
+            elif sig == "MOM":
+                still_holds = check_mom(F, i)
+                fire_kwargs = dict(mom_fires=[e["fire_bar"]])
+            else:  # REBOUND
+                still_holds = check_rebound(F, i)[0]
+                fire_kwargs = dict(rebound_fires=[e["fire_bar"]])
+            png = build_plot(F, meta["company"], meta["ticker"], meta["date"],
+                             [sig], lookback=40, **fire_kwargs)
+            body = (
+                f"{name} ({meta['ticker']})  [{sector}]\n"
+                f"Signal        : {sig}\n"
+                f"Fired on      : {e['fire_date']}  (close {entry_close:.2f})\n"
+                f"Now ({meta['date']}): close {now_close:.2f}\n"
+                f"Change        : {pct:+.2f}%\n"
+                f"Condition still holds today: {'YES' if still_holds else 'no'}\n"
+            )
+            resolved.append(dict(stock=name, signal=sig, body=body,
+                                 image_name=f"{name}_{sig}_day1.png", png=png))
+        elif age > 1:
+            pass  # stale — dropped silently, per design
+        else:
+            keep.append(e)  # not due yet
+    return keep
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # 7. MAIN LOOP
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -937,6 +1015,8 @@ def main():
     print(f"Universe: {len(universe)} stocks")
 
     log = _load(LOG_PATH)
+    pending = load_pending_log()
+    resolved_followups = []
     today_label = None
     sections, charts = [], []
     rev_hits, mom_hits, surge_hits = [], [], []
@@ -978,6 +1058,10 @@ def main():
             continue
         i = len(F["close"]) - 1
 
+        # ── Day-1 follow-up: resolve anything that fired yesterday for this
+        # stock BEFORE checking today's own signals ────────────────────────
+        pending = process_followups(pending, resolved_followups, name, F, i, meta, cfg["sector"])
+
         rev = check_rev(F, i)
         mom = check_mom(F, i)
         surge = check_surge(F, i)
@@ -1002,6 +1086,17 @@ def main():
               f"A1={'YES' if a1 else 'no':3s}  A5={'YES' if a5 else 'no':3s}  "
               f"REBOUND={'YES' if rebound else 'no'}"
               + (f" (p={rebound_p:.2f})" if not np.isnan(rebound_p) else ""))
+
+        # ── Register today's fires for tomorrow's day-1 follow-up ──────────
+        if rev:
+            pending.append(dict(stock=name, signal="REV", fire_bar=i,
+                                fire_date=today_label, entry_close=float(F["close"][i])))
+        if mom:
+            pending.append(dict(stock=name, signal="MOM", fire_bar=i,
+                                fire_date=today_label, entry_close=float(F["close"][i])))
+        if rebound:
+            pending.append(dict(stock=name, signal="REBOUND", fire_bar=i,
+                                fire_date=today_label, entry_close=float(F["close"][i])))
 
         if not (rev or mom or surge or spred or a1 or a5 or rebound):
             continue
@@ -1068,9 +1163,22 @@ def main():
                 print(f"   chart failed: {e}")
 
     _save(LOG_PATH, log)
+    save_pending_log(pending)
+
+    # ── Send the batched day-1 follow-up email (independent of whether any
+    # new signals fired today) ──────────────────────────────────────────
+    if resolved_followups:
+        fu_body = (
+            f"DAY-1 FOLLOW-UP  —  {today_label}\n"
+            f"{len(resolved_followups)} item(s)\n"
+            + "\n".join(f"\n{'='*60}\n{r['body']}" for r in resolved_followups)
+        )
+        fu_attachments = [(r["image_name"], r["png"]) for r in resolved_followups]
+        send_email(f"[Day-1 Follow-up] {len(resolved_followups)} item(s) — {today_label}",
+                   fu_body, fu_attachments)
 
     if not sections:
-        print("\nNo signals today — no email sent.")
+        print("\nNo signals today — no daily scan email sent.")
         return
 
     body = (
