@@ -5,5 +5,19 @@
     "fire_bar": 1263,
     "fire_date": "04-09-2026",
     "entry_close": 1395.0
+  },
+  {
+    "stock": "SRMENERGY",
+    "signal": "MOM",
+    "fire_bar": 1264,
+    "fire_date": "04-09-2026",
+    "entry_close": 28.09
+  },
+  {
+    "stock": "ADANIENSOL",
+    "signal": "REV",
+    "fire_bar": 1263,
+    "fire_date": "04-09-2026",
+    "entry_close": 1401.0
   }
 ]
