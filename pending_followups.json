@@ -2,29 +2,8 @@
   {
     "stock": "ADANIENSOL",
     "signal": "REV",
-    "fire_bar": 1262,
-    "fire_date": "03-09-2026",
-    "entry_close": 1387.7
-  },
-  {
-    "stock": "ADANIENSOL",
-    "signal": "REV",
-    "fire_bar": 1262,
-    "fire_date": "03-09-2026",
-    "entry_close": 1388.9
-  },
-  {
-    "stock": "DOLATALGO",
-    "signal": "REV",
-    "fire_bar": 1270,
-    "fire_date": "03-09-2026",
-    "entry_close": 70.0
-  },
-  {
-    "stock": "ADANIENSOL",
-    "signal": "REV",
-    "fire_bar": 1262,
-    "fire_date": "03-09-2026",
-    "entry_close": 1385.7
+    "fire_bar": 1263,
+    "fire_date": "04-09-2026",
+    "entry_close": 1395.0
   }
 ]
