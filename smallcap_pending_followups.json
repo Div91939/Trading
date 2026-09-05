@@ -299,5 +299,117 @@
     "fire_bar": 1259,
     "fire_date": "04-09-2026",
     "entry_close": 74.53
+  },
+  {
+    "stock": "ALOKINDS",
+    "signal": "REV",
+    "fire_bar": 1259,
+    "fire_date": "04-09-2026",
+    "entry_close": 7.83
+  },
+  {
+    "stock": "ALOKINDS",
+    "signal": "REBOUND",
+    "fire_bar": 1259,
+    "fire_date": "04-09-2026",
+    "entry_close": 7.83
+  },
+  {
+    "stock": "AVALON",
+    "signal": "REBOUND",
+    "fire_bar": 840,
+    "fire_date": "04-09-2026",
+    "entry_close": 2196.6
+  },
+  {
+    "stock": "BALUFORGE",
+    "signal": "REV",
+    "fire_bar": 587,
+    "fire_date": "04-09-2026",
+    "entry_close": 574.1
+  },
+  {
+    "stock": "BALUFORGE",
+    "signal": "REBOUND",
+    "fire_bar": 587,
+    "fire_date": "04-09-2026",
+    "entry_close": 574.1
+  },
+  {
+    "stock": "HAPPSTMNDS",
+    "signal": "REV",
+    "fire_bar": 1259,
+    "fire_date": "04-09-2026",
+    "entry_close": 354.0
+  },
+  {
+    "stock": "HAPPSTMNDS",
+    "signal": "REBOUND",
+    "fire_bar": 1259,
+    "fire_date": "04-09-2026",
+    "entry_close": 354.0
+  },
+  {
+    "stock": "HCC",
+    "signal": "REBOUND",
+    "fire_bar": 1259,
+    "fire_date": "04-09-2026",
+    "entry_close": 22.98
+  },
+  {
+    "stock": "JAYNECOIND",
+    "signal": "REV",
+    "fire_bar": 1259,
+    "fire_date": "04-09-2026",
+    "entry_close": 89.04
+  },
+  {
+    "stock": "JAYNECOIND",
+    "signal": "REBOUND",
+    "fire_bar": 1259,
+    "fire_date": "04-09-2026",
+    "entry_close": 89.04
+  },
+  {
+    "stock": "KIRLPNU",
+    "signal": "REBOUND",
+    "fire_bar": 833,
+    "fire_date": "04-09-2026",
+    "entry_close": 760.45
+  },
+  {
+    "stock": "POWERMECH",
+    "signal": "REV",
+    "fire_bar": 1258,
+    "fire_date": "04-09-2026",
+    "entry_close": 2306.1
+  },
+  {
+    "stock": "PRUDENT",
+    "signal": "REBOUND",
+    "fire_bar": 1064,
+    "fire_date": "04-09-2026",
+    "entry_close": 3347.6
+  },
+  {
+    "stock": "RATEGAIN",
+    "signal": "REV",
+    "fire_bar": 1168,
+    "fire_date": "04-09-2026",
+    "entry_close": 851.15
+  },
+  {
+    "stock": "RENUKA",
+    "signal": "REBOUND",
+    "fire_bar": 1259,
+    "fire_date": "04-09-2026",
+    "entry_close": 24.04
+  },
+  {
+    "stock": "WEBELSOLAR",
+    "signal": "REBOUND",
+    "fire_bar": 1259,
+    "fire_date": "04-09-2026",
+    "entry_close": 74.53
   }
 ]
