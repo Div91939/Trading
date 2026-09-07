@@ -54,5 +54,68 @@
     "fire_bar": 1260,
     "fire_date": "07-09-2026",
     "entry_close": 90.9
+  },
+  {
+    "stock": "ALOKINDS",
+    "signal": "REBOUND",
+    "fire_bar": 1260,
+    "fire_date": "07-09-2026",
+    "entry_close": 7.55
+  },
+  {
+    "stock": "BALUFORGE",
+    "signal": "REV",
+    "fire_bar": 588,
+    "fire_date": "07-09-2026",
+    "entry_close": 550.45
+  },
+  {
+    "stock": "BALUFORGE",
+    "signal": "REBOUND",
+    "fire_bar": 588,
+    "fire_date": "07-09-2026",
+    "entry_close": 550.45
+  },
+  {
+    "stock": "HAPPSTMNDS",
+    "signal": "REV",
+    "fire_bar": 1260,
+    "fire_date": "07-09-2026",
+    "entry_close": 344.0
+  },
+  {
+    "stock": "HAPPSTMNDS",
+    "signal": "REBOUND",
+    "fire_bar": 1260,
+    "fire_date": "07-09-2026",
+    "entry_close": 344.0
+  },
+  {
+    "stock": "HCC",
+    "signal": "REBOUND",
+    "fire_bar": 1260,
+    "fire_date": "07-09-2026",
+    "entry_close": 22.98
+  },
+  {
+    "stock": "JAYNECOIND",
+    "signal": "REV",
+    "fire_bar": 1260,
+    "fire_date": "07-09-2026",
+    "entry_close": 89.74
+  },
+  {
+    "stock": "JAYNECOIND",
+    "signal": "REBOUND",
+    "fire_bar": 1260,
+    "fire_date": "07-09-2026",
+    "entry_close": 89.74
+  },
+  {
+    "stock": "PCJEWELLER",
+    "signal": "MOM",
+    "fire_bar": 1260,
+    "fire_date": "07-09-2026",
+    "entry_close": 13.53
   }
 ]
