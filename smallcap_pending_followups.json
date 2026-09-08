@@ -33,5 +33,68 @@
     "fire_bar": 1261,
     "fire_date": "08-09-2026",
     "entry_close": 89.83
+  },
+  {
+    "stock": "ALOKINDS",
+    "signal": "REBOUND",
+    "fire_bar": 1261,
+    "fire_date": "08-09-2026",
+    "entry_close": 7.86
+  },
+  {
+    "stock": "APOLLO",
+    "signal": "MOM",
+    "fire_bar": 1261,
+    "fire_date": "08-09-2026",
+    "entry_close": 421.2
+  },
+  {
+    "stock": "BALUFORGE",
+    "signal": "REV",
+    "fire_bar": 589,
+    "fire_date": "08-09-2026",
+    "entry_close": 546.9
+  },
+  {
+    "stock": "BALUFORGE",
+    "signal": "REBOUND",
+    "fire_bar": 589,
+    "fire_date": "08-09-2026",
+    "entry_close": 546.9
+  },
+  {
+    "stock": "GMMPFAUDLR",
+    "signal": "MOM",
+    "fire_bar": 1260,
+    "fire_date": "08-09-2026",
+    "entry_close": 1272.8
+  },
+  {
+    "stock": "JAYNECOIND",
+    "signal": "REV",
+    "fire_bar": 1261,
+    "fire_date": "08-09-2026",
+    "entry_close": 89.72
+  },
+  {
+    "stock": "JAYNECOIND",
+    "signal": "REBOUND",
+    "fire_bar": 1261,
+    "fire_date": "08-09-2026",
+    "entry_close": 89.72
+  },
+  {
+    "stock": "MTARTECH",
+    "signal": "MOM",
+    "fire_bar": 1261,
+    "fire_date": "08-09-2026",
+    "entry_close": 7770.5
+  },
+  {
+    "stock": "STLTECH",
+    "signal": "MOM",
+    "fire_bar": 1261,
+    "fire_date": "08-09-2026",
+    "entry_close": 825.6
   }
 ]
