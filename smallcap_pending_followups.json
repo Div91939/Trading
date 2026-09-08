@@ -35,25 +35,11 @@
     "entry_close": 89.83
   },
   {
-    "stock": "ALOKINDS",
-    "signal": "REBOUND",
-    "fire_bar": 1261,
-    "fire_date": "08-09-2026",
-    "entry_close": 7.86
-  },
-  {
     "stock": "APOLLO",
     "signal": "MOM",
     "fire_bar": 1261,
     "fire_date": "08-09-2026",
     "entry_close": 421.2
-  },
-  {
-    "stock": "BALUFORGE",
-    "signal": "REV",
-    "fire_bar": 589,
-    "fire_date": "08-09-2026",
-    "entry_close": 546.9
   },
   {
     "stock": "BALUFORGE",
@@ -70,20 +56,6 @@
     "entry_close": 1272.8
   },
   {
-    "stock": "JAYNECOIND",
-    "signal": "REV",
-    "fire_bar": 1261,
-    "fire_date": "08-09-2026",
-    "entry_close": 89.72
-  },
-  {
-    "stock": "JAYNECOIND",
-    "signal": "REBOUND",
-    "fire_bar": 1261,
-    "fire_date": "08-09-2026",
-    "entry_close": 89.72
-  },
-  {
     "stock": "MTARTECH",
     "signal": "MOM",
     "fire_bar": 1261,
@@ -98,67 +70,11 @@
     "entry_close": 825.6
   },
   {
-    "stock": "ALOKINDS",
-    "signal": "REBOUND",
-    "fire_bar": 1261,
-    "fire_date": "08-09-2026",
-    "entry_close": 7.61
-  },
-  {
-    "stock": "APOLLO",
-    "signal": "MOM",
-    "fire_bar": 1261,
-    "fire_date": "08-09-2026",
-    "entry_close": 417.85
-  },
-  {
-    "stock": "BALUFORGE",
-    "signal": "REV",
-    "fire_bar": 589,
-    "fire_date": "08-09-2026",
-    "entry_close": 545.35
-  },
-  {
-    "stock": "BALUFORGE",
-    "signal": "REBOUND",
-    "fire_bar": 589,
-    "fire_date": "08-09-2026",
-    "entry_close": 545.35
-  },
-  {
     "stock": "HAPPSTMNDS",
     "signal": "REV",
     "fire_bar": 1261,
     "fire_date": "08-09-2026",
     "entry_close": 339.5
-  },
-  {
-    "stock": "HCC",
-    "signal": "REBOUND",
-    "fire_bar": 1261,
-    "fire_date": "08-09-2026",
-    "entry_close": 23.77
-  },
-  {
-    "stock": "JAYNECOIND",
-    "signal": "REV",
-    "fire_bar": 1261,
-    "fire_date": "08-09-2026",
-    "entry_close": 89.54
-  },
-  {
-    "stock": "JAYNECOIND",
-    "signal": "REBOUND",
-    "fire_bar": 1261,
-    "fire_date": "08-09-2026",
-    "entry_close": 89.54
-  },
-  {
-    "stock": "MTARTECH",
-    "signal": "MOM",
-    "fire_bar": 1261,
-    "fire_date": "08-09-2026",
-    "entry_close": 7835.0
   },
   {
     "stock": "SANSERA",
@@ -168,10 +84,10 @@
     "entry_close": 4018.7
   },
   {
-    "stock": "STLTECH",
-    "signal": "MOM",
+    "stock": "CSBBANK",
+    "signal": "REV",
     "fire_bar": 1261,
     "fire_date": "08-09-2026",
-    "entry_close": 825.6
+    "entry_close": 312.85
   }
 ]
