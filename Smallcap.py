@@ -329,8 +329,13 @@ DTF_ADX        = 30    # ADX above this + -DI>+DI = confirmed downtrend
 # above for A5/REV/SPRED, so no new indicator loop is needed.
 MOM_DAYPCT  = 3.0    # each of 2 consecutive days must be >= this (%)
 MOM_NEAR250 = 90.0   # must be >= this % of the 250-day high
-MOM_ATR     = 4.5    # ATR% floor
-MOM_GAP     = 0.5    # day-2 opening gap vs prior close, minimum (%)
+# NOTE: ATR and gap filters REMOVED on request (2026-09-08) -- not
+# re-validated with only these two conditions. The original 4-filter
+# version (streak + position + ATR>=4.5 + gap>=0.5) was walk-forward
+# tested at n=517/4yr, +4.70% 30d-hold avg, 68.7% win, most consistent
+# win-rate across years. This 2-filter version fires more often and has
+# NOT been re-tested for quality at that frequency -- treat with caution
+# until walk-forward numbers exist for this exact configuration.
 # NOTE: no cooloff — MOM fires on every bar the condition is true.
 
 
@@ -644,19 +649,17 @@ def check_mom(F, i):
     """MOM — 2-day momentum streak (redefined; the old leg-inception rule was
     retired for being the only negative contributor in the last-year P/L —
     see the MOM_* constants block). Two consecutive days each up >=
-    MOM_DAYPCT%, kept only near the 250d high with real volatility and a
-    gap-up continuation on day 2. Reuses day_ret / pct_of_250high / atr_pct
-    / gap -- all already computed above for A5/REV/SPRED."""
+    MOM_DAYPCT%, kept only near the 250d high. ATR and gap filters removed
+    on request (2026-09-08) -- see the constants block for the caveat that
+    this 2-filter version has not been walk-forward validated."""
     if i < 1:
         return False
-    keys = ("day_ret", "pct_of_250high", "atr_pct", "gap")
+    keys = ("day_ret", "pct_of_250high")
     if any(np.isnan(F[k][i]) for k in keys) or np.isnan(F["day_ret"][i - 1]):
         return False
     return (F["day_ret"][i]        >= MOM_DAYPCT and
             F["day_ret"][i - 1]    >= MOM_DAYPCT and
-            F["pct_of_250high"][i] >= MOM_NEAR250 and
-            F["atr_pct"][i]        >= MOM_ATR and
-            F["gap"][i]            >= MOM_GAP)
+            F["pct_of_250high"][i] >= MOM_NEAR250)
 
 
 def check_surge(F, i):
@@ -808,13 +811,13 @@ SIGNAL_DESCRIPTIONS = {
     "MOM": (
         "MOMENTUM ENTRY (2-day streak — redefined, replaces the old 'LEG' rule)\n"
         "  Two consecutive days each up >= {a}%, only kept near the 250-day\n"
-        "  high with real volatility and a gap-up continuation on day 2 (a\n"
-        "  flat grind up on day 2 is a much weaker event than one that opens\n"
-        "  strong).\n"
-        "  Conditions: 2 consecutive days >= {a}%  |  >= {b}% of 250d high  |  "
-        "ATR >= {c}%  |  day-2 gap >= {d}%\n"
-        "  Backtest: n=632/4yr, 89.4% target / 9.8% stop / 0.8% timeout,\n"
-        "  avg +4.04%, median +3.66%, win 76.4%, avg hold 12.1 bars.\n"
+        "  high. ATR and gap filters removed 2026-09-08 -- NOT re-validated\n"
+        "  at this looser configuration; fires more often, quality unknown.\n"
+        "  Conditions: 2 consecutive days >= {a}%  |  >= {b}% of 250d high\n"
+        "  Prior 4-filter backtest (streak+position+ATR+gap): n=632/4yr,\n"
+        "  89.4% target / 9.8% stop / 0.8% timeout, avg +4.04%, median\n"
+        "  +3.66%, win 76.4%, avg hold 12.1 bars. These numbers do NOT apply\n"
+        "  to the current 2-filter version.\n"
         "  EXIT (manual — this scanner alerts entries only): next local high\n"
         "  >= entry+5% (order=1: high[k] > both neighbours), sell at the CLOSE\n"
         "  one bar after confirmation. 25% hard stop as backstop, 120-bar cap."
