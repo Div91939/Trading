@@ -951,9 +951,21 @@ def load_pending_log():
     if not content:
         return []
     try:
-        return json.loads(content)
+        raw = json.loads(content)
     except json.JSONDecodeError:
         return []
+    # One-time cleanup: collapse any (stock, signal, fire_bar) duplicates
+    # that may already be sitting in the committed file (e.g. from a
+    # workflow that ran twice on the same day before the append-guard
+    # below existed). Keeps the first occurrence of each key.
+    seen, deduped = set(), []
+    for e in raw:
+        key = (e.get("stock"), e.get("signal"), e.get("fire_bar"))
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(e)
+    return deduped
 
 
 def save_pending_log(pending):
@@ -1091,13 +1103,21 @@ def main():
               + (f" (p={rebound_p:.2f})" if not np.isnan(rebound_p) else ""))
 
         # ── Register today's fires for tomorrow's day-1 follow-up ──────────
-        if rev:
+        # Guarded against duplicate appends: if the workflow is ever run
+        # twice on the same trading day (e.g. workflow_dispatch triggered
+        # manually more than once), this stops a second identical entry
+        # for the same (stock, signal, fire_bar) piling up and showing as
+        # a repeated section in tomorrow's follow-up email.
+        def _already_pending(sig):
+            return any(e["stock"] == name and e["signal"] == sig and e["fire_bar"] == i
+                      for e in pending)
+        if rev and not _already_pending("REV"):
             pending.append(dict(stock=name, signal="REV", fire_bar=i,
                                 fire_date=today_label, entry_close=float(F["close"][i])))
-        if mom:
+        if mom and not _already_pending("MOM"):
             pending.append(dict(stock=name, signal="MOM", fire_bar=i,
                                 fire_date=today_label, entry_close=float(F["close"][i])))
-        if rebound:
+        if rebound and not _already_pending("REBOUND"):
             pending.append(dict(stock=name, signal="REBOUND", fire_bar=i,
                                 fire_date=today_label, entry_close=float(F["close"][i])))
 
