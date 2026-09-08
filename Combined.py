@@ -644,11 +644,14 @@ def check_rev(ind, i, cfg=None):
 
 MOM_DAYPCT  = 3.0    # each of 2 consecutive days must be >= this (%)
 MOM_NEAR250 = 90.0   # must be >= this % of the 250-day high
-MOM_ATR     = 4.5    # ATR% floor
-MOM_GAP     = 0.5    # day-2 opening gap vs prior close, minimum (%)
-# NOTE: no cooloff — MOM fires on every bar the condition is true, including
-# on consecutive days if the streak keeps re-qualifying. Removed on request;
-# previously suppressed refires within MOM_COOLOFF=10 bars.
+# NOTE: ATR and gap filters REMOVED on request (2026-09-08) -- not
+# re-validated with only these two conditions. The original 4-filter
+# version (streak + position + ATR>=4.5 + gap>=0.5) was walk-forward
+# tested at n=517/4yr, +4.70% 30d-hold avg, 68.7% win, most consistent
+# win-rate across years. This 2-filter version fires more often and has
+# NOT been re-tested for quality at that frequency -- treat with caution
+# until walk-forward numbers exist for this exact configuration.
+# NOTE: no cooloff — MOM fires on every bar the condition is true.
 
 def check_mom(ind, i, cfg=None):
     """
@@ -657,9 +660,9 @@ def check_mom(ind, i, cfg=None):
     for call-site compatibility but unused.
 
     Two consecutive daily gains >= MOM_DAYPCT% each, kept only if the stock
-    is near its 250-day high, volatile enough, and day 2 opened with a real
-    gap (a flat grind up on day 2 is a much weaker event than one that opens
-    strong — this is what separates continuation from noise).
+    is near its 250-day high. ATR and gap filters REMOVED (2026-09-08) --
+    NOT re-validated at this looser configuration; the numbers below apply
+    to the original 4-filter version only.
 
     Research thread: a run of consecutive +X% days is monotonically
     predictive of the next 30 days -- 1 day: +4.35% avg / 54.1% win, 2 days:
@@ -669,15 +672,20 @@ def check_mom(ind, i, cfg=None):
     the 2-day streak:
       raw 2-day streak                              n=1380/4yr +5.55% 30d-hold  54.9% win
       + near250>=90, atr>=4.5, gap>=0.5 (4% trigger) n= 313/4yr +8.70% 30d-hold  60.4% win
-      SAME filters, 3% trigger (looser, CHOSEN)      n= 517/4yr +4.70% 30d-hold  68.7% win,
+      SAME filters, 3% trigger                       n= 517/4yr +4.70% 30d-hold  68.7% win,
                                                       most consistent win-rate across years
-    EXIT (validated separately -- order=1 local-maximum target, decidable
-    live): next local high >= entry+5%, confirmed when high[k] > both
-    neighbours (order=1), sold at the CLOSE one bar after confirmation. 25%
-    hard stop as backstop, 120-bar cap if neither hits first.
-      Backtest (this filter set, 3% trigger, order=1, exit+1 bar): n=632/4yr,
+      streak + position ONLY (current, no ATR/gap)   NOT WALK-FORWARD TESTED -- fires
+                                                      more often than either row above;
+                                                      quality at this frequency is unknown
+    EXIT (validated separately, on the 4-filter version -- order=1
+    local-maximum target, decidable live): next local high >= entry+5%,
+    confirmed when high[k] > both neighbours (order=1), sold at the CLOSE
+    one bar after confirmation. 25% hard stop as backstop, 120-bar cap if
+    neither hits first.
+      Backtest (4-filter set, 3% trigger, order=1, exit+1 bar): n=632/4yr,
       89.4% target / 9.8% stop / 0.8% timeout, avg +4.04%, median +3.66%,
-      win 76.4%, avg hold 12.1 bars.
+      win 76.4%, avg hold 12.1 bars. Does NOT apply to the current 2-filter
+      version.
     NOTE: this scanner only ALERTS entries, same as REV -- it does not
     manage the exit live. The exit rule above is what the backtest numbers
     assume; apply it manually or extend the scanner with an open-position
@@ -685,14 +693,12 @@ def check_mom(ind, i, cfg=None):
     """
     if i < 1:
         return False
-    keys = ("ret1", "pct_of_250high", "atr_pct", "gap")
+    keys = ("ret1", "pct_of_250high")
     if any(np.isnan(ind[k][i]) for k in keys) or np.isnan(ind["ret1"][i - 1]):
         return False
     return (ind["ret1"][i]            >= MOM_DAYPCT and
             ind["ret1"][i - 1]        >= MOM_DAYPCT and
-            ind["pct_of_250high"][i]  >= MOM_NEAR250 and
-            ind["atr_pct"][i]         >= MOM_ATR and
-            ind["gap"][i]             >= MOM_GAP)
+            ind["pct_of_250high"][i]  >= MOM_NEAR250)
 
 
 def rebound_probability(ind, i):
@@ -741,13 +747,14 @@ SIGNAL_DESCRIPTIONS = {
     "MOM": (
         "MOMENTUM ENTRY (2-day streak — redefined)\n"
         "  Two consecutive days each up >= {MOM_DAYPCT}%, only kept near the\n"
-        "  250-day high with real volatility and a gap-up continuation on day\n"
-        "  2 (a flat grind up on day 2 is a much weaker event than one that\n"
-        "  opens strong).\n"
-        "  Conditions: 2 consecutive days >= {MOM_DAYPCT}%  |  >= {MOM_NEAR250}% of 250d high  |  "
-        "ATR >= {MOM_ATR}%  |  day-2 gap >= {MOM_GAP}%\n"
-        "  Backtest: n=632/4yr, 89.4% target / 9.8% stop / 0.8% timeout,\n"
-        "  avg +4.04%, median +3.66%, win 76.4%, avg hold 12.1 bars.\n"
+        "  250-day high. ATR and gap filters removed 2026-09-08 -- NOT\n"
+        "  re-validated at this looser configuration; fires more often,\n"
+        "  quality unknown.\n"
+        "  Conditions: 2 consecutive days >= {MOM_DAYPCT}%  |  >= {MOM_NEAR250}% of 250d high\n"
+        "  Prior 4-filter backtest (streak+position+ATR+gap): n=632/4yr,\n"
+        "  89.4% target / 9.8% stop / 0.8% timeout, avg +4.04%, median\n"
+        "  +3.66%, win 76.4%, avg hold 12.1 bars. These numbers do NOT apply\n"
+        "  to the current 2-filter version.\n"
         "  EXIT (manual — this scanner alerts entries only): next local high\n"
         "  >= entry+5% (order=1: high[k] > both neighbours), sell at the CLOSE\n"
         "  one bar after confirmation. 25% hard stop as backstop, 120-bar cap."
