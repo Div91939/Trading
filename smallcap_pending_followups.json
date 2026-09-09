@@ -61,5 +61,12 @@
     "fire_bar": 1262,
     "fire_date": "09-09-2026",
     "entry_close": 854.8
+  },
+  {
+    "stock": "CUPID",
+    "signal": "REBOUND",
+    "fire_bar": 1262,
+    "fire_date": "09-09-2026",
+    "entry_close": 277.7
   }
 ]
