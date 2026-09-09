@@ -88,7 +88,7 @@ DATA_ROOT      = "Smallcap"
 UNIVERSE_FILTER = "NIFTY_MICROCAP_250"
 LOG_PATH       = "smallcap_email_log.json"
 
-EMAIL_SENDER   = "divyanshdewan@gmail.com"
+EMAIL_SENDER   = "tradingscript1357@gmail.com"
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
 EMAIL_RECEIVER = "divyanshdewan@gmail.com,mohanchirag.26@gmail.com,prateeksinha2026@gmail.com, nishant02206@gmail.com,reuel.amin123@gmail.com"
 
