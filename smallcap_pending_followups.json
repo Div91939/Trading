@@ -68,5 +68,12 @@
     "fire_bar": 1262,
     "fire_date": "09-09-2026",
     "entry_close": 277.7
+  },
+  {
+    "stock": "RAYMONDLSL",
+    "signal": "REBOUND",
+    "fire_bar": 502,
+    "fire_date": "09-09-2026",
+    "entry_close": 670.45
   }
 ]
