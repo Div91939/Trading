@@ -2,78 +2,43 @@
   {
     "stock": "ALOKINDS",
     "signal": "REBOUND",
-    "fire_bar": 1262,
-    "fire_date": "09-09-2026",
-    "entry_close": 7.44
+    "fire_bar": 1263,
+    "fire_date": "10-09-2026",
+    "entry_close": 7.45
   },
   {
     "stock": "BALAMINES",
     "signal": "REBOUND",
-    "fire_bar": 1262,
-    "fire_date": "09-09-2026",
-    "entry_close": 2410.5
-  },
-  {
-    "stock": "BALUFORGE",
-    "signal": "REV",
-    "fire_bar": 590,
-    "fire_date": "09-09-2026",
-    "entry_close": 533.0
-  },
-  {
-    "stock": "CSBBANK",
-    "signal": "REV",
-    "fire_bar": 1262,
-    "fire_date": "09-09-2026",
-    "entry_close": 306.6
-  },
-  {
-    "stock": "GMMPFAUDLR",
-    "signal": "MOM",
-    "fire_bar": 1261,
-    "fire_date": "09-09-2026",
-    "entry_close": 1339.3
+    "fire_bar": 1263,
+    "fire_date": "10-09-2026",
+    "entry_close": 2406.0
   },
   {
     "stock": "HCC",
     "signal": "REBOUND",
-    "fire_bar": 1262,
-    "fire_date": "09-09-2026",
-    "entry_close": 23.38
+    "fire_bar": 1263,
+    "fire_date": "10-09-2026",
+    "entry_close": 23.18
+  },
+  {
+    "stock": "MTARTECH",
+    "signal": "REBOUND",
+    "fire_bar": 1263,
+    "fire_date": "10-09-2026",
+    "entry_close": 7302.5
   },
   {
     "stock": "MASTEK",
     "signal": "REV",
-    "fire_bar": 1262,
-    "fire_date": "09-09-2026",
-    "entry_close": 1621.0
+    "fire_bar": 1263,
+    "fire_date": "10-09-2026",
+    "entry_close": 1627.0
   },
   {
-    "stock": "RAIN",
+    "stock": "SHAREINDIA",
     "signal": "MOM",
-    "fire_bar": 1262,
-    "fire_date": "09-09-2026",
-    "entry_close": 224.39
-  },
-  {
-    "stock": "STLTECH",
-    "signal": "MOM",
-    "fire_bar": 1262,
-    "fire_date": "09-09-2026",
-    "entry_close": 854.8
-  },
-  {
-    "stock": "CUPID",
-    "signal": "REBOUND",
-    "fire_bar": 1262,
-    "fire_date": "09-09-2026",
-    "entry_close": 277.7
-  },
-  {
-    "stock": "RAYMONDLSL",
-    "signal": "REBOUND",
-    "fire_bar": 502,
-    "fire_date": "09-09-2026",
-    "entry_close": 670.45
+    "fire_bar": 1263,
+    "fire_date": "10-09-2026",
+    "entry_close": 206.5
   }
 ]
