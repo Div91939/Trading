@@ -40,5 +40,26 @@
     "fire_bar": 1263,
     "fire_date": "10-09-2026",
     "entry_close": 206.5
+  },
+  {
+    "stock": "ENTERO",
+    "signal": "REBOUND",
+    "fire_bar": 636,
+    "fire_date": "10-09-2026",
+    "entry_close": 1792.9
+  },
+  {
+    "stock": "INDIGOPNTS",
+    "signal": "REV",
+    "fire_bar": 1263,
+    "fire_date": "10-09-2026",
+    "entry_close": 1077.8
+  },
+  {
+    "stock": "WABAG",
+    "signal": "MOM",
+    "fire_bar": 1263,
+    "fire_date": "10-09-2026",
+    "entry_close": 2211.8
   }
 ]
