@@ -89,5 +89,12 @@
     "fire_bar": 1263,
     "fire_date": "11-09-2026",
     "entry_close": 1165.5
+  },
+  {
+    "stock": "JAIBALAJI",
+    "signal": "REV",
+    "fire_bar": 1264,
+    "fire_date": "11-09-2026",
+    "entry_close": 64.4
   }
 ]
