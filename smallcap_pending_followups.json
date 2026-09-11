@@ -2,64 +2,92 @@
   {
     "stock": "ALOKINDS",
     "signal": "REBOUND",
-    "fire_bar": 1263,
-    "fire_date": "10-09-2026",
-    "entry_close": 7.45
+    "fire_bar": 1264,
+    "fire_date": "11-09-2026",
+    "entry_close": 7.33
+  },
+  {
+    "stock": "BALAMINES",
+    "signal": "REV",
+    "fire_bar": 1264,
+    "fire_date": "11-09-2026",
+    "entry_close": 2260.0
   },
   {
     "stock": "BALAMINES",
     "signal": "REBOUND",
-    "fire_bar": 1263,
-    "fire_date": "10-09-2026",
-    "entry_close": 2406.0
+    "fire_bar": 1264,
+    "fire_date": "11-09-2026",
+    "entry_close": 2260.0
+  },
+  {
+    "stock": "BALUFORGE",
+    "signal": "REV",
+    "fire_bar": 592,
+    "fire_date": "11-09-2026",
+    "entry_close": 523.4
+  },
+  {
+    "stock": "CMSINFO",
+    "signal": "REV",
+    "fire_bar": 1164,
+    "fire_date": "11-09-2026",
+    "entry_close": 224.09
+  },
+  {
+    "stock": "HAPPSTMNDS",
+    "signal": "REV",
+    "fire_bar": 1264,
+    "fire_date": "11-09-2026",
+    "entry_close": 331.25
   },
   {
     "stock": "HCC",
     "signal": "REBOUND",
-    "fire_bar": 1263,
-    "fire_date": "10-09-2026",
-    "entry_close": 23.18
-  },
-  {
-    "stock": "MTARTECH",
-    "signal": "REBOUND",
-    "fire_bar": 1263,
-    "fire_date": "10-09-2026",
-    "entry_close": 7302.5
-  },
-  {
-    "stock": "MASTEK",
-    "signal": "REV",
-    "fire_bar": 1263,
-    "fire_date": "10-09-2026",
-    "entry_close": 1627.0
-  },
-  {
-    "stock": "SHAREINDIA",
-    "signal": "MOM",
-    "fire_bar": 1263,
-    "fire_date": "10-09-2026",
-    "entry_close": 206.5
-  },
-  {
-    "stock": "ENTERO",
-    "signal": "REBOUND",
-    "fire_bar": 636,
-    "fire_date": "10-09-2026",
-    "entry_close": 1792.9
+    "fire_bar": 1264,
+    "fire_date": "11-09-2026",
+    "entry_close": 22.08
   },
   {
     "stock": "INDIGOPNTS",
     "signal": "REV",
-    "fire_bar": 1263,
-    "fire_date": "10-09-2026",
-    "entry_close": 1077.8
+    "fire_bar": 1264,
+    "fire_date": "11-09-2026",
+    "entry_close": 1071.8
   },
   {
-    "stock": "WABAG",
-    "signal": "MOM",
+    "stock": "JSFB",
+    "signal": "REV",
+    "fire_bar": 640,
+    "fire_date": "11-09-2026",
+    "entry_close": 496.25
+  },
+  {
+    "stock": "MTARTECH",
+    "signal": "REBOUND",
+    "fire_bar": 1264,
+    "fire_date": "11-09-2026",
+    "entry_close": 7179.5
+  },
+  {
+    "stock": "MASTEK",
+    "signal": "REV",
+    "fire_bar": 1264,
+    "fire_date": "11-09-2026",
+    "entry_close": 1603.4
+  },
+  {
+    "stock": "PGIL",
+    "signal": "REV",
     "fire_bar": 1263,
-    "fire_date": "10-09-2026",
-    "entry_close": 2211.8
+    "fire_date": "11-09-2026",
+    "entry_close": 1165.5
+  },
+  {
+    "stock": "PGIL",
+    "signal": "REBOUND",
+    "fire_bar": 1263,
+    "fire_date": "11-09-2026",
+    "entry_close": 1165.5
   }
 ]

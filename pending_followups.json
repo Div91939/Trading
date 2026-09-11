@@ -1,9 +1,16 @@
 [
   {
+    "stock": "ORIRAIL",
+    "signal": "REV",
+    "fire_bar": 1273,
+    "fire_date": "11-09-2026",
+    "entry_close": 118.6
+  },
+  {
     "stock": "SRMENERGY",
     "signal": "MOM",
-    "fire_bar": 1268,
-    "fire_date": "10-09-2026",
-    "entry_close": 31.54
+    "fire_bar": 1269,
+    "fire_date": "11-09-2026",
+    "entry_close": 33.0
   }
 ]
