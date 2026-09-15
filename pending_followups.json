@@ -5,5 +5,19 @@
     "fire_bar": 1221,
     "fire_date": "15-09-2026",
     "entry_close": 1357.5
+  },
+  {
+    "stock": "BEML",
+    "signal": "REV",
+    "fire_bar": 1278,
+    "fire_date": "15-09-2026",
+    "entry_close": 1939.3
+  },
+  {
+    "stock": "TITAGARH",
+    "signal": "REV",
+    "fire_bar": 1274,
+    "fire_date": "15-09-2026",
+    "entry_close": 811.45
   }
 ]
