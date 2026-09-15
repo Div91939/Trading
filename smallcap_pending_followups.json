@@ -1,100 +1,72 @@
 [
   {
+    "stock": "ALKYLAMINE",
+    "signal": "REV",
+    "fire_bar": 1265,
+    "fire_date": "15-09-2026",
+    "entry_close": 1820.7
+  },
+  {
     "stock": "ALOKINDS",
     "signal": "REBOUND",
-    "fire_bar": 1264,
-    "fire_date": "11-09-2026",
-    "entry_close": 7.33
+    "fire_bar": 1265,
+    "fire_date": "15-09-2026",
+    "entry_close": 7.51
   },
   {
     "stock": "BALAMINES",
     "signal": "REV",
-    "fire_bar": 1264,
-    "fire_date": "11-09-2026",
-    "entry_close": 2260.0
-  },
-  {
-    "stock": "BALAMINES",
-    "signal": "REBOUND",
-    "fire_bar": 1264,
-    "fire_date": "11-09-2026",
-    "entry_close": 2260.0
+    "fire_bar": 1265,
+    "fire_date": "15-09-2026",
+    "entry_close": 2221.0
   },
   {
     "stock": "BALUFORGE",
     "signal": "REV",
-    "fire_bar": 592,
-    "fire_date": "11-09-2026",
-    "entry_close": 523.4
+    "fire_bar": 593,
+    "fire_date": "15-09-2026",
+    "entry_close": 512.15
   },
   {
-    "stock": "CMSINFO",
-    "signal": "REV",
-    "fire_bar": 1164,
-    "fire_date": "11-09-2026",
-    "entry_close": 224.09
-  },
-  {
-    "stock": "HAPPSTMNDS",
-    "signal": "REV",
-    "fire_bar": 1264,
-    "fire_date": "11-09-2026",
-    "entry_close": 331.25
-  },
-  {
-    "stock": "HCC",
+    "stock": "INOXINDIA",
     "signal": "REBOUND",
-    "fire_bar": 1264,
-    "fire_date": "11-09-2026",
-    "entry_close": 22.08
-  },
-  {
-    "stock": "INDIGOPNTS",
-    "signal": "REV",
-    "fire_bar": 1264,
-    "fire_date": "11-09-2026",
-    "entry_close": 1071.8
-  },
-  {
-    "stock": "JSFB",
-    "signal": "REV",
-    "fire_bar": 640,
-    "fire_date": "11-09-2026",
-    "entry_close": 496.25
+    "fire_bar": 676,
+    "fire_date": "15-09-2026",
+    "entry_close": 2128.0
   },
   {
     "stock": "MTARTECH",
     "signal": "REBOUND",
-    "fire_bar": 1264,
-    "fire_date": "11-09-2026",
-    "entry_close": 7179.5
+    "fire_bar": 1265,
+    "fire_date": "15-09-2026",
+    "entry_close": 6960.0
   },
   {
-    "stock": "MASTEK",
+    "stock": "PNCINFRA",
     "signal": "REV",
-    "fire_bar": 1264,
-    "fire_date": "11-09-2026",
-    "entry_close": 1603.4
+    "fire_bar": 1265,
+    "fire_date": "15-09-2026",
+    "entry_close": 144.76
+  },
+  {
+    "stock": "PNCINFRA",
+    "signal": "REBOUND",
+    "fire_bar": 1265,
+    "fire_date": "15-09-2026",
+    "entry_close": 144.76
   },
   {
     "stock": "PGIL",
     "signal": "REV",
-    "fire_bar": 1263,
-    "fire_date": "11-09-2026",
-    "entry_close": 1165.5
+    "fire_bar": 1264,
+    "fire_date": "15-09-2026",
+    "entry_close": 1146.6
   },
   {
     "stock": "PGIL",
     "signal": "REBOUND",
-    "fire_bar": 1263,
-    "fire_date": "11-09-2026",
-    "entry_close": 1165.5
-  },
-  {
-    "stock": "JAIBALAJI",
-    "signal": "REV",
     "fire_bar": 1264,
-    "fire_date": "11-09-2026",
-    "entry_close": 64.4
+    "fire_date": "15-09-2026",
+    "entry_close": 1146.6
   }
 ]
