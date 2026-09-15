@@ -68,5 +68,75 @@
     "fire_bar": 1264,
     "fire_date": "15-09-2026",
     "entry_close": 1146.6
+  },
+  {
+    "stock": "ACI",
+    "signal": "REV",
+    "fire_bar": 945,
+    "fire_date": "15-09-2026",
+    "entry_close": 456.3
+  },
+  {
+    "stock": "BALAMINES",
+    "signal": "REBOUND",
+    "fire_bar": 1265,
+    "fire_date": "15-09-2026",
+    "entry_close": 2166.3
+  },
+  {
+    "stock": "DATAMATICS",
+    "signal": "REBOUND",
+    "fire_bar": 1265,
+    "fire_date": "15-09-2026",
+    "entry_close": 782.8
+  },
+  {
+    "stock": "ELECTCAST",
+    "signal": "REV",
+    "fire_bar": 1265,
+    "fire_date": "15-09-2026",
+    "entry_close": 75.22
+  },
+  {
+    "stock": "INDIGOPNTS",
+    "signal": "REV",
+    "fire_bar": 1265,
+    "fire_date": "15-09-2026",
+    "entry_close": 1052.6
+  },
+  {
+    "stock": "JAIBALAJI",
+    "signal": "REV",
+    "fire_bar": 1265,
+    "fire_date": "15-09-2026",
+    "entry_close": 63.78
+  },
+  {
+    "stock": "MIDHANI",
+    "signal": "REBOUND",
+    "fire_bar": 1265,
+    "fire_date": "15-09-2026",
+    "entry_close": 413.05
+  },
+  {
+    "stock": "QPOWER",
+    "signal": "REBOUND",
+    "fire_bar": 386,
+    "fire_date": "15-09-2026",
+    "entry_close": 1367.0
+  },
+  {
+    "stock": "SANDUMA",
+    "signal": "REV",
+    "fire_bar": 747,
+    "fire_date": "15-09-2026",
+    "entry_close": 183.48
+  },
+  {
+    "stock": "ANUP",
+    "signal": "REV",
+    "fire_bar": 1264,
+    "fire_date": "15-09-2026",
+    "entry_close": 1634.5
   }
 ]

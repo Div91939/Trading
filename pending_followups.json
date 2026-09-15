@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "stock": "PARAS",
+    "signal": "REV",
+    "fire_bar": 1221,
+    "fire_date": "15-09-2026",
+    "entry_close": 1357.5
+  }
+]
