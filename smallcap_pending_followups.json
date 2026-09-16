@@ -509,5 +509,19 @@
     "fire_bar": 1266,
     "fire_date": "16-09-2026",
     "entry_close": 73.71
+  },
+  {
+    "stock": "ARVINDFASN",
+    "signal": "REV",
+    "fire_bar": 1266,
+    "fire_date": "16-09-2026",
+    "entry_close": 416.35
+  },
+  {
+    "stock": "RELAXO",
+    "signal": "REV",
+    "fire_bar": 1265,
+    "fire_date": "16-09-2026",
+    "entry_close": 311.4
   }
 ]
