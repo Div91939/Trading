@@ -474,5 +474,40 @@
     "fire_bar": 1266,
     "fire_date": "16-09-2026",
     "entry_close": 240.0
+  },
+  {
+    "stock": "HCC",
+    "signal": "REBOUND",
+    "fire_bar": 1266,
+    "fire_date": "16-09-2026",
+    "entry_close": 20.99
+  },
+  {
+    "stock": "RAIN",
+    "signal": "REBOUND",
+    "fire_bar": 1266,
+    "fire_date": "16-09-2026",
+    "entry_close": 199.26
+  },
+  {
+    "stock": "THANGAMAYL",
+    "signal": "REBOUND",
+    "fire_bar": 1266,
+    "fire_date": "16-09-2026",
+    "entry_close": 4909.5
+  },
+  {
+    "stock": "WABAG",
+    "signal": "REBOUND",
+    "fire_bar": 1266,
+    "fire_date": "16-09-2026",
+    "entry_close": 2041.7
+  },
+  {
+    "stock": "WEBELSOLAR",
+    "signal": "REBOUND",
+    "fire_bar": 1266,
+    "fire_date": "16-09-2026",
+    "entry_close": 73.71
   }
 ]
