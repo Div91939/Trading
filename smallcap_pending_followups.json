@@ -103,5 +103,26 @@
     "fire_bar": 1267,
     "fire_date": "17-09-2026",
     "entry_close": 848.0
+  },
+  {
+    "stock": "AVALON",
+    "signal": "REBOUND",
+    "fire_bar": 848,
+    "fire_date": "17-09-2026",
+    "entry_close": 2247.2
+  },
+  {
+    "stock": "ENTERO",
+    "signal": "REV",
+    "fire_bar": 640,
+    "fire_date": "17-09-2026",
+    "entry_close": 1675.1
+  },
+  {
+    "stock": "INOXINDIA",
+    "signal": "REV",
+    "fire_bar": 678,
+    "fire_date": "17-09-2026",
+    "entry_close": 2001.6
   }
 ]
