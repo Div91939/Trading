@@ -124,5 +124,26 @@
     "fire_bar": 678,
     "fire_date": "17-09-2026",
     "entry_close": 2001.6
+  },
+  {
+    "stock": "AWFIS",
+    "signal": "REBOUND",
+    "fire_bar": 574,
+    "fire_date": "17-09-2026",
+    "entry_close": 264.7
+  },
+  {
+    "stock": "ICIL",
+    "signal": "REBOUND",
+    "fire_bar": 1267,
+    "fire_date": "17-09-2026",
+    "entry_close": 435.5
+  },
+  {
+    "stock": "TI",
+    "signal": "MOM",
+    "fire_bar": 1267,
+    "fire_date": "17-09-2026",
+    "entry_close": 543.85
   }
 ]
