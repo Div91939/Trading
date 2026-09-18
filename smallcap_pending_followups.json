@@ -138,5 +138,40 @@
     "fire_bar": 772,
     "fire_date": "18-09-2026",
     "entry_close": 1147.0
+  },
+  {
+    "stock": "AWFIS",
+    "signal": "REBOUND",
+    "fire_bar": 575,
+    "fire_date": "18-09-2026",
+    "entry_close": 269.6
+  },
+  {
+    "stock": "KIRLPNU",
+    "signal": "REBOUND",
+    "fire_bar": 842,
+    "fire_date": "18-09-2026",
+    "entry_close": 693.45
+  },
+  {
+    "stock": "MSTCLTD",
+    "signal": "REBOUND",
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 704.0
+  },
+  {
+    "stock": "RELAXO",
+    "signal": "REBOUND",
+    "fire_bar": 1267,
+    "fire_date": "18-09-2026",
+    "entry_close": 293.8
+  },
+  {
+    "stock": "SHILPAMED",
+    "signal": "MOM",
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 1010.9
   }
 ]
