@@ -173,5 +173,75 @@
     "fire_bar": 1268,
     "fire_date": "18-09-2026",
     "entry_close": 1010.9
+  },
+  {
+    "stock": "APOLLO",
+    "signal": "REV",
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 370.7
+  },
+  {
+    "stock": "APOLLO",
+    "signal": "REBOUND",
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 370.7
+  },
+  {
+    "stock": "BLUESTONE",
+    "signal": "REBOUND",
+    "fire_bar": 270,
+    "fire_date": "18-09-2026",
+    "entry_close": 827.5
+  },
+  {
+    "stock": "CUPID",
+    "signal": "REBOUND",
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 265.0
+  },
+  {
+    "stock": "HGINFRA",
+    "signal": "REV",
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 442.45
+  },
+  {
+    "stock": "NEOGEN",
+    "signal": "MOM",
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 2488.4
+  },
+  {
+    "stock": "QPOWER",
+    "signal": "MOM",
+    "fire_bar": 389,
+    "fire_date": "18-09-2026",
+    "entry_close": 1536.1
+  },
+  {
+    "stock": "ROUTE",
+    "signal": "REBOUND",
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 464.4
+  },
+  {
+    "stock": "THANGAMAYL",
+    "signal": "REBOUND",
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 5044.5
+  },
+  {
+    "stock": "MANYAVAR",
+    "signal": "REBOUND",
+    "fire_bar": 1135,
+    "fire_date": "18-09-2026",
+    "entry_close": 544.25
   }
 ]
