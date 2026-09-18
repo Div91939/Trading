@@ -2,148 +2,141 @@
   {
     "stock": "ALOKINDS",
     "signal": "REBOUND",
-    "fire_bar": 1267,
-    "fire_date": "17-09-2026",
-    "entry_close": 7.36
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 7.03
   },
   {
     "stock": "BALAMINES",
     "signal": "REV",
-    "fire_bar": 1267,
-    "fire_date": "17-09-2026",
-    "entry_close": 2179.8
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 2173.3
   },
   {
     "stock": "BALAMINES",
     "signal": "REBOUND",
-    "fire_bar": 1267,
-    "fire_date": "17-09-2026",
-    "entry_close": 2179.8
-  },
-  {
-    "stock": "BALUFORGE",
-    "signal": "REV",
-    "fire_bar": 595,
-    "fire_date": "17-09-2026",
-    "entry_close": 492.05
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 2173.3
   },
   {
     "stock": "BORORENEW",
     "signal": "REV",
-    "fire_bar": 1267,
-    "fire_date": "17-09-2026",
-    "entry_close": 448.75
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 452.75
   },
   {
     "stock": "INOXINDIA",
     "signal": "REBOUND",
-    "fire_bar": 678,
-    "fire_date": "17-09-2026",
-    "entry_close": 2036.5
+    "fire_bar": 679,
+    "fire_date": "18-09-2026",
+    "entry_close": 2055.1
   },
   {
     "stock": "KRN",
     "signal": "REV",
-    "fire_bar": 488,
-    "fire_date": "17-09-2026",
-    "entry_close": 1420.4
+    "fire_bar": 489,
+    "fire_date": "18-09-2026",
+    "entry_close": 1415.0
   },
   {
     "stock": "KRN",
     "signal": "REBOUND",
-    "fire_bar": 488,
-    "fire_date": "17-09-2026",
-    "entry_close": 1420.4
+    "fire_bar": 489,
+    "fire_date": "18-09-2026",
+    "entry_close": 1415.0
   },
   {
-    "stock": "KIRLPNU",
-    "signal": "REBOUND",
-    "fire_bar": 841,
-    "fire_date": "17-09-2026",
-    "entry_close": 696.6
+    "stock": "LUMAXTECH",
+    "signal": "MOM",
+    "fire_bar": 1267,
+    "fire_date": "18-09-2026",
+    "entry_close": 2089.7
   },
   {
     "stock": "MTARTECH",
     "signal": "REBOUND",
-    "fire_bar": 1267,
-    "fire_date": "17-09-2026",
-    "entry_close": 6928.0
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 7035.5
+  },
+  {
+    "stock": "PCJEWELLER",
+    "signal": "REBOUND",
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 12.61
+  },
+  {
+    "stock": "PNCINFRA",
+    "signal": "REV",
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 139.62
   },
   {
     "stock": "PNCINFRA",
     "signal": "REBOUND",
-    "fire_bar": 1267,
-    "fire_date": "17-09-2026",
-    "entry_close": 136.37
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 139.62
   },
   {
     "stock": "PGIL",
     "signal": "REBOUND",
-    "fire_bar": 1266,
-    "fire_date": "17-09-2026",
-    "entry_close": 1111.0
+    "fire_bar": 1267,
+    "fire_date": "18-09-2026",
+    "entry_close": 1148.7
   },
   {
-    "stock": "QPOWER",
-    "signal": "MOM",
-    "fire_bar": 388,
-    "fire_date": "17-09-2026",
-    "entry_close": 1493.0
-  },
-  {
-    "stock": "SKIPPER",
+    "stock": "RELAXO",
     "signal": "REV",
-    "fire_bar": 1266,
-    "fire_date": "17-09-2026",
-    "entry_close": 521.7
+    "fire_bar": 1267,
+    "fire_date": "18-09-2026",
+    "entry_close": 301.7
+  },
+  {
+    "stock": "SHAREINDIA",
+    "signal": "MOM",
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 225.84
+  },
+  {
+    "stock": "RENUKA",
+    "signal": "REV",
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 22.43
   },
   {
     "stock": "STLTECH",
     "signal": "REBOUND",
-    "fire_bar": 1267,
-    "fire_date": "17-09-2026",
-    "entry_close": 848.0
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 819.95
   },
   {
-    "stock": "AVALON",
-    "signal": "REBOUND",
-    "fire_bar": 848,
-    "fire_date": "17-09-2026",
-    "entry_close": 2247.2
-  },
-  {
-    "stock": "ENTERO",
-    "signal": "REV",
-    "fire_bar": 640,
-    "fire_date": "17-09-2026",
-    "entry_close": 1675.1
-  },
-  {
-    "stock": "INOXINDIA",
-    "signal": "REV",
-    "fire_bar": 678,
-    "fire_date": "17-09-2026",
-    "entry_close": 2001.6
-  },
-  {
-    "stock": "AWFIS",
-    "signal": "REBOUND",
-    "fire_bar": 574,
-    "fire_date": "17-09-2026",
-    "entry_close": 264.7
-  },
-  {
-    "stock": "ICIL",
-    "signal": "REBOUND",
-    "fire_bar": 1267,
-    "fire_date": "17-09-2026",
-    "entry_close": 435.5
+    "stock": "TVSSCS",
+    "signal": "MOM",
+    "fire_bar": 760,
+    "fire_date": "18-09-2026",
+    "entry_close": 134.12
   },
   {
     "stock": "TI",
     "signal": "MOM",
-    "fire_bar": 1267,
-    "fire_date": "17-09-2026",
-    "entry_close": 543.85
+    "fire_bar": 1268,
+    "fire_date": "18-09-2026",
+    "entry_close": 566.45
+  },
+  {
+    "stock": "YATHARTH",
+    "signal": "MOM",
+    "fire_bar": 772,
+    "fire_date": "18-09-2026",
+    "entry_close": 1147.0
   }
 ]
