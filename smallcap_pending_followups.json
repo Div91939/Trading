@@ -110,5 +110,47 @@
     "fire_bar": 1269,
     "fire_date": "21-09-2026",
     "entry_close": 811.0
+  },
+  {
+    "stock": "GMMPFAUDLR",
+    "signal": "MOM",
+    "fire_bar": 1268,
+    "fire_date": "21-09-2026",
+    "entry_close": 1515.5
+  },
+  {
+    "stock": "GOKEX",
+    "signal": "REV",
+    "fire_bar": 1269,
+    "fire_date": "21-09-2026",
+    "entry_close": 702.6
+  },
+  {
+    "stock": "KRN",
+    "signal": "REBOUND",
+    "fire_bar": 490,
+    "fire_date": "21-09-2026",
+    "entry_close": 1414.0
+  },
+  {
+    "stock": "MIDHANI",
+    "signal": "REBOUND",
+    "fire_bar": 1269,
+    "fire_date": "21-09-2026",
+    "entry_close": 423.35
+  },
+  {
+    "stock": "SHILPAMED",
+    "signal": "MOM",
+    "fire_bar": 1269,
+    "fire_date": "21-09-2026",
+    "entry_close": 1061.5
+  },
+  {
+    "stock": "THANGAMAYL",
+    "signal": "REBOUND",
+    "fire_bar": 1269,
+    "fire_date": "21-09-2026",
+    "entry_close": 4920.0
   }
 ]

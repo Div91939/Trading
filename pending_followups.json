@@ -5,5 +5,12 @@
     "fire_bar": 690,
     "fire_date": "21-09-2026",
     "entry_close": 712.8
+  },
+  {
+    "stock": "BSE",
+    "signal": "REV",
+    "fire_bar": 1282,
+    "fire_date": "21-09-2026",
+    "entry_close": 3154.4
   }
 ]
