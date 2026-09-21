@@ -1,16 +1,9 @@
 [
   {
-    "stock": "SWITCHTE",
-    "signal": "MOM",
-    "fire_bar": 1277,
-    "fire_date": "18-09-2026",
-    "entry_close": 134.25
-  },
-  {
     "stock": "TATATECH",
     "signal": "REV",
-    "fire_bar": 689,
-    "fire_date": "18-09-2026",
-    "entry_close": 739.25
+    "fire_bar": 690,
+    "fire_date": "21-09-2026",
+    "entry_close": 712.8
   }
 ]
