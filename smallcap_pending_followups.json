@@ -152,5 +152,26 @@
     "fire_bar": 1269,
     "fire_date": "21-09-2026",
     "entry_close": 4920.0
+  },
+  {
+    "stock": "ENTERO",
+    "signal": "MOM",
+    "fire_bar": 642,
+    "fire_date": "21-09-2026",
+    "entry_close": 1795.0
+  },
+  {
+    "stock": "NEOGEN",
+    "signal": "REBOUND",
+    "fire_bar": 1269,
+    "fire_date": "21-09-2026",
+    "entry_close": 2359.8
+  },
+  {
+    "stock": "PNCINFRA",
+    "signal": "REV",
+    "fire_bar": 1269,
+    "fire_date": "21-09-2026",
+    "entry_close": 140.74
   }
 ]
