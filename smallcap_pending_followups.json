@@ -68,5 +68,26 @@
     "fire_bar": 1137,
     "fire_date": "22-09-2026",
     "entry_close": 526.9
+  },
+  {
+    "stock": "APOLLO",
+    "signal": "MOM",
+    "fire_bar": 1270,
+    "fire_date": "22-09-2026",
+    "entry_close": 410.4
+  },
+  {
+    "stock": "CUPID",
+    "signal": "REV",
+    "fire_bar": 1270,
+    "fire_date": "22-09-2026",
+    "entry_close": 256.0
+  },
+  {
+    "stock": "KRN",
+    "signal": "REV",
+    "fire_bar": 491,
+    "fire_date": "22-09-2026",
+    "entry_close": 1412.0
   }
 ]

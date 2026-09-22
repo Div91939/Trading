@@ -12,5 +12,12 @@
     "fire_bar": 691,
     "fire_date": "22-09-2026",
     "entry_close": 724.45
+  },
+  {
+    "stock": "RAPICUT",
+    "signal": "REV",
+    "fire_bar": 1279,
+    "fire_date": "22-09-2026",
+    "entry_close": 291.05
   }
 ]
