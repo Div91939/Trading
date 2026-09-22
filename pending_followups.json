@@ -1,16 +1,16 @@
 [
   {
-    "stock": "TATATECH",
-    "signal": "REV",
-    "fire_bar": 690,
-    "fire_date": "21-09-2026",
-    "entry_close": 712.8
+    "stock": "SRMENERGY",
+    "signal": "MOM",
+    "fire_bar": 1275,
+    "fire_date": "22-09-2026",
+    "entry_close": 29.43
   },
   {
-    "stock": "BSE",
+    "stock": "TATATECH",
     "signal": "REV",
-    "fire_bar": 1282,
-    "fire_date": "21-09-2026",
-    "entry_close": 3154.4
+    "fire_bar": 691,
+    "fire_date": "22-09-2026",
+    "entry_close": 724.45
   }
 ]
