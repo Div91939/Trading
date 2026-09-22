@@ -89,5 +89,19 @@
     "fire_bar": 491,
     "fire_date": "22-09-2026",
     "entry_close": 1412.0
+  },
+  {
+    "stock": "ELLEN",
+    "signal": "REBOUND",
+    "fire_bar": 306,
+    "fire_date": "22-09-2026",
+    "entry_close": 357.1
+  },
+  {
+    "stock": "SMLMAH",
+    "signal": "MOM",
+    "fire_bar": 1270,
+    "fire_date": "22-09-2026",
+    "entry_close": 6719.5
   }
 ]
