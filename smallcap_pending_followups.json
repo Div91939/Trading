@@ -68,5 +68,33 @@
     "fire_bar": 1271,
     "fire_date": "23-09-2026",
     "entry_close": 842.75
+  },
+  {
+    "stock": "BLUESTONE",
+    "signal": "REBOUND",
+    "fire_bar": 273,
+    "fire_date": "23-09-2026",
+    "entry_close": 848.95
+  },
+  {
+    "stock": "CUPID",
+    "signal": "MOM",
+    "fire_bar": 1271,
+    "fire_date": "23-09-2026",
+    "entry_close": 267.55
+  },
+  {
+    "stock": "ICIL",
+    "signal": "MOM",
+    "fire_bar": 1271,
+    "fire_date": "23-09-2026",
+    "entry_close": 472.55
+  },
+  {
+    "stock": "KTKBANK",
+    "signal": "MOM",
+    "fire_bar": 1271,
+    "fire_date": "23-09-2026",
+    "entry_close": 342.55
   }
 ]
