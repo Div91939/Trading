@@ -1,23 +1,9 @@
 [
   {
-    "stock": "SRMENERGY",
-    "signal": "MOM",
-    "fire_bar": 1275,
-    "fire_date": "22-09-2026",
-    "entry_close": 29.43
-  },
-  {
-    "stock": "TATATECH",
-    "signal": "REV",
-    "fire_bar": 691,
-    "fire_date": "22-09-2026",
-    "entry_close": 724.45
-  },
-  {
     "stock": "RAPICUT",
     "signal": "REV",
-    "fire_bar": 1279,
-    "fire_date": "22-09-2026",
-    "entry_close": 291.05
+    "fire_bar": 1280,
+    "fire_date": "23-09-2026",
+    "entry_close": 289.0
   }
 ]
