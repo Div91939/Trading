@@ -96,5 +96,12 @@
     "fire_bar": 1271,
     "fire_date": "23-09-2026",
     "entry_close": 342.55
+  },
+  {
+    "stock": "STLTECH",
+    "signal": "MOM",
+    "fire_bar": 1271,
+    "fire_date": "23-09-2026",
+    "entry_close": 867.1
   }
 ]
