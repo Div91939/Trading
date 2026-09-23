@@ -55,6 +55,11 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.mime.image import MIMEImage
 
+# A/B/C confidence grading for REV (and optionally REBOUND). Shared with
+# Smallcap.py so the two scanners cannot drift apart. See grading.py for the
+# factor list, the walk-forward evidence and the refit instructions.
+import grading
+
 # ─────────────────────────────────────────────────────────────────────────────
 # CONFIG
 # ─────────────────────────────────────────────────────────────────────────────
@@ -978,7 +983,7 @@ def process_followups(pending, resolved, stock_name, cfg, ind, i, meta, regime):
                 still_holds = check_rebound(ind, i)[0]
                 fire_kwargs = dict(rebound_fires=[e["fire_bar"]])
             png = build_plot(ind, meta["company"], meta["ticker"], meta["date"],
-                             regime, lookback=40, **fire_kwargs)
+                             regime, lookback=120, **fire_kwargs)
             body = (
                 f"{stock_name} ({meta['ticker']})\n"
                 f"Signal        : {sig}\n"
@@ -1035,6 +1040,21 @@ def main():
     report_sections  = []
     plot_attachments = []
 
+    # ── Market/sector context for grading ─────────────────────────────────
+    # Built from the Smallcap folder: that is the backdrop the grade was
+    # fitted against, for both universes. Combined has no sector index of
+    # its own, so its sector factor falls back to the market.
+    # Fetched BEFORE the per-stock loop so every stock is graded against the
+    # same, fully-updated market state.
+    try:
+        MKT_CTX = grading.build_market_context()
+        print(f"market context: {'built' if MKT_CTX else 'UNAVAILABLE — grading disabled today'}")
+    except Exception as e:
+        MKT_CTX = None
+        print(f"market context failed ({e}) — grading disabled today")
+
+    graded_dropped = []
+
     for stock_name, cfg in STOCKS.items():
         print(f"\n── {stock_name} ──────────────────────────────────────")
 
@@ -1075,9 +1095,27 @@ def main():
         # ── REV ──────────────────────────────────────────────────────────
         rev_fired = False
         rev_w_ret = None
+        rev_grade = rev_score = None
         if signals_to_run in ("REV", "BOTH"):
             rev_fired = check_rev(ind, i, cfg)
             rev_w_ret = rev_window_return(ind, i, cfg["RevWindow"])
+            # ── A/B/C grading; C fires are suppressed when GRADE_DROP_C is
+            # set. Walk-forward on this universe: top third beat bottom third
+            # in 2 of 3 years (+5.66pp), on only ~420 trades — weaker evidence
+            # than Smallcap REV, so treat with more caution.
+            if rev_fired:
+                # one of the grading factors is how this stock's PAST REV
+                # fires performed versus its own drift, so the full fire
+                # history for this stock is needed
+                rev_hist_mask = np.array([check_rev(ind, k, cfg)
+                                          for k in range(len(ind["close"]))])
+                rev_grade, rev_score, _ = grading.grade(
+                    "Combined", "REV", ind, i,
+                    pd.to_datetime(meta["date"], format="%d-%m-%Y"), MKT_CTX,
+                    rev_hist_mask)
+                if rev_grade is not None and not grading.should_alert(rev_grade):
+                    graded_dropped.append(f"{stock_name} REV({rev_grade})")
+                    rev_fired = False
 
         # ── MOM — no cooloff; fires on every bar the condition is true ─────
         mom_fired = False
@@ -1090,6 +1128,17 @@ def main():
         # is flipped. No cooloff — fires on every bar the score clears the
         # threshold. ─────────────────────────────────────────────────────
         rebound_fired, rebound_p = check_rebound(ind, i)
+        rebound_grade = rebound_score = None
+        if rebound_fired:
+            rb_hist_mask = np.array([check_rebound(ind, k)[0]
+                                     for k in range(len(ind["close"]))])
+            rebound_grade, rebound_score, _ = grading.grade(
+                "Combined", "REBOUND", ind, i,
+                pd.to_datetime(meta["date"], format="%d-%m-%Y"), MKT_CTX,
+                rb_hist_mask)
+            if rebound_grade is not None and not grading.should_alert(rebound_grade):
+                graded_dropped.append(f"{stock_name} REBOUND({rebound_grade})")
+                rebound_fired = False
 
         # ── Print daily status ────────────────────────────────────────────
         print(f"  Regime    : {regime}   (informational — REV/MOM do not gate on this)")
@@ -1129,30 +1178,22 @@ def main():
         # ── Build email section ───────────────────────────────────────────
         kinds = [k for k, on in (("REV", rev_fired), ("MOM", mom_fired),
                                  ("REBOUND", rebound_fired)) if on]
+        # ── Alert body: deliberately four fields only. Everything else was
+        # noise to read every morning; the diagnostics live in the chart.
+        strength = "-"
+        if rev_fired and rev_grade:
+            strength = rev_grade
+        elif rebound_fired and rebound_grade:
+            strength = rebound_grade
+        ret5_pct = ((ind["close"][i] / ind["close"][i - 5] - 1) * 100
+                    if i >= 5 and ind["close"][i - 5] > 0 else float("nan"))
         lines = [
-            f"\n{'='*60}",
-            f"{meta['company']} ({meta['ticker']})  —  {meta['date']}",
-            f"{'='*60}",
-            f"Signals  : {', '.join(kinds)}",
-            f"Regime   : {regime}  (informational only)",
-            f"Close    : {ind['close'][i]:.2f}",
-            f"Vol ratio: {ind['vol_ratio'][i]:.2f}x   ADX: {ind['adx'][i]:.1f}   DI+: {ind['di_plus'][i]:.1f}  DI-: {ind['di_minus'][i]:.1f}",
-            f"MA50 slope (20d): {ind['ma50_slope'][i]:.2f}%",
+            f"\n{stock_name} ({meta['ticker']})",
+            f"  Signal    : {', '.join(kinds)}",
+            f"  Strength  : {strength}",
+            f"  1d change : {ind['ret1'][i]:+.2f}%",
+            f"  5d change : {ret5_pct:+.2f}%",
         ]
-        if rebound_fired:
-            lines.append(
-                f"REBOUND prob: {rebound_p:.3f}  (threshold {REBOUND_THRESHOLD:.3f})   "
-                f"dd_20d: {ind['dd_20d'][i]:+.2f}%   [fitted score, gated on this "
-                f"universe -- see REBOUND_ENABLED in the constants block]"
-            )
-        if mom_fired:
-            lines.append(
-                f"MOM: 2-day streak {ind['ret1'][i-1]:+.2f}% / {ind['ret1'][i]:+.2f}%   "
-                f"% of 250d high: {ind['pct_of_250high'][i]:.1f}%   "
-                f"ATR: {ind['atr_pct'][i]:.2f}%   day-2 gap: {ind['gap'][i]:+.2f}%   "
-                f"[manual exit -- see MOM in SIGNAL_DESCRIPTIONS]"
-            )
-
         for sig_name in kinds:
             log_key = f"{stock_name}_{sig_name}"
             log[log_key] = today_label
@@ -1198,6 +1239,11 @@ def main():
     subject  = f"[Signal Scanner] {n_stocks} stock(s) — {today_label}"
     body = (
         f"DAILY SIGNAL SCAN  —  {today_label}\n"
+        f"Grading  : REV {'ON' if grading.GRADE_REV else 'off'}, "
+        f"REBOUND {'ON' if grading.GRADE_REBOUND else 'off'}, "
+        f"drop-C {'ON' if grading.GRADE_DROP_C else 'off'}"
+        + (f"  |  suppressed {len(graded_dropped)} C-grade fire(s): {', '.join(graded_dropped)}"
+           if graded_dropped else "  |  none suppressed") + "\n"
         f"Strategy: REV (mean reversion) + MOM (2-day momentum streak, manual exit)\n"
         f"REV hold: 30 days, 25% stop. MOM exit: see SIGNAL_DESCRIPTIONS.\n"
         f"Stocks scanned: {len(STOCKS)}\n"
