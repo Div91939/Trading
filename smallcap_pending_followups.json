@@ -1,107 +1,51 @@
 [
   {
-    "stock": "AXISCADES",
-    "signal": "MOM",
-    "fire_bar": 1271,
-    "fire_date": "23-09-2026",
-    "entry_close": 1964.8
-  },
-  {
-    "stock": "AARTIPHARM",
-    "signal": "MOM",
-    "fire_bar": 903,
-    "fire_date": "23-09-2026",
-    "entry_close": 937.7
-  },
-  {
-    "stock": "ALOKINDS",
+    "stock": "BLUESTONE",
     "signal": "REBOUND",
-    "fire_bar": 1271,
-    "fire_date": "23-09-2026",
-    "entry_close": 7.46
+    "fire_bar": 274,
+    "fire_date": "24-09-2026",
+    "entry_close": 825.5
   },
   {
     "stock": "CUPID",
     "signal": "REBOUND",
-    "fire_bar": 1271,
-    "fire_date": "23-09-2026",
-    "entry_close": 258.55
-  },
-  {
-    "stock": "MTARTECH",
-    "signal": "REBOUND",
-    "fire_bar": 1271,
-    "fire_date": "23-09-2026",
-    "entry_close": 7240.0
-  },
-  {
-    "stock": "OPTIEMUS",
-    "signal": "MOM",
-    "fire_bar": 1270,
-    "fire_date": "23-09-2026",
-    "entry_close": 798.4
-  },
-  {
-    "stock": "PCJEWELLER",
-    "signal": "MOM",
-    "fire_bar": 1271,
-    "fire_date": "23-09-2026",
-    "entry_close": 14.71
+    "fire_bar": 1272,
+    "fire_date": "24-09-2026",
+    "entry_close": 267.0
   },
   {
     "stock": "PNCINFRA",
     "signal": "REBOUND",
-    "fire_bar": 1271,
-    "fire_date": "23-09-2026",
-    "entry_close": 139.39
+    "fire_bar": 1272,
+    "fire_date": "24-09-2026",
+    "entry_close": 138.0
   },
   {
     "stock": "PGIL",
     "signal": "REBOUND",
-    "fire_bar": 1270,
-    "fire_date": "23-09-2026",
-    "entry_close": 1214.8
+    "fire_bar": 1271,
+    "fire_date": "24-09-2026",
+    "entry_close": 1307.8
+  },
+  {
+    "stock": "SHAREINDIA",
+    "signal": "REBOUND",
+    "fire_bar": 1272,
+    "fire_date": "24-09-2026",
+    "entry_close": 209.97
+  },
+  {
+    "stock": "SOUTHBANK",
+    "signal": "MOM",
+    "fire_bar": 1272,
+    "fire_date": "24-09-2026",
+    "entry_close": 48.78
   },
   {
     "stock": "STLTECH",
     "signal": "REBOUND",
-    "fire_bar": 1271,
-    "fire_date": "23-09-2026",
-    "entry_close": 842.75
-  },
-  {
-    "stock": "BLUESTONE",
-    "signal": "REBOUND",
-    "fire_bar": 273,
-    "fire_date": "23-09-2026",
-    "entry_close": 848.95
-  },
-  {
-    "stock": "CUPID",
-    "signal": "MOM",
-    "fire_bar": 1271,
-    "fire_date": "23-09-2026",
-    "entry_close": 267.55
-  },
-  {
-    "stock": "ICIL",
-    "signal": "MOM",
-    "fire_bar": 1271,
-    "fire_date": "23-09-2026",
-    "entry_close": 472.55
-  },
-  {
-    "stock": "KTKBANK",
-    "signal": "MOM",
-    "fire_bar": 1271,
-    "fire_date": "23-09-2026",
-    "entry_close": 342.55
-  },
-  {
-    "stock": "STLTECH",
-    "signal": "MOM",
-    "fire_bar": 1271,
-    "fire_date": "23-09-2026",
-    "entry_close": 867.1
+    "fire_bar": 1272,
+    "fire_date": "24-09-2026",
+    "entry_close": 844.45
   }
 ]
