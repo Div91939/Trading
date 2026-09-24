@@ -54,5 +54,47 @@
     "fire_bar": 1272,
     "fire_date": "24-09-2026",
     "entry_close": 2361.3
+  },
+  {
+    "stock": "AVALON",
+    "signal": "REBOUND",
+    "fire_bar": 853,
+    "fire_date": "24-09-2026",
+    "entry_close": 2316.1
+  },
+  {
+    "stock": "ELLEN",
+    "signal": "REBOUND",
+    "fire_bar": 308,
+    "fire_date": "24-09-2026",
+    "entry_close": 357.7
+  },
+  {
+    "stock": "HGINFRA",
+    "signal": "REBOUND",
+    "fire_bar": 1272,
+    "fire_date": "24-09-2026",
+    "entry_close": 468.05
+  },
+  {
+    "stock": "IONEXCHANG",
+    "signal": "REBOUND",
+    "fire_bar": 1135,
+    "fire_date": "24-09-2026",
+    "entry_close": 420.55
+  },
+  {
+    "stock": "MTARTECH",
+    "signal": "REBOUND",
+    "fire_bar": 1272,
+    "fire_date": "24-09-2026",
+    "entry_close": 7050.0
+  },
+  {
+    "stock": "OPTIEMUS",
+    "signal": "REBOUND",
+    "fire_bar": 1271,
+    "fire_date": "24-09-2026",
+    "entry_close": 781.5
   }
 ]
