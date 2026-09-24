@@ -47,5 +47,12 @@
     "fire_bar": 1272,
     "fire_date": "24-09-2026",
     "entry_close": 844.45
+  },
+  {
+    "stock": "NEOGEN",
+    "signal": "REBOUND",
+    "fire_bar": 1272,
+    "fire_date": "24-09-2026",
+    "entry_close": 2361.3
   }
 ]
