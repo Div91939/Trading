@@ -75,5 +75,12 @@
     "fire_bar": 1078,
     "fire_date": "25-09-2026",
     "entry_close": 3116.6
+  },
+  {
+    "stock": "EQUITASBNK",
+    "signal": "REV",
+    "fire_bar": 1273,
+    "fire_date": "25-09-2026",
+    "entry_close": 66.53
   }
 ]
