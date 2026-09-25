@@ -61,5 +61,19 @@
     "fire_bar": 1273,
     "fire_date": "25-09-2026",
     "entry_close": 841.0
+  },
+  {
+    "stock": "CUPID",
+    "signal": "REBOUND",
+    "fire_bar": 1273,
+    "fire_date": "25-09-2026",
+    "entry_close": 270.1
+  },
+  {
+    "stock": "PRUDENT",
+    "signal": "REV",
+    "fire_bar": 1078,
+    "fire_date": "25-09-2026",
+    "entry_close": 3116.6
   }
 ]
