@@ -2,99 +2,64 @@
   {
     "stock": "BLUESTONE",
     "signal": "REBOUND",
-    "fire_bar": 274,
-    "fire_date": "24-09-2026",
-    "entry_close": 825.5
-  },
-  {
-    "stock": "CUPID",
-    "signal": "REBOUND",
-    "fire_bar": 1272,
-    "fire_date": "24-09-2026",
-    "entry_close": 267.0
-  },
-  {
-    "stock": "PNCINFRA",
-    "signal": "REBOUND",
-    "fire_bar": 1272,
-    "fire_date": "24-09-2026",
-    "entry_close": 138.0
-  },
-  {
-    "stock": "PGIL",
-    "signal": "REBOUND",
-    "fire_bar": 1271,
-    "fire_date": "24-09-2026",
-    "entry_close": 1307.8
-  },
-  {
-    "stock": "SHAREINDIA",
-    "signal": "REBOUND",
-    "fire_bar": 1272,
-    "fire_date": "24-09-2026",
-    "entry_close": 209.97
-  },
-  {
-    "stock": "SOUTHBANK",
-    "signal": "MOM",
-    "fire_bar": 1272,
-    "fire_date": "24-09-2026",
-    "entry_close": 48.78
-  },
-  {
-    "stock": "STLTECH",
-    "signal": "REBOUND",
-    "fire_bar": 1272,
-    "fire_date": "24-09-2026",
-    "entry_close": 844.45
-  },
-  {
-    "stock": "NEOGEN",
-    "signal": "REBOUND",
-    "fire_bar": 1272,
-    "fire_date": "24-09-2026",
-    "entry_close": 2361.3
-  },
-  {
-    "stock": "AVALON",
-    "signal": "REBOUND",
-    "fire_bar": 853,
-    "fire_date": "24-09-2026",
-    "entry_close": 2316.1
+    "fire_bar": 275,
+    "fire_date": "25-09-2026",
+    "entry_close": 797.3
   },
   {
     "stock": "ELLEN",
     "signal": "REBOUND",
-    "fire_bar": 308,
-    "fire_date": "24-09-2026",
-    "entry_close": 357.7
-  },
-  {
-    "stock": "HGINFRA",
-    "signal": "REBOUND",
-    "fire_bar": 1272,
-    "fire_date": "24-09-2026",
-    "entry_close": 468.05
-  },
-  {
-    "stock": "IONEXCHANG",
-    "signal": "REBOUND",
-    "fire_bar": 1135,
-    "fire_date": "24-09-2026",
-    "entry_close": 420.55
+    "fire_bar": 309,
+    "fire_date": "25-09-2026",
+    "entry_close": 356.2
   },
   {
     "stock": "MTARTECH",
     "signal": "REBOUND",
-    "fire_bar": 1272,
-    "fire_date": "24-09-2026",
-    "entry_close": 7050.0
+    "fire_bar": 1273,
+    "fire_date": "25-09-2026",
+    "entry_close": 6992.0
+  },
+  {
+    "stock": "NEOGEN",
+    "signal": "REBOUND",
+    "fire_bar": 1273,
+    "fire_date": "25-09-2026",
+    "entry_close": 2340.6
   },
   {
     "stock": "OPTIEMUS",
     "signal": "REBOUND",
-    "fire_bar": 1271,
-    "fire_date": "24-09-2026",
-    "entry_close": 781.5
+    "fire_bar": 1272,
+    "fire_date": "25-09-2026",
+    "entry_close": 767.15
+  },
+  {
+    "stock": "PNCINFRA",
+    "signal": "REBOUND",
+    "fire_bar": 1273,
+    "fire_date": "25-09-2026",
+    "entry_close": 135.95
+  },
+  {
+    "stock": "PGIL",
+    "signal": "REBOUND",
+    "fire_bar": 1272,
+    "fire_date": "25-09-2026",
+    "entry_close": 1353.2
+  },
+  {
+    "stock": "SHAREINDIA",
+    "signal": "REBOUND",
+    "fire_bar": 1273,
+    "fire_date": "25-09-2026",
+    "entry_close": 208.52
+  },
+  {
+    "stock": "STLTECH",
+    "signal": "REBOUND",
+    "fire_bar": 1273,
+    "fire_date": "25-09-2026",
+    "entry_close": 841.0
   }
 ]
