@@ -1,86 +1,65 @@
 [
   {
+    "stock": "AWFIS",
+    "signal": "REBOUND",
+    "fire_bar": 581,
+    "fire_date": "28-09-2026",
+    "entry_close": 256.8
+  },
+  {
     "stock": "BLUESTONE",
     "signal": "REBOUND",
-    "fire_bar": 275,
-    "fire_date": "25-09-2026",
-    "entry_close": 797.3
-  },
-  {
-    "stock": "ELLEN",
-    "signal": "REBOUND",
-    "fire_bar": 309,
-    "fire_date": "25-09-2026",
-    "entry_close": 356.2
-  },
-  {
-    "stock": "MTARTECH",
-    "signal": "REBOUND",
-    "fire_bar": 1273,
-    "fire_date": "25-09-2026",
-    "entry_close": 6992.0
-  },
-  {
-    "stock": "NEOGEN",
-    "signal": "REBOUND",
-    "fire_bar": 1273,
-    "fire_date": "25-09-2026",
-    "entry_close": 2340.6
-  },
-  {
-    "stock": "OPTIEMUS",
-    "signal": "REBOUND",
-    "fire_bar": 1272,
-    "fire_date": "25-09-2026",
-    "entry_close": 767.15
-  },
-  {
-    "stock": "PNCINFRA",
-    "signal": "REBOUND",
-    "fire_bar": 1273,
-    "fire_date": "25-09-2026",
-    "entry_close": 135.95
-  },
-  {
-    "stock": "PGIL",
-    "signal": "REBOUND",
-    "fire_bar": 1272,
-    "fire_date": "25-09-2026",
-    "entry_close": 1353.2
-  },
-  {
-    "stock": "SHAREINDIA",
-    "signal": "REBOUND",
-    "fire_bar": 1273,
-    "fire_date": "25-09-2026",
-    "entry_close": 208.52
-  },
-  {
-    "stock": "STLTECH",
-    "signal": "REBOUND",
-    "fire_bar": 1273,
-    "fire_date": "25-09-2026",
-    "entry_close": 841.0
+    "fire_bar": 276,
+    "fire_date": "28-09-2026",
+    "entry_close": 786.6
   },
   {
     "stock": "CUPID",
     "signal": "REBOUND",
-    "fire_bar": 1273,
-    "fire_date": "25-09-2026",
-    "entry_close": 270.1
-  },
-  {
-    "stock": "PRUDENT",
-    "signal": "REV",
-    "fire_bar": 1078,
-    "fire_date": "25-09-2026",
-    "entry_close": 3116.6
+    "fire_bar": 1274,
+    "fire_date": "28-09-2026",
+    "entry_close": 263.7
   },
   {
     "stock": "EQUITASBNK",
     "signal": "REV",
+    "fire_bar": 1274,
+    "fire_date": "28-09-2026",
+    "entry_close": 65.31
+  },
+  {
+    "stock": "MTARTECH",
+    "signal": "REBOUND",
+    "fire_bar": 1274,
+    "fire_date": "28-09-2026",
+    "entry_close": 6958.0
+  },
+  {
+    "stock": "OPTIEMUS",
+    "signal": "REBOUND",
     "fire_bar": 1273,
-    "fire_date": "25-09-2026",
-    "entry_close": 66.53
+    "fire_date": "28-09-2026",
+    "entry_close": 774.1
+  },
+  {
+    "stock": "PNCINFRA",
+    "signal": "REBOUND",
+    "fire_bar": 1274,
+    "fire_date": "28-09-2026",
+    "entry_close": 133.74
+  },
+  {
+    "stock": "SHAREINDIA",
+    "signal": "REBOUND",
+    "fire_bar": 1274,
+    "fire_date": "28-09-2026",
+    "entry_close": 206.58
+  },
+  {
+    "stock": "STLTECH",
+    "signal": "REBOUND",
+    "fire_bar": 1274,
+    "fire_date": "28-09-2026",
+    "entry_close": 811.0
   }
 ]
