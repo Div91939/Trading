@@ -68,5 +68,19 @@
     "fire_bar": 650,
     "fire_date": "28-09-2026",
     "entry_close": 503.75
+  },
+  {
+    "stock": "ELLEN",
+    "signal": "REBOUND",
+    "fire_bar": 310,
+    "fire_date": "28-09-2026",
+    "entry_close": 359.05
+  },
+  {
+    "stock": "LOTUSDEV",
+    "signal": "REBOUND",
+    "fire_bar": 285,
+    "fire_date": "28-09-2026",
+    "entry_close": 208.05
   }
 ]
