@@ -61,5 +61,12 @@
     "fire_bar": 1274,
     "fire_date": "28-09-2026",
     "entry_close": 811.0
+  },
+  {
+    "stock": "JSFB",
+    "signal": "REBOUND",
+    "fire_bar": 650,
+    "fire_date": "28-09-2026",
+    "entry_close": 503.75
   }
 ]
