@@ -1,16 +1,9 @@
 [
   {
-    "stock": "RAPICUT",
+    "stock": "BEML",
     "signal": "REV",
-    "fire_bar": 1283,
-    "fire_date": "28-09-2026",
-    "entry_close": 276.8
-  },
-  {
-    "stock": "SWITCHTE",
-    "signal": "MOM",
-    "fire_bar": 1283,
-    "fire_date": "28-09-2026",
-    "entry_close": 143.7
+    "fire_bar": 1288,
+    "fire_date": "29-09-2026",
+    "entry_close": 1955.5
   }
 ]

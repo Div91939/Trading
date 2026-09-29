@@ -1,86 +1,51 @@
 [
   {
+    "stock": "AVALON",
+    "signal": "REBOUND",
+    "fire_bar": 856,
+    "fire_date": "29-09-2026",
+    "entry_close": 2292.9
+  },
+  {
     "stock": "AWFIS",
     "signal": "REBOUND",
-    "fire_bar": 581,
-    "fire_date": "28-09-2026",
-    "entry_close": 256.8
+    "fire_bar": 582,
+    "fire_date": "29-09-2026",
+    "entry_close": 245.6
   },
   {
     "stock": "BLUESTONE",
     "signal": "REBOUND",
-    "fire_bar": 276,
-    "fire_date": "28-09-2026",
-    "entry_close": 786.6
+    "fire_bar": 277,
+    "fire_date": "29-09-2026",
+    "entry_close": 763.25
   },
   {
     "stock": "CUPID",
     "signal": "REBOUND",
-    "fire_bar": 1274,
-    "fire_date": "28-09-2026",
-    "entry_close": 263.7
+    "fire_bar": 1275,
+    "fire_date": "29-09-2026",
+    "entry_close": 265.0
   },
   {
-    "stock": "EQUITASBNK",
+    "stock": "SAMHI",
     "signal": "REV",
-    "fire_bar": 1274,
-    "fire_date": "28-09-2026",
-    "entry_close": 65.31
-  },
-  {
-    "stock": "MTARTECH",
-    "signal": "REBOUND",
-    "fire_bar": 1274,
-    "fire_date": "28-09-2026",
-    "entry_close": 6958.0
-  },
-  {
-    "stock": "OPTIEMUS",
-    "signal": "REBOUND",
-    "fire_bar": 1273,
-    "fire_date": "28-09-2026",
-    "entry_close": 774.1
-  },
-  {
-    "stock": "PNCINFRA",
-    "signal": "REBOUND",
-    "fire_bar": 1274,
-    "fire_date": "28-09-2026",
-    "entry_close": 133.74
+    "fire_bar": 747,
+    "fire_date": "29-09-2026",
+    "entry_close": 147.47
   },
   {
     "stock": "SHAREINDIA",
     "signal": "REBOUND",
-    "fire_bar": 1274,
-    "fire_date": "28-09-2026",
-    "entry_close": 206.58
+    "fire_bar": 1275,
+    "fire_date": "29-09-2026",
+    "entry_close": 205.22
   },
   {
     "stock": "STLTECH",
     "signal": "REBOUND",
-    "fire_bar": 1274,
-    "fire_date": "28-09-2026",
-    "entry_close": 811.0
-  },
-  {
-    "stock": "JSFB",
-    "signal": "REBOUND",
-    "fire_bar": 650,
-    "fire_date": "28-09-2026",
-    "entry_close": 503.75
-  },
-  {
-    "stock": "ELLEN",
-    "signal": "REBOUND",
-    "fire_bar": 310,
-    "fire_date": "28-09-2026",
-    "entry_close": 359.05
-  },
-  {
-    "stock": "LOTUSDEV",
-    "signal": "REBOUND",
-    "fire_bar": 285,
-    "fire_date": "28-09-2026",
-    "entry_close": 208.05
+    "fire_bar": 1275,
+    "fire_date": "29-09-2026",
+    "entry_close": 805.45
   }
 ]
