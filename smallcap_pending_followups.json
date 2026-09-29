@@ -82,5 +82,26 @@
     "fire_bar": 1275,
     "fire_date": "29-09-2026",
     "entry_close": 418.45
+  },
+  {
+    "stock": "AURIONPRO",
+    "signal": "REV",
+    "fire_bar": 1275,
+    "fire_date": "29-09-2026",
+    "entry_close": 634.2
+  },
+  {
+    "stock": "CRIZAC",
+    "signal": "REBOUND",
+    "fire_bar": 306,
+    "fire_date": "29-09-2026",
+    "entry_close": 169.08
+  },
+  {
+    "stock": "SANSERA",
+    "signal": "REBOUND",
+    "fire_bar": 1242,
+    "fire_date": "29-09-2026",
+    "entry_close": 4362.2
   }
 ]
