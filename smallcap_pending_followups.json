@@ -47,5 +47,40 @@
     "fire_bar": 1275,
     "fire_date": "29-09-2026",
     "entry_close": 805.45
+  },
+  {
+    "stock": "EUREKAFORB",
+    "signal": "REV",
+    "fire_bar": 510,
+    "fire_date": "29-09-2026",
+    "entry_close": 354.0
+  },
+  {
+    "stock": "MAHSCOOTER",
+    "signal": "REV",
+    "fire_bar": 1274,
+    "fire_date": "29-09-2026",
+    "entry_close": 12282.0
+  },
+  {
+    "stock": "PNCINFRA",
+    "signal": "REBOUND",
+    "fire_bar": 1275,
+    "fire_date": "29-09-2026",
+    "entry_close": 130.98
+  },
+  {
+    "stock": "PRUDENT",
+    "signal": "REV",
+    "fire_bar": 1080,
+    "fire_date": "29-09-2026",
+    "entry_close": 3087.0
+  },
+  {
+    "stock": "TSFINV",
+    "signal": "REV",
+    "fire_bar": 1275,
+    "fire_date": "29-09-2026",
+    "entry_close": 418.45
   }
 ]

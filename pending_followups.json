@@ -5,5 +5,12 @@
     "fire_bar": 1288,
     "fire_date": "29-09-2026",
     "entry_close": 1955.5
+  },
+  {
+    "stock": "SWITCHTE",
+    "signal": "MOM",
+    "fire_bar": 1284,
+    "fire_date": "29-09-2026",
+    "entry_close": 151.2
   }
 ]
