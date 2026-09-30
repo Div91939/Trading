@@ -82,5 +82,47 @@
     "fire_bar": 652,
     "fire_date": "30-09-2026",
     "entry_close": 498.25
+  },
+  {
+    "stock": "ARVINDFASN",
+    "signal": "REV",
+    "fire_bar": 1276,
+    "fire_date": "30-09-2026",
+    "entry_close": 387.45
+  },
+  {
+    "stock": "ELLEN",
+    "signal": "REBOUND",
+    "fire_bar": 312,
+    "fire_date": "30-09-2026",
+    "entry_close": 356.9
+  },
+  {
+    "stock": "METROPOLIS",
+    "signal": "REV",
+    "fire_bar": 1276,
+    "fire_date": "30-09-2026",
+    "entry_close": 541.7
+  },
+  {
+    "stock": "OPTIEMUS",
+    "signal": "REBOUND",
+    "fire_bar": 1275,
+    "fire_date": "30-09-2026",
+    "entry_close": 767.75
+  },
+  {
+    "stock": "SPARC",
+    "signal": "REBOUND",
+    "fire_bar": 1276,
+    "fire_date": "30-09-2026",
+    "entry_close": 197.19
+  },
+  {
+    "stock": "YATHARTH",
+    "signal": "REV",
+    "fire_bar": 780,
+    "fire_date": "30-09-2026",
+    "entry_close": 1032.5
   }
 ]
