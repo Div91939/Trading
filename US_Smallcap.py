@@ -86,7 +86,9 @@ membership is the fix and has not been sourced.
   SURGE  exQ5 +1.80pp  4/5 quintiles  +32.3%/yr  4/5 folds
   A5     exQ5 +1.28pp  5/5 quintiles  +27.8%/yr  3/5 folds
   REV    exQ5 +1.10pp  4/5 quintiles  +28.8%/yr  4/5 folds
-  MOM    exQ5 +0.75pp  3/5 quintiles  +19.5%/yr  4/5 folds
+  MOM    exQ5 +0.75pp  3/5 quintiles  +19.5%/yr  4/5 folds   <- shipped at 2.0/gate off;
+                                                     Smallcap.py's 3.0/gate-90 measured
+                                                     exQ5 -0.41pp, 1 of 5 quintiles here
   A1     exQ5 not run  --             +17.2%/yr  4/5 folds   <- ~benchmark
 
 THE POSITION GATES DO NOT TRANSFER. Every "near the 52w/250d high" and "off
@@ -202,23 +204,41 @@ REV_PX_MA10, REV_Z5, REV_UPL, REV_ATR, REV_RET60 = -6, -0.5, 0, 3.5, -40
 A5_DAY     = 6.0
 A5_NEAR52  = 0.0          # 0 = gate disabled
 
-# ── MOM ────────────────────────────────────────────────────────────────────
-# Rule shape unchanged: two consecutive days each up >= MOM_DAYPCT, optionally
-# gated near the 250-day high.
-#   live (Indian) (3.0, near90) : exQ5 -0.41pp, 1/5 quintiles  <- WORST config
-#                                 in this study; the gate is actively harmful
-#   US retuned    (2.0, OFF)    : PORT_PCT +19.5%/yr, 4/5 folds,
-#                                 exQ5 +0.75pp, 3/5 quintiles
-# WEAKEST of the five signals shipped. +19.5%/yr is only ~4pp above the
-# do-nothing benchmark of +15.4%, and it beats the benchmark in only 3 of 5
-# quintiles. Shipped because it is positive and its parameters were stable,
-# but it should be the first candidate for removal if the book is
-# slot-constrained — every MOM fire displaces a possible SPRED fire.
-# Note the direction of travel: the streak threshold LOOSENS (3.0 -> 2.0) and
-# the position gate goes off entirely, i.e. on US data this signal wants to be
-# a plain 2-day-strength signal with no positional context at all.
-MOM_DAYPCT  = 2.0
-MOM_NEAR250 = 0.0         # 0 = gate disabled
+# ── MOM ───────────────────────────────────────────────────────────────────
+# SET TO 2.0% WITH NO POSITION GATE — the pair the US walk-forward selected.
+# This DIVERGES from Smallcap.py / Combined.py, which both run 3.0% with
+# pct_of_250high >= 90. Stated by value rather than "old/new" because those
+# labels are ambiguous: Smallcap.py's 3.0/90 rule is itself the *newer* MOM
+# within this project (it replaced the retired LEG/MA50-cross definition in
+# Sept 2026), while 2.0/no-gate is newer only as a US retune.
+#
+#   2.0, gate OFF   <- SET BELOW
+#       +19.5%/yr against a +15.4%/yr do-nothing benchmark, exQ5 +0.75pp,
+#       positive in 3 of 5 return quintiles. Weakest of the five validated
+#       signals, but the best of the two MOM pairs on the US walk-forward.
+#   3.0, gate 90    <- what Smallcap.py and Combined.py run
+#       exQ5 -0.41pp, beating the benchmark in 1 of 5 quintiles — the worst
+#       configuration measured anywhere in the US study.
+#
+# WHAT DROPPING THE GATE ACTUALLY DOES — measured across all 572 tickers over
+# the last 200 bars, and visible in the comparison charts:
+#   3.0/90 fires 783 times; 2.0/off fires 4,358. Of those, 3,575 (82%) are
+#   fires the gated rule would have blocked, and the median stock spends 62%
+#   of its bars below the 90% line. 309 of 572 tickers produce NO gated fires
+#   at all in that window.
+#   The two rules are not one signal at two sensitivities. The gated version
+#   fires on continuation near the highs; the ungated version fires on that
+#   PLUS every sharp bounce inside a drawdown. Mean 2-day move on gated fires
+#   is 15-25%, on gate-blocked fires 7-12% — the gate was selecting the
+#   violent ones, not merely thinning the count.
+# Consequence to watch: at 4,358 vs 783 fires, MOM will dominate a 20-slot
+# book and displace SPRED, which is the only signal here with a
+# survivorship-robust edge (exQ5 +3.19pp, 5/5 quintiles). If capital is
+# slot-constrained, either set ENABLED["MOM"]=False or put MOM last in
+# SIGNAL_PRIORITY (it already is).
+# To match the Indian books instead, set 3.0 / 90.0.
+MOM_DAYPCT  = 2.0    # each of 2 consecutive days must be >= this (%)
+MOM_NEAR250 = 0.0    # % of the 250-day high required; 0 = gate disabled
 
 # ── A1 ─────────────────────────────────────────────────────────────────────
 # Rule shape unchanged: below the lower Bollinger band and still falling.
@@ -568,13 +588,16 @@ MAX_CHARTS     = 25                  # cap attachments so the email stays sendab
 
 BATCH          = 100                 # tickers per yfinance download call
 CHECK_BARS     = 5                   # stored closes compared against a fresh fetch
+
 DRIFT_TOL      = 0.005               # 0.5% — beyond this, full re-fetch
 FULL_PERIOD    = "5y"                # window used when rebuilding a ticker
 
 # Which signals to scan. All six are wired; the two flagged below are ON only
 # because switching them off silently would hide a decision from you.
-#   MOM — weakest of the five validated: +19.5%/yr against a +15.4%/yr
-#         do-nothing benchmark, beats it in 3 of 5 return quintiles.
+#   MOM — runs at 2.0% with no position gate (diverges from Smallcap.py's
+#         3.0/gate-90). +19.5%/yr against a +15.4%/yr benchmark, exQ5 +0.75pp,
+#         3 of 5 quintiles. Weakest of the five validated signals, and at this
+#         setting it fires ~5.6x more often than the gated version.
 #   A1  — UNVALIDATED on US data: +17.2%/yr, does not clear the benchmark
 #         meaningfully, survivorship decomposition never run.
 # Under a slot-constrained book every MOM or A1 fire displaces a possible
@@ -641,58 +664,6 @@ def load_names(tickers):
 # 2. FETCH + APPEND IN PLACE
 # ─────────────────────────────────────────────────────────────────────────────
 COLS = ["Date", "Open", "High", "Low", "Close", "Volume"]
-
-
-def _frame_to_rows(hist):
-    """yfinance frame -> list of dicts in the stored schema."""
-    out = []
-    for ts, r in hist.iterrows():
-        if not np.isfinite(r.get("Close", np.nan)):
-            continue
-        out.append({
-            "Date": pd.Timestamp(ts).strftime("%d-%m-%Y"),
-            "Open": round(float(r["Open"]), 4),
-            "High": round(float(r["High"]), 4),
-            "Low": round(float(r["Low"]), 4),
-            "Close": round(float(r["Close"]), 4),
-            "Volume": int(r["Volume"]) if np.isfinite(r.get("Volume", np.nan)) else 0,
-        })
-    return out
-
-
-def download_batch(tickers, period="10d"):
-    """One yfinance call for many tickers. Returns {ticker: DataFrame}.
-    auto_adjust=True to match how the stored history was built."""
-    if not tickers:
-        return {}
-    data = yf.download(tickers, period=period, interval="1d", group_by="ticker",
-                       auto_adjust=True, actions=True, progress=False,
-                       threads=True)
-    out = {}
-    if isinstance(data.columns, pd.MultiIndex):
-        for t in tickers:
-            if t in data.columns.get_level_values(0):
-                d = data[t].dropna(how="all")
-                if not d.empty:
-                    out[t] = d
-    else:
-        d = data.dropna(how="all")
-        if not d.empty:
-            out[tickers[0]] = d
-    return out
-
-
-def full_refetch(ticker, csv_path):
-    """Rewrite a ticker's whole history. Used when a corporate action or a
-    retroactive re-adjustment makes appending unsafe."""
-    h = yf.Ticker(ticker).history(period=FULL_PERIOD, interval="1d", auto_adjust=True)
-    if h is None or h.empty:
-        return False, 0
-    rows = _frame_to_rows(h)
-    if not rows:
-        return False, 0
-    pd.DataFrame(rows)[COLS].to_csv(csv_path, index=False)
-    return True, len(rows)
 
 
 def update_csv(ticker, csv_path, fresh):
@@ -837,6 +808,27 @@ def build_plot(F, company, ticker, date_label, kinds, lookback=PLOT_LOOKBACK,
 # ─────────────────────────────────────────────────────────────────────────────
 # 4. LOGS + EMAIL
 # ─────────────────────────────────────────────────────────────────────────────
+def fmt_list(tickers, names, width=96, indent=9, namelen=24):
+    """'TICKER (Company Name)' comma list, wrapped. Names are what the email is
+    read for — a bare ticker means looking it up before you can judge it."""
+    if not tickers:
+        return "-"
+    parts = []
+    for t in tickers:
+        nm = str(names.get(t, "")).strip()
+        parts.append(f"{t} ({nm[:namelen]})" if nm and nm != t else t)
+    lines, cur = [], ""
+    for p in parts:
+        cand = p if not cur else f"{cur}, {p}"
+        if len(cand) > width and cur:
+            lines.append(cur); cur = p
+        else:
+            cur = cand
+    if cur:
+        lines.append(cur)
+    return ("\n" + " " * indent).join(lines)
+
+
 def _load(path, default):
     if not os.path.exists(path):
         return default
@@ -1095,7 +1087,7 @@ def main():
         f"(self-contained, no model files)\n"
         f"Grading  : OFF — drop-C cost 22.7pp of return on deployed capital "
         f"in walk-forward on this universe\n"
-        f"Universe : {len(uni)} tickers"
+        + f"Universe : {len(uni)} tickers"
         + (f", {len(off)} signal(s) disabled: {', '.join(off)}" if off else "")
         + "\n"
         + (f"Re-fetched (corporate action / drift): {len(refetched)}"
@@ -1111,7 +1103,7 @@ def main():
         if not ENABLED.get(s):
             continue
         h = hits[s]
-        header += f"{s:6s}: {len(h):3d}  ({', '.join(h) if h else '-'})\n"
+        header += f"{s:6s}: {len(h):3d}  {fmt_list(h, names)}\n"
 
     multi = {}
     for s in SIGNAL_PRIORITY:
@@ -1119,9 +1111,11 @@ def main():
             multi.setdefault(t, []).append(s)
     conf = {t: v for t, v in multi.items() if len(v) > 1}
     if conf:
-        header += ("Confluence (2+): "
-                   + ", ".join(f"{t}[{'+'.join(v)}]" for t, v in list(conf.items())[:15])
-                   + "\n")
+        header += "Confluence (2+):\n"
+        for t, v in list(conf.items())[:20]:
+            nm = str(names.get(t, "")).strip()
+            header += f"         {t} ({nm[:34]}) — {'+'.join(v)}\n" if nm and nm != t \
+                      else f"         {t} — {'+'.join(v)}\n"
 
     if len(sections) > MAX_CHARTS:
         header += f"\n(charts capped at {MAX_CHARTS} attachments)\n"
