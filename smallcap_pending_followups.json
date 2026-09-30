@@ -68,5 +68,19 @@
     "fire_bar": 1276,
     "fire_date": "30-09-2026",
     "entry_close": 67.3
+  },
+  {
+    "stock": "AURIONPRO",
+    "signal": "REV",
+    "fire_bar": 1276,
+    "fire_date": "30-09-2026",
+    "entry_close": 628.0
+  },
+  {
+    "stock": "JSFB",
+    "signal": "REBOUND",
+    "fire_bar": 652,
+    "fire_date": "30-09-2026",
+    "entry_close": 498.25
   }
 ]
