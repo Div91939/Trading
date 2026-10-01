@@ -131,5 +131,61 @@
     "fire_bar": 1277,
     "fire_date": "01-10-2026",
     "entry_close": 938.9
+  },
+  {
+    "stock": "AXISCADES",
+    "signal": "MOM",
+    "fire_bar": 1277,
+    "fire_date": "01-10-2026",
+    "entry_close": 2307.3
+  },
+  {
+    "stock": "AURIONPRO",
+    "signal": "REBOUND",
+    "fire_bar": 1277,
+    "fire_date": "01-10-2026",
+    "entry_close": 607.8
+  },
+  {
+    "stock": "AVALON",
+    "signal": "REBOUND",
+    "fire_bar": 858,
+    "fire_date": "01-10-2026",
+    "entry_close": 2280.2
+  },
+  {
+    "stock": "EMBDL",
+    "signal": "REBOUND",
+    "fire_bar": 1277,
+    "fire_date": "01-10-2026",
+    "entry_close": 56.13
+  },
+  {
+    "stock": "EIEL",
+    "signal": "REV",
+    "fire_bar": 459,
+    "fire_date": "01-10-2026",
+    "entry_close": 184.0
+  },
+  {
+    "stock": "PRSMJOHNSN",
+    "signal": "REV",
+    "fire_bar": 1275,
+    "fire_date": "01-10-2026",
+    "entry_close": 103.61
+  },
+  {
+    "stock": "SPARC",
+    "signal": "REBOUND",
+    "fire_bar": 1277,
+    "fire_date": "01-10-2026",
+    "entry_close": 194.13
+  },
+  {
+    "stock": "THANGAMAYL",
+    "signal": "REBOUND",
+    "fire_bar": 1277,
+    "fire_date": "01-10-2026",
+    "entry_close": 4861.0
   }
 ]
