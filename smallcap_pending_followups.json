@@ -61,5 +61,75 @@
     "fire_bar": 1244,
     "fire_date": "01-10-2026",
     "entry_close": 4349.0
+  },
+  {
+    "stock": "AVL",
+    "signal": "REV",
+    "fire_bar": 472,
+    "fire_date": "01-10-2026",
+    "entry_close": 566.95
+  },
+  {
+    "stock": "ARVINDFASN",
+    "signal": "REV",
+    "fire_bar": 1277,
+    "fire_date": "01-10-2026",
+    "entry_close": 379.65
+  },
+  {
+    "stock": "AURIONPRO",
+    "signal": "REV",
+    "fire_bar": 1277,
+    "fire_date": "01-10-2026",
+    "entry_close": 614.4
+  },
+  {
+    "stock": "AWFIS",
+    "signal": "REV",
+    "fire_bar": 584,
+    "fire_date": "01-10-2026",
+    "entry_close": 237.59
+  },
+  {
+    "stock": "AWFIS",
+    "signal": "REBOUND",
+    "fire_bar": 584,
+    "fire_date": "01-10-2026",
+    "entry_close": 237.59
+  },
+  {
+    "stock": "CSBBANK",
+    "signal": "REV",
+    "fire_bar": 1277,
+    "fire_date": "01-10-2026",
+    "entry_close": 300.7
+  },
+  {
+    "stock": "JSFB",
+    "signal": "REV",
+    "fire_bar": 653,
+    "fire_date": "01-10-2026",
+    "entry_close": 475.15
+  },
+  {
+    "stock": "KPIGREEN",
+    "signal": "REBOUND",
+    "fire_bar": 1277,
+    "fire_date": "01-10-2026",
+    "entry_close": 345.8
+  },
+  {
+    "stock": "LLOYDSENGG",
+    "signal": "REBOUND",
+    "fire_bar": 1277,
+    "fire_date": "01-10-2026",
+    "entry_close": 96.32
+  },
+  {
+    "stock": "STLTECH",
+    "signal": "MOM",
+    "fire_bar": 1277,
+    "fire_date": "01-10-2026",
+    "entry_close": 938.9
   }
 ]
