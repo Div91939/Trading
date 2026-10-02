@@ -187,5 +187,40 @@
     "fire_bar": 1277,
     "fire_date": "01-10-2026",
     "entry_close": 4861.0
+  },
+  {
+    "stock": "INOXGREEN",
+    "signal": "REV",
+    "fire_bar": 956,
+    "fire_date": "01-10-2026",
+    "entry_close": 158.51
+  },
+  {
+    "stock": "RELIGARE",
+    "signal": "REV",
+    "fire_bar": 1276,
+    "fire_date": "01-10-2026",
+    "entry_close": 224.0
+  },
+  {
+    "stock": "SAFARI",
+    "signal": "REV",
+    "fire_bar": 1275,
+    "fire_date": "01-10-2026",
+    "entry_close": 1371.1
+  },
+  {
+    "stock": "SHAREINDIA",
+    "signal": "REBOUND",
+    "fire_bar": 1277,
+    "fire_date": "01-10-2026",
+    "entry_close": 206.8
+  },
+  {
+    "stock": "LOTUSDEV",
+    "signal": "MOM",
+    "fire_bar": 288,
+    "fire_date": "01-10-2026",
+    "entry_close": 232.0
   }
 ]
