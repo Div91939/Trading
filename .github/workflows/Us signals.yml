@@ -1,17 +1,19 @@
 name: US Stock Signals
 
+# Triggered externally (workflow_dispatch via your cron job). GitHub's own
+# schedule is deliberately not used.
 on:
   workflow_dispatch:
-  # Uncomment to run automatically after the US close. NYSE/Nasdaq close 16:00
-  # America/New_York. GitHub cron is ALWAYS UTC and has no DST awareness, so do
-  # NOT add an "EDT line" and an "EST line" — both would fire every weekday and
-  # the scan would run twice. 22:30 UTC is after the close in both halves of the
-  # year (18:30 ET under EDT, 17:30 ET under EST):
-  # schedule:
-  #   - cron: '30 22 * * 1-5'
 
 permissions:
   contents: write
+
+# Shared with daily_signals.yml. Both workflows commit to the same branch, so
+# they queue behind each other instead of racing. cancel-in-progress is false so
+# a run in flight is never killed mid-scan or mid-push.
+concurrency:
+  group: signals-repo-writes
+  cancel-in-progress: false
 
 jobs:
   run-signals:
@@ -19,6 +21,15 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          # REQUIRED — do not drop this. actions/checkout defaults to
+          # fetch-depth: 1, a clone holding a single commit. A rebase onto a
+          # newer origin then has no common ancestor to diff against, so git
+          # treats every file as changed on both sides and the whole tree
+          # conflicts at once. That is what produced the 05-10 failure:
+          #   CONFLICT (content): Merge conflict in us_smallcap_data/ZWS.csv
+          # on ~600 files that nothing had actually touched twice.
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -29,8 +40,7 @@ jobs:
         run: pip install -r requirements.txt
 
       # continue-on-error so a mid-run crash can never block the commit step
-      # below — same reason as the Smallcap step in daily_signals.yml. Without
-      # it a crash leaves CSVs updated on disk but never pushed.
+      # below. Without it a crash leaves CSVs updated on disk but never pushed.
       - name: Run US Smallcap
         env:
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
@@ -44,28 +54,59 @@ jobs:
       - name: Commit updated CSVs
         if: always()
         run: |
+          set -e
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # us_smallcap_data/ holds the price CSVs. The JSON files carry the
-          # e-mail de-duplication log, the day-1 follow-up queue and the
-          # company-name cache — all three must persist between runs or
-          # follow-ups silently stop working.
-          git add us_smallcap_data/
-          git add -A -- '*.json'
+          # US files only, named explicitly. An unscoped `git add -A -- '*.json'`
+          # would also stage the Indian books' state files, and the Indian
+          # workflow's copy of that glob stages these US ones. Two workflows
+          # writing each other's state is how they end up fighting over blobs.
+          PATHS="us_smallcap_data us_pending_followups.json us_scanner_log.json us_ticker_names.json"
+          MSG="Auto: update us_smallcap_data $(date +'%d-%m-%Y %H:%M UTC')"
 
+          git add -A -- $PATHS
           if git diff --cached --quiet; then
             echo "nothing to commit"
-          else
-            git commit -m "Auto: update us_smallcap_data $(date +'%d-%m-%Y %H:%M UTC')"
-            git pull --rebase --autostash origin ${GITHUB_REF_NAME}
-            git push
+            exit 0
           fi
+          git commit -m "$MSG"
+
+          # REPLAY, NOT REBASE.
+          # The Indian workflow runs several times a day, so by the time this
+          # one pushes the branch has usually moved and the push is rejected.
+          # Rebasing to catch up is the wrong tool here: these CSVs are
+          # regenerated output, not hand-edited text, so there is never
+          # anything to merge line by line — and a rebase can stop on a
+          # conflict that needs a human, which no scheduled run has.
+          #
+          # Instead: reset onto the new tip, lay this run's own files back over
+          # it, and commit that. Deterministic, cannot conflict, and the result
+          # is always "whatever else landed, plus this run's data".
+          for attempt in 1 2 3 4; do
+            if git push; then
+              echo "pushed on attempt $attempt"
+              exit 0
+            fi
+            echo "push rejected - replaying this run's files onto the new tip (attempt $attempt)"
+            OURS=$(git rev-parse HEAD)
+            git fetch origin "${GITHUB_REF_NAME}"
+            git reset --hard "origin/${GITHUB_REF_NAME}"
+            git checkout "$OURS" -- $PATHS
+            git add -A -- $PATHS
+            if git diff --cached --quiet; then
+              echo "new tip already carries this run's data - nothing to push"
+              exit 0
+            fi
+            git commit -m "$MSG"
+          done
+          echo "push failed after 4 attempts"
+          exit 1
 
       - name: Report freshness
         if: always()
         run: |
-          python - <<'EOF'
+          python - <<'PY'
           import glob, os, pandas as pd
           root = "us_smallcap_data"
           files = glob.glob(os.path.join(root, "*.csv"))
@@ -81,4 +122,4 @@ jobs:
           print(f"{root}: {len(files)} files")
           for k in sorted(latest, reverse=True)[:3]:
               print(f"   {k.date()} : {latest[k]} files")
-          EOF
+          PY
