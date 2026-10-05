@@ -588,6 +588,8 @@ MAX_CHARTS     = 25                  # cap attachments so the email stays sendab
 
 BATCH          = 100                 # tickers per yfinance download call
 CHECK_BARS     = 5                   # stored closes compared against a fresh fetch
+FETCH_PERIOD   = "1mo"               # window pulled per run: long enough to cover
+                                     # a missed week and to overlap CHECK_BARS
 
 DRIFT_TOL      = 0.005               # 0.5% — beyond this, full re-fetch
 FULL_PERIOD    = "5y"                # window used when rebuilding a ticker
@@ -664,6 +666,109 @@ def load_names(tickers):
 # 2. FETCH + APPEND IN PLACE
 # ─────────────────────────────────────────────────────────────────────────────
 COLS = ["Date", "Open", "High", "Low", "Close", "Volume"]
+
+
+def download_batch(tickers):
+    """Recent bars for a batch of tickers in one yfinance call.
+
+    Returns {ticker: DataFrame} indexed by date. `actions=True` is required:
+    update_csv's first guard looks for the Dividends / Stock Splits columns to
+    decide whether the stored adjusted series is still the same series, and
+    without them a split would silently corrupt the file instead of triggering
+    a rebuild. A ticker that comes back empty is simply absent from the dict,
+    which update_csv reports as 'nodata' rather than failing the run.
+    """
+    out = {}
+    tickers = list(tickers)
+    if not tickers:
+        return out
+    raw = yf.download(tickers, period=FETCH_PERIOD, interval="1d",
+                      auto_adjust=True, actions=True, group_by="ticker",
+                      progress=False, threads=True)
+    if raw is None or len(raw) == 0:
+        return out
+    # one ticker comes back with flat columns, several with a MultiIndex
+    if isinstance(raw.columns, pd.MultiIndex):
+        have = set(raw.columns.get_level_values(0))
+        for t in tickers:
+            if t not in have:
+                continue
+            d = raw[t].dropna(how="all")
+            if len(d):
+                out[t] = d
+    else:
+        d = raw.dropna(how="all")
+        if len(d):
+            out[tickers[0]] = d
+    return out
+
+
+def _frame_to_rows(fresh):
+    """A yfinance frame -> the row dicts update_csv works in.
+
+    Dates become dd-mm-YYYY to match the stored schema, prices are rounded to
+    4dp and volume to int. 4dp rather than 2dp deliberately: the drift check
+    trips at 0.5% divergence, and on a sub-$5 stock 2dp rounding is itself a
+    ~0.5% error, so it would cause spurious full re-fetches. Rows with any
+    missing price are dropped — a half-formed bar is worse than no bar.
+    """
+    rows = []
+    if fresh is None or len(fresh) == 0:
+        return rows
+    d = fresh.copy()
+    d.columns = [str(c).strip() for c in d.columns]
+    idx = pd.to_datetime(d.index, errors="coerce")
+    for ts, r in zip(idx, d.to_dict("records")):
+        if pd.isna(ts):
+            continue
+        try:
+            o, h, l, c = (float(r["Open"]), float(r["High"]),
+                          float(r["Low"]), float(r["Close"]))
+        except (KeyError, TypeError, ValueError):
+            continue
+        if any(pd.isna(x) for x in (o, h, l, c)):
+            continue
+        v = r.get("Volume", 0)
+        try:
+            v = 0 if pd.isna(v) else int(v)
+        except (TypeError, ValueError):
+            v = 0
+        rows.append({"Date": ts.strftime("%d-%m-%Y"),
+                     "Open": round(o, 4), "High": round(h, 4),
+                     "Low": round(l, 4), "Close": round(c, 4),
+                     "Volume": v})
+    return rows
+
+
+def full_refetch(ticker, csv_path):
+    """Rebuild one ticker's whole history from scratch. Returns (ok, n_bars).
+
+    Called when a corporate action or a drifting tail means yfinance is no
+    longer serving the same adjusted series the file was built from — an
+    append would then splice two incompatible price scales together.
+
+    The MIN_ROWS // 2 floor is the safety catch: a throttled or failed fetch
+    returns a short frame, and writing that would truncate a good 5-year file
+    down to a stub that data_quality_ok then rejects for the rest of time. On
+    a short result the existing file is left untouched and the caller keeps
+    using it.
+    """
+    try:
+        d = yf.Ticker(ticker).history(period=FULL_PERIOD, interval="1d",
+                                      auto_adjust=True)
+    except Exception:
+        return False, 0
+    rows = _frame_to_rows(d)
+    if len(rows) < MIN_ROWS // 2:
+        return False, len(rows)
+    out = pd.DataFrame(rows, columns=COLS)
+    out["_d"] = pd.to_datetime(out["Date"], format="%d-%m-%Y", errors="coerce")
+    out = (out.dropna(subset=["_d"]).sort_values("_d")
+              .drop_duplicates(subset="Date", keep="last")
+              .drop(columns="_d"))
+    out[COLS].to_csv(csv_path, index=False)
+    return True, len(out)
+
 
 
 def update_csv(ticker, csv_path, fresh):
