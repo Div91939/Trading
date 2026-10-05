@@ -1,4 +1,4 @@
-name: US Stock Signals
+name: Daily Stock Signals
 
 # Triggered externally (workflow_dispatch via your cron job). GitHub's own
 # schedule is deliberately not used.
@@ -8,9 +8,7 @@ on:
 permissions:
   contents: write
 
-# Shared with daily_signals.yml. Both workflows commit to the same branch, so
-# they queue behind each other instead of racing. cancel-in-progress is false so
-# a run in flight is never killed mid-scan or mid-push.
+# Shared with us_signals.yml — see the note there.
 concurrency:
   group: signals-repo-writes
   cancel-in-progress: false
@@ -22,13 +20,9 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
         with:
-          # REQUIRED — do not drop this. actions/checkout defaults to
-          # fetch-depth: 1, a clone holding a single commit. A rebase onto a
-          # newer origin then has no common ancestor to diff against, so git
-          # treats every file as changed on both sides and the whole tree
-          # conflicts at once. That is what produced the 05-10 failure:
-          #   CONFLICT (content): Merge conflict in us_smallcap_data/ZWS.csv
-          # on ~600 files that nothing had actually touched twice.
+          # REQUIRED — see the note in us_signals.yml. A shallow clone has no
+          # merge base, which makes a catch-up rebase conflict on the whole
+          # tree at once.
           fetch-depth: 0
 
       - name: Set up Python
@@ -39,17 +33,17 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # continue-on-error so a mid-run crash can never block the commit step
-      # below. Without it a crash leaves CSVs updated on disk but never pushed.
-      - name: Run US Smallcap
+      - name: Run Combined
         env:
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-          # Set to 1 to re-send even if the scan already ran for this trading
-          # day. The script's same-day guard otherwise stops a duplicate email
-          # when this workflow is dispatched more than once.
-          FORCE_RUN: '0'
+        run: python Combined.py
+
+      # continue-on-error so a smallcap crash can never block the commit step.
+      - name: Run Smallcap
+        env:
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
         continue-on-error: true
-        run: python US_Smallcap.py
+        run: python Smallcap.py
 
       - name: Commit updated CSVs
         if: always()
@@ -58,12 +52,16 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # US files only, named explicitly. An unscoped `git add -A -- '*.json'`
-          # would also stage the Indian books' state files, and the Indian
-          # workflow's copy of that glob stages these US ones. Two workflows
-          # writing each other's state is how they end up fighting over blobs.
-          PATHS="us_smallcap_data us_pending_followups.json us_scanner_log.json us_ticker_names.json"
-          MSG="Auto: update us_smallcap_data $(date +'%d-%m-%Y %H:%M UTC')"
+          # Indian files only, named explicitly — the old '*.json' glob also
+          # staged the US state files written by us_signals.yml.
+          PATHS="Data Smallcap \
+                 combined_rebound_log.json email_log.json mom_cross_log.json \
+                 pending_followups.json ticker_cache.json \
+                 smallcap_alert_log.json smallcap_email_log.json \
+                 smallcap_mom_log.json smallcap_pending_followups.json \
+                 smallcap_rebound_log.json smallcap_spred_log.json \
+                 smallcap_surge_log.json"
+          MSG="Auto: update Data + Smallcap $(date +'%d-%m-%Y %H:%M UTC')"
 
           git add -A -- $PATHS
           if git diff --cached --quiet; then
@@ -72,17 +70,8 @@ jobs:
           fi
           git commit -m "$MSG"
 
-          # REPLAY, NOT REBASE.
-          # The Indian workflow runs several times a day, so by the time this
-          # one pushes the branch has usually moved and the push is rejected.
-          # Rebasing to catch up is the wrong tool here: these CSVs are
-          # regenerated output, not hand-edited text, so there is never
-          # anything to merge line by line — and a rebase can stop on a
-          # conflict that needs a human, which no scheduled run has.
-          #
-          # Instead: reset onto the new tip, lay this run's own files back over
-          # it, and commit that. Deterministic, cannot conflict, and the result
-          # is always "whatever else landed, plus this run's data".
+          # REPLAY, NOT REBASE — see the long note in us_signals.yml. Reset onto
+          # the new tip, lay this run's own files back over it, commit that.
           for attempt in 1 2 3 4; do
             if git push; then
               echo "pushed on attempt $attempt"
@@ -108,18 +97,18 @@ jobs:
         run: |
           python - <<'PY'
           import glob, os, pandas as pd
-          root = "us_smallcap_data"
-          files = glob.glob(os.path.join(root, "*.csv"))
-          latest = {}
-          for f in files:
-              try:
-                  d = pd.read_csv(f, usecols=["Date"])
-                  m = pd.to_datetime(d["Date"], format="%d-%m-%Y", errors="coerce").max()
-                  if pd.notna(m):
-                      latest[m] = latest.get(m, 0) + 1
-              except Exception:
-                  pass
-          print(f"{root}: {len(files)} files")
-          for k in sorted(latest, reverse=True)[:3]:
-              print(f"   {k.date()} : {latest[k]} files")
+          for root in ("Data", "Smallcap"):
+              files = glob.glob(os.path.join(root, "**", "*.csv"), recursive=True)
+              latest = {}
+              for f in files:
+                  try:
+                      d = pd.read_csv(f, usecols=["Date"])
+                      m = pd.to_datetime(d["Date"], format="%d-%m-%Y", errors="coerce").max()
+                      if pd.notna(m):
+                          latest[m] = latest.get(m, 0) + 1
+                  except Exception:
+                      pass
+              print(f"{root}: {len(files)} files")
+              for k in sorted(latest, reverse=True)[:3]:
+                  print(f"   {k.date()} : {latest[k]} files")
           PY
