@@ -1,226 +1,86 @@
 [
   {
+    "stock": "AVALON",
+    "signal": "REBOUND",
+    "fire_bar": 859,
+    "fire_date": "05-10-2026",
+    "entry_close": 2337.2
+  },
+  {
+    "stock": "BALAMINES",
+    "signal": "REV",
+    "fire_bar": 1278,
+    "fire_date": "05-10-2026",
+    "entry_close": 1988.4
+  },
+  {
     "stock": "BLUESTONE",
     "signal": "REBOUND",
-    "fire_bar": 279,
-    "fire_date": "01-10-2026",
-    "entry_close": 782.95
+    "fire_bar": 280,
+    "fire_date": "05-10-2026",
+    "entry_close": 795.2
   },
   {
     "stock": "ELLEN",
     "signal": "REBOUND",
-    "fire_bar": 313,
-    "fire_date": "01-10-2026",
-    "entry_close": 344.95
+    "fire_bar": 314,
+    "fire_date": "05-10-2026",
+    "entry_close": 338.85
   },
   {
     "stock": "JSFB",
     "signal": "REBOUND",
-    "fire_bar": 653,
-    "fire_date": "01-10-2026",
-    "entry_close": 483.5
-  },
-  {
-    "stock": "KIRLPNU",
-    "signal": "REBOUND",
-    "fire_bar": 851,
-    "fire_date": "01-10-2026",
-    "entry_close": 674.2
-  },
-  {
-    "stock": "OPTIEMUS",
-    "signal": "REBOUND",
-    "fire_bar": 1276,
-    "fire_date": "01-10-2026",
-    "entry_close": 762.25
-  },
-  {
-    "stock": "PNCINFRA",
-    "signal": "REBOUND",
-    "fire_bar": 1277,
-    "fire_date": "01-10-2026",
-    "entry_close": 135.83
-  },
-  {
-    "stock": "PGIL",
-    "signal": "REBOUND",
-    "fire_bar": 1276,
-    "fire_date": "01-10-2026",
-    "entry_close": 1274.7
-  },
-  {
-    "stock": "PRICOLLTD",
-    "signal": "REV",
-    "fire_bar": 1276,
-    "fire_date": "01-10-2026",
-    "entry_close": 702.75
-  },
-  {
-    "stock": "SANSERA",
-    "signal": "REBOUND",
-    "fire_bar": 1244,
-    "fire_date": "01-10-2026",
-    "entry_close": 4349.0
-  },
-  {
-    "stock": "AVL",
-    "signal": "REV",
-    "fire_bar": 472,
-    "fire_date": "01-10-2026",
-    "entry_close": 566.95
-  },
-  {
-    "stock": "ARVINDFASN",
-    "signal": "REV",
-    "fire_bar": 1277,
-    "fire_date": "01-10-2026",
-    "entry_close": 379.65
-  },
-  {
-    "stock": "AURIONPRO",
-    "signal": "REV",
-    "fire_bar": 1277,
-    "fire_date": "01-10-2026",
-    "entry_close": 614.4
-  },
-  {
-    "stock": "AWFIS",
-    "signal": "REV",
-    "fire_bar": 584,
-    "fire_date": "01-10-2026",
-    "entry_close": 237.59
-  },
-  {
-    "stock": "AWFIS",
-    "signal": "REBOUND",
-    "fire_bar": 584,
-    "fire_date": "01-10-2026",
-    "entry_close": 237.59
-  },
-  {
-    "stock": "CSBBANK",
-    "signal": "REV",
-    "fire_bar": 1277,
-    "fire_date": "01-10-2026",
-    "entry_close": 300.7
-  },
-  {
-    "stock": "JSFB",
-    "signal": "REV",
-    "fire_bar": 653,
-    "fire_date": "01-10-2026",
-    "entry_close": 475.15
+    "fire_bar": 654,
+    "fire_date": "05-10-2026",
+    "entry_close": 493.15
   },
   {
     "stock": "KPIGREEN",
     "signal": "REBOUND",
-    "fire_bar": 1277,
-    "fire_date": "01-10-2026",
-    "entry_close": 345.8
+    "fire_bar": 1278,
+    "fire_date": "05-10-2026",
+    "entry_close": 340.55
   },
   {
-    "stock": "LLOYDSENGG",
+    "stock": "PNCINFRA",
     "signal": "REBOUND",
-    "fire_bar": 1277,
-    "fire_date": "01-10-2026",
-    "entry_close": 96.32
+    "fire_bar": 1278,
+    "fire_date": "05-10-2026",
+    "entry_close": 137.87
   },
   {
-    "stock": "STLTECH",
-    "signal": "MOM",
-    "fire_bar": 1277,
-    "fire_date": "01-10-2026",
-    "entry_close": 938.9
-  },
-  {
-    "stock": "AXISCADES",
-    "signal": "MOM",
-    "fire_bar": 1277,
-    "fire_date": "01-10-2026",
-    "entry_close": 2307.3
-  },
-  {
-    "stock": "AURIONPRO",
+    "stock": "SANSERA",
     "signal": "REBOUND",
-    "fire_bar": 1277,
-    "fire_date": "01-10-2026",
-    "entry_close": 607.8
-  },
-  {
-    "stock": "AVALON",
-    "signal": "REBOUND",
-    "fire_bar": 858,
-    "fire_date": "01-10-2026",
-    "entry_close": 2280.2
-  },
-  {
-    "stock": "EMBDL",
-    "signal": "REBOUND",
-    "fire_bar": 1277,
-    "fire_date": "01-10-2026",
-    "entry_close": 56.13
-  },
-  {
-    "stock": "EIEL",
-    "signal": "REV",
-    "fire_bar": 459,
-    "fire_date": "01-10-2026",
-    "entry_close": 184.0
-  },
-  {
-    "stock": "PRSMJOHNSN",
-    "signal": "REV",
-    "fire_bar": 1275,
-    "fire_date": "01-10-2026",
-    "entry_close": 103.61
-  },
-  {
-    "stock": "SPARC",
-    "signal": "REBOUND",
-    "fire_bar": 1277,
-    "fire_date": "01-10-2026",
-    "entry_close": 194.13
+    "fire_bar": 1245,
+    "fire_date": "05-10-2026",
+    "entry_close": 4318.6
   },
   {
     "stock": "THANGAMAYL",
     "signal": "REBOUND",
-    "fire_bar": 1277,
-    "fire_date": "01-10-2026",
+    "fire_bar": 1278,
+    "fire_date": "05-10-2026",
     "entry_close": 4861.0
   },
   {
-    "stock": "INOXGREEN",
+    "stock": "V2RETAIL",
     "signal": "REV",
-    "fire_bar": 956,
-    "fire_date": "01-10-2026",
-    "entry_close": 158.51
+    "fire_bar": 1278,
+    "fire_date": "05-10-2026",
+    "entry_close": 169.25
   },
   {
-    "stock": "RELIGARE",
-    "signal": "REV",
-    "fire_bar": 1276,
-    "fire_date": "01-10-2026",
-    "entry_close": 224.0
-  },
-  {
-    "stock": "SAFARI",
-    "signal": "REV",
-    "fire_bar": 1275,
-    "fire_date": "01-10-2026",
-    "entry_close": 1371.1
-  },
-  {
-    "stock": "SHAREINDIA",
+    "stock": "V2RETAIL",
     "signal": "REBOUND",
-    "fire_bar": 1277,
-    "fire_date": "01-10-2026",
-    "entry_close": 206.8
+    "fire_bar": 1278,
+    "fire_date": "05-10-2026",
+    "entry_close": 169.25
   },
   {
-    "stock": "LOTUSDEV",
-    "signal": "MOM",
-    "fire_bar": 288,
-    "fire_date": "01-10-2026",
-    "entry_close": 232.0
+    "stock": "YATHARTH",
+    "signal": "REBOUND",
+    "fire_bar": 782,
+    "fire_date": "05-10-2026",
+    "entry_close": 1007.2
   }
 ]
