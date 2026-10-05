@@ -30,11 +30,11 @@ jobs:
       # continue-on-error so a crash part way through can never block the
       # commit step below. Without it, a mid-run failure leaves the CSVs
       # updated on disk but never pushed, and the next run re-does the work.
-      - name: Run US Scanner
+      - name: Run US Smallcap
         env:
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
         continue-on-error: true
-        run: python US_Scanner.py
+        run: python US_Smallcap.py
 
       - name: Commit updated CSVs
         if: always()
