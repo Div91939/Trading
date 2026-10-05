@@ -1,5 +1,5 @@
 """
-US_Scanner.py — US S&P 600 smallcap daily scanner (single self-contained file)
+US_Smallcap.py — US S&P 600 smallcap daily scanner (single self-contained file)
 =============================================================================
 Built to the same operational shape as Smallcap.py, the Indian scanner that
 has been running reliably: fetch one ticker at a time, append to the stored
@@ -116,6 +116,11 @@ FOLLOWUP_SIGNALS = {"SPRED", "SURGE", "REV", "A5", "MOM"}
 
 # Distinct two-char subject codes — S/A alone collide (SPRED vs SURGE, A5 vs A1).
 CODE = {"SPRED": "SP", "SURGE": "SU", "A5": "A5", "REV": "R", "MOM": "M", "A1": "A1"}
+
+# Printed as the first line of every run. If a run's log does not show this
+# exact string, that run is NOT executing this file — look for an older copy,
+# a different branch, or a stale log, not for a bug in here.
+VERSION = "v2 2026-10-05 per-ticker-fetch"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -744,6 +749,12 @@ def process_followups(pending, resolved, ticker, F, i, company, date_label):
 # 7. MAIN
 # ─────────────────────────────────────────────────────────────────────────────
 def main():
+    print("=" * 66)
+    print(f"US SCANNER  {VERSION}")
+    print(f"  file   : {os.path.abspath(__file__)}")
+    print(f"  fetch  : yf.Ticker(t).history(period='{FETCH_DAYS}d')  "
+          f"one call per ticker")
+    print("=" * 66, flush=True)
     universe = load_universe()
     print(f"Universe: {len(universe)} tickers from {DATA_ROOT}/")
 
@@ -880,7 +891,7 @@ def main():
     counts = "/".join(f"{len(hits[s])}{CODE[s]}" for s in SIGNAL_PRIORITY
                       if ENABLED.get(s))
     head = [f"US SMALLCAP DAILY SCAN  —  {today_label}",
-            "Engine   : hardcoded thresholds in US_Scanner.py (self-contained)",
+            "Engine   : hardcoded thresholds in US_Smallcap.py (self-contained)",
             "Grading  : OFF — drop-C cost 22.7pp of return in walk-forward here",
             f"Universe : {len(universe)} tickers, {len(fresh_dates)} fetched OK"]
     if fetch_failed:
