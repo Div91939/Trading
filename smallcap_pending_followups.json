@@ -145,5 +145,68 @@
     "fire_bar": 1278,
     "fire_date": "05-10-2026",
     "entry_close": 119.03
+  },
+  {
+    "stock": "AURIONPRO",
+    "signal": "REBOUND",
+    "fire_bar": 1278,
+    "fire_date": "05-10-2026",
+    "entry_close": 598.5
+  },
+  {
+    "stock": "EUREKAFORB",
+    "signal": "REV",
+    "fire_bar": 513,
+    "fire_date": "05-10-2026",
+    "entry_close": 342.15
+  },
+  {
+    "stock": "FIEMIND",
+    "signal": "REV",
+    "fire_bar": 1278,
+    "fire_date": "05-10-2026",
+    "entry_close": 1763.1
+  },
+  {
+    "stock": "INOXGREEN",
+    "signal": "REBOUND",
+    "fire_bar": 957,
+    "fire_date": "05-10-2026",
+    "entry_close": 149.95
+  },
+  {
+    "stock": "JKLAKSHMI",
+    "signal": "REV",
+    "fire_bar": 1278,
+    "fire_date": "05-10-2026",
+    "entry_close": 466.8
+  },
+  {
+    "stock": "NEOGEN",
+    "signal": "REBOUND",
+    "fire_bar": 1278,
+    "fire_date": "05-10-2026",
+    "entry_close": 2311.2
+  },
+  {
+    "stock": "OPTIEMUS",
+    "signal": "REBOUND",
+    "fire_bar": 1277,
+    "fire_date": "05-10-2026",
+    "entry_close": 786.2
+  },
+  {
+    "stock": "PRICOLLTD",
+    "signal": "REV",
+    "fire_bar": 1277,
+    "fire_date": "05-10-2026",
+    "entry_close": 704.45
+  },
+  {
+    "stock": "STLTECH",
+    "signal": "MOM",
+    "fire_bar": 1278,
+    "fire_date": "05-10-2026",
+    "entry_close": 1001.25
   }
 ]
