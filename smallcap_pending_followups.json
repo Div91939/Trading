@@ -82,5 +82,68 @@
     "fire_bar": 782,
     "fire_date": "05-10-2026",
     "entry_close": 1007.2
+  },
+  {
+    "stock": "AURIONPRO",
+    "signal": "REV",
+    "fire_bar": 1278,
+    "fire_date": "05-10-2026",
+    "entry_close": 606.2
+  },
+  {
+    "stock": "BALAMINES",
+    "signal": "REBOUND",
+    "fire_bar": 1278,
+    "fire_date": "05-10-2026",
+    "entry_close": 1946.4
+  },
+  {
+    "stock": "EIEL",
+    "signal": "REV",
+    "fire_bar": 460,
+    "fire_date": "05-10-2026",
+    "entry_close": 178.89
+  },
+  {
+    "stock": "GREAVESCOT",
+    "signal": "REBOUND",
+    "fire_bar": 1278,
+    "fire_date": "05-10-2026",
+    "entry_close": 222.24
+  },
+  {
+    "stock": "HGINFRA",
+    "signal": "REV",
+    "fire_bar": 1278,
+    "fire_date": "05-10-2026",
+    "entry_close": 405.35
+  },
+  {
+    "stock": "INOXGREEN",
+    "signal": "REV",
+    "fire_bar": 957,
+    "fire_date": "05-10-2026",
+    "entry_close": 150.21
+  },
+  {
+    "stock": "KIRLPNU",
+    "signal": "REBOUND",
+    "fire_bar": 852,
+    "fire_date": "05-10-2026",
+    "entry_close": 671.55
+  },
+  {
+    "stock": "SAFARI",
+    "signal": "REV",
+    "fire_bar": 1276,
+    "fire_date": "05-10-2026",
+    "entry_close": 1315.0
+  },
+  {
+    "stock": "TEXRAIL",
+    "signal": "REBOUND",
+    "fire_bar": 1278,
+    "fire_date": "05-10-2026",
+    "entry_close": 119.03
   }
 ]
