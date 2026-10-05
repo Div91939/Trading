@@ -1,13 +1,17 @@
 name: Daily Stock Signals
 
+# Triggered externally (workflow_dispatch via your cron job). GitHub's own
+# schedule is deliberately not used.
 on:
   workflow_dispatch:
-  # Uncomment to run automatically after NSE close (17:00 IST = 11:30 UTC), Mon-Fri:
-  # schedule:
-  #   - cron: '30 11 * * 1-5'
 
 permissions:
   contents: write
+
+# Shared with us_signals.yml — see the note there.
+concurrency:
+  group: signals-repo-writes
+  cancel-in-progress: false
 
 jobs:
   run-signals:
@@ -15,6 +19,11 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
+        with:
+          # REQUIRED — see the note in us_signals.yml. A shallow clone has no
+          # merge base, which makes a catch-up rebase conflict on the whole
+          # tree at once.
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -29,9 +38,7 @@ jobs:
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
         run: python Combined.py
 
-      # continue-on-error so a failure in the smallcap scan can never block the
-      # commit step below. Previously a mid-run crash left CSVs updated on disk
-      # but never pushed.
+      # continue-on-error so a smallcap crash can never block the commit step.
       - name: Run Smallcap
         env:
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
@@ -41,27 +48,54 @@ jobs:
       - name: Commit updated CSVs
         if: always()
         run: |
+          set -e
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # THE FIX: Smallcap/ was never staged, so those CSVs stayed frozen
-          # while Data/ kept updating. Logs are committed too so the e-mail
-          # de-duplication actually persists between runs.
-          git add Data/ Smallcap/
-          git add -A -- '*.json'
+          # Indian files only, named explicitly — the old '*.json' glob also
+          # staged the US state files written by us_signals.yml.
+          PATHS="Data Smallcap \
+                 combined_rebound_log.json email_log.json mom_cross_log.json \
+                 pending_followups.json ticker_cache.json \
+                 smallcap_alert_log.json smallcap_email_log.json \
+                 smallcap_mom_log.json smallcap_pending_followups.json \
+                 smallcap_rebound_log.json smallcap_spred_log.json \
+                 smallcap_surge_log.json"
+          MSG="Auto: update Data + Smallcap $(date +'%d-%m-%Y %H:%M UTC')"
 
+          git add -A -- $PATHS
           if git diff --cached --quiet; then
             echo "nothing to commit"
-          else
-            git commit -m "Auto: update Data + Smallcap $(date +'%d-%m-%Y %H:%M UTC')"
-            git pull --rebase --autostash origin ${GITHUB_REF_NAME}
-            git push
+            exit 0
           fi
+          git commit -m "$MSG"
+
+          # REPLAY, NOT REBASE — see the long note in us_signals.yml. Reset onto
+          # the new tip, lay this run's own files back over it, commit that.
+          for attempt in 1 2 3 4; do
+            if git push; then
+              echo "pushed on attempt $attempt"
+              exit 0
+            fi
+            echo "push rejected - replaying this run's files onto the new tip (attempt $attempt)"
+            OURS=$(git rev-parse HEAD)
+            git fetch origin "${GITHUB_REF_NAME}"
+            git reset --hard "origin/${GITHUB_REF_NAME}"
+            git checkout "$OURS" -- $PATHS
+            git add -A -- $PATHS
+            if git diff --cached --quiet; then
+              echo "new tip already carries this run's data - nothing to push"
+              exit 0
+            fi
+            git commit -m "$MSG"
+          done
+          echo "push failed after 4 attempts"
+          exit 1
 
       - name: Report freshness
         if: always()
         run: |
-          python - <<'EOF'
+          python - <<'PY'
           import glob, os, pandas as pd
           for root in ("Data", "Smallcap"):
               files = glob.glob(os.path.join(root, "**", "*.csv"), recursive=True)
@@ -77,4 +111,4 @@ jobs:
               print(f"{root}: {len(files)} files")
               for k in sorted(latest, reverse=True)[:3]:
                   print(f"   {k.date()} : {latest[k]} files")
-          EOF
+          PY

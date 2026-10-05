@@ -2,11 +2,10 @@ name: US Stock Signals
 
 on:
   workflow_dispatch:
-  # Uncomment to run automatically after the US close. NYSE/Nasdaq close 16:00
-  # America/New_York. GitHub cron is ALWAYS UTC and has no DST awareness, so do
-  # NOT add an "EDT line" and an "EST line" — both would fire every weekday and
-  # the scan would run twice. 22:30 UTC is after the close in both halves of the
-  # year (18:30 ET under EDT, 17:30 ET under EST):
+  # Manual trigger only — you dispatch this yourself.
+  # If you ever want it automatic: GitHub cron is always UTC with no DST, so
+  # use ONE line. 22:30 UTC is after the US close in both halves of the year.
+  # Never add a second "EST line" — both would fire every weekday.
   # schedule:
   #   - cron: '30 22 * * 1-5'
 
@@ -28,16 +27,12 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # continue-on-error so a mid-run crash can never block the commit step
-      # below — same reason as the Smallcap step in daily_signals.yml. Without
-      # it a crash leaves CSVs updated on disk but never pushed.
+      # continue-on-error so a crash part way through can never block the
+      # commit step below. Without it, a mid-run failure leaves the CSVs
+      # updated on disk but never pushed, and the next run re-does the work.
       - name: Run US Smallcap
         env:
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-          # Set to 1 to re-send even if the scan already ran for this trading
-          # day. The script's same-day guard otherwise stops a duplicate email
-          # when this workflow is dispatched more than once.
-          FORCE_RUN: '0'
         continue-on-error: true
         run: python US_Smallcap.py
 
@@ -47,10 +42,8 @@ jobs:
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # us_smallcap_data/ holds the price CSVs. The JSON files carry the
-          # e-mail de-duplication log, the day-1 follow-up queue and the
-          # company-name cache — all three must persist between runs or
-          # follow-ups silently stop working.
+          # us_smallcap_data/ holds the price CSVs. The JSON state is committed
+          # too, or the day-1 follow-up queue and the fire log reset every run.
           git add us_smallcap_data/
           git add -A -- '*.json'
 
@@ -67,18 +60,18 @@ jobs:
         run: |
           python - <<'EOF'
           import glob, os, pandas as pd
-          root = "us_smallcap_data"
-          files = glob.glob(os.path.join(root, "*.csv"))
-          latest = {}
-          for f in files:
-              try:
-                  d = pd.read_csv(f, usecols=["Date"])
-                  m = pd.to_datetime(d["Date"], format="%d-%m-%Y", errors="coerce").max()
-                  if pd.notna(m):
-                      latest[m] = latest.get(m, 0) + 1
-              except Exception:
-                  pass
-          print(f"{root}: {len(files)} files")
-          for k in sorted(latest, reverse=True)[:3]:
-              print(f"   {k.date()} : {latest[k]} files")
+          for root in ("us_smallcap_data",):
+              files = glob.glob(os.path.join(root, "*.csv"))
+              latest = {}
+              for f in files:
+                  try:
+                      d = pd.read_csv(f, usecols=["Date"])
+                      m = pd.to_datetime(d["Date"], format="%d-%m-%Y", errors="coerce").max()
+                      if pd.notna(m):
+                          latest[m] = latest.get(m, 0) + 1
+                  except Exception:
+                      pass
+              print(f"{root}: {len(files)} files")
+              for k in sorted(latest, reverse=True)[:3]:
+                  print(f"   {k.date()} : {latest[k]} files")
           EOF
