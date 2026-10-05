@@ -1,17 +1,16 @@
-name: Daily Stock Signals
+name: US Stock Signals
 
-# Triggered externally (workflow_dispatch via your cron job). GitHub's own
-# schedule is deliberately not used.
 on:
   workflow_dispatch:
+  # Manual trigger only — you dispatch this yourself.
+  # If you ever want it automatic: GitHub cron is always UTC with no DST, so
+  # use ONE line. 22:30 UTC is after the US close in both halves of the year.
+  # Never add a second "EST line" — both would fire every weekday.
+  # schedule:
+  #   - cron: '30 22 * * 1-5'
 
 permissions:
   contents: write
-
-# Shared with us_signals.yml — see the note there.
-concurrency:
-  group: signals-repo-writes
-  cancel-in-progress: false
 
 jobs:
   run-signals:
@@ -19,11 +18,6 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v4
-        with:
-          # REQUIRED — see the note in us_signals.yml. A shallow clone has no
-          # merge base, which makes a catch-up rebase conflict on the whole
-          # tree at once.
-          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -33,72 +27,41 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run Combined
-        env:
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-        run: python Combined.py
-
-      # continue-on-error so a smallcap crash can never block the commit step.
-      - name: Run Smallcap
+      # continue-on-error so a crash part way through can never block the
+      # commit step below. Without it, a mid-run failure leaves the CSVs
+      # updated on disk but never pushed, and the next run re-does the work.
+      - name: Run US Scanner
         env:
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
         continue-on-error: true
-        run: python Smallcap.py
+        run: python US_Scanner.py
 
       - name: Commit updated CSVs
         if: always()
         run: |
-          set -e
           git config user.name  "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Indian files only, named explicitly — the old '*.json' glob also
-          # staged the US state files written by us_signals.yml.
-          PATHS="Data Smallcap \
-                 combined_rebound_log.json email_log.json mom_cross_log.json \
-                 pending_followups.json ticker_cache.json \
-                 smallcap_alert_log.json smallcap_email_log.json \
-                 smallcap_mom_log.json smallcap_pending_followups.json \
-                 smallcap_rebound_log.json smallcap_spred_log.json \
-                 smallcap_surge_log.json"
-          MSG="Auto: update Data + Smallcap $(date +'%d-%m-%Y %H:%M UTC')"
+          # us_smallcap_data/ holds the price CSVs. The JSON state is committed
+          # too, or the day-1 follow-up queue and the fire log reset every run.
+          git add us_smallcap_data/
+          git add -A -- '*.json'
 
-          git add -A -- $PATHS
           if git diff --cached --quiet; then
             echo "nothing to commit"
-            exit 0
+          else
+            git commit -m "Auto: update us_smallcap_data $(date +'%d-%m-%Y %H:%M UTC')"
+            git pull --rebase --autostash origin ${GITHUB_REF_NAME}
+            git push
           fi
-          git commit -m "$MSG"
-
-          # REPLAY, NOT REBASE — see the long note in us_signals.yml. Reset onto
-          # the new tip, lay this run's own files back over it, commit that.
-          for attempt in 1 2 3 4; do
-            if git push; then
-              echo "pushed on attempt $attempt"
-              exit 0
-            fi
-            echo "push rejected - replaying this run's files onto the new tip (attempt $attempt)"
-            OURS=$(git rev-parse HEAD)
-            git fetch origin "${GITHUB_REF_NAME}"
-            git reset --hard "origin/${GITHUB_REF_NAME}"
-            git checkout "$OURS" -- $PATHS
-            git add -A -- $PATHS
-            if git diff --cached --quiet; then
-              echo "new tip already carries this run's data - nothing to push"
-              exit 0
-            fi
-            git commit -m "$MSG"
-          done
-          echo "push failed after 4 attempts"
-          exit 1
 
       - name: Report freshness
         if: always()
         run: |
-          python - <<'PY'
+          python - <<'EOF'
           import glob, os, pandas as pd
-          for root in ("Data", "Smallcap"):
-              files = glob.glob(os.path.join(root, "**", "*.csv"), recursive=True)
+          for root in ("us_smallcap_data",):
+              files = glob.glob(os.path.join(root, "*.csv"))
               latest = {}
               for f in files:
                   try:
@@ -111,4 +74,4 @@ jobs:
               print(f"{root}: {len(files)} files")
               for k in sorted(latest, reverse=True)[:3]:
                   print(f"   {k.date()} : {latest[k]} files")
-          PY
+          EOF
