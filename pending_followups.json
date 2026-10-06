@@ -1,16 +1,23 @@
 [
   {
-    "stock": "PROZONER",
-    "signal": "REV",
-    "fire_bar": 1283,
-    "fire_date": "05-10-2026",
-    "entry_close": 50.85
-  },
-  {
     "stock": "RAPICUT",
     "signal": "REV",
+    "fire_bar": 1288,
+    "fire_date": "06-10-2026",
+    "entry_close": 247.1
+  },
+  {
+    "stock": "SWITCHTE",
+    "signal": "MOM",
     "fire_bar": 1287,
     "fire_date": "05-10-2026",
-    "entry_close": 256.4
+    "entry_close": 170.9
+  },
+  {
+    "stock": "SRMENERGY",
+    "signal": "MOM",
+    "fire_bar": 1284,
+    "fire_date": "06-10-2026",
+    "entry_close": 28.88
   }
 ]
