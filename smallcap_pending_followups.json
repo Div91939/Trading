@@ -82,5 +82,40 @@
     "fire_bar": 1278,
     "fire_date": "06-10-2026",
     "entry_close": 673.15
+  },
+  {
+    "stock": "BALAMINES",
+    "signal": "REBOUND",
+    "fire_bar": 1279,
+    "fire_date": "06-10-2026",
+    "entry_close": 2287.7
+  },
+  {
+    "stock": "GREAVESCOT",
+    "signal": "REBOUND",
+    "fire_bar": 1279,
+    "fire_date": "06-10-2026",
+    "entry_close": 222.78
+  },
+  {
+    "stock": "LUMAXTECH",
+    "signal": "REV",
+    "fire_bar": 1278,
+    "fire_date": "06-10-2026",
+    "entry_close": 1856.9
+  },
+  {
+    "stock": "LUMAXTECH",
+    "signal": "REBOUND",
+    "fire_bar": 1278,
+    "fire_date": "06-10-2026",
+    "entry_close": 1856.9
+  },
+  {
+    "stock": "THANGAMAYL",
+    "signal": "REBOUND",
+    "fire_bar": 1279,
+    "fire_date": "06-10-2026",
+    "entry_close": 4758.5
   }
 ]
