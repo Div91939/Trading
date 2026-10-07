@@ -1,16 +1,23 @@
 [
   {
+    "stock": "E2E",
+    "signal": "MOM",
+    "fire_bar": 1293,
+    "fire_date": "07-10-2026",
+    "entry_close": 723.3
+  },
+  {
     "stock": "RAPICUT",
     "signal": "REV",
-    "fire_bar": 1288,
-    "fire_date": "06-10-2026",
-    "entry_close": 247.1
+    "fire_bar": 1289,
+    "fire_date": "07-10-2026",
+    "entry_close": 249.5
   },
   {
     "stock": "SRMENERGY",
     "signal": "MOM",
-    "fire_bar": 1284,
-    "fire_date": "06-10-2026",
-    "entry_close": 28.88
+    "fire_bar": 1285,
+    "fire_date": "07-10-2026",
+    "entry_close": 30.32
   }
 ]
