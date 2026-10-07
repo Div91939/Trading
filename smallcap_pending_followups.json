@@ -96,5 +96,26 @@
     "fire_bar": 1280,
     "fire_date": "07-10-2026",
     "entry_close": 89.81
+  },
+  {
+    "stock": "OPTIEMUS",
+    "signal": "MOM",
+    "fire_bar": 1279,
+    "fire_date": "07-10-2026",
+    "entry_close": 861.9
+  },
+  {
+    "stock": "PRICOLLTD",
+    "signal": "REV",
+    "fire_bar": 1279,
+    "fire_date": "07-10-2026",
+    "entry_close": 661.25
+  },
+  {
+    "stock": "TEXRAIL",
+    "signal": "REV",
+    "fire_bar": 1280,
+    "fire_date": "07-10-2026",
+    "entry_close": 114.74
   }
 ]
