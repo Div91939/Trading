@@ -12,5 +12,26 @@
     "fire_bar": 1286,
     "fire_date": "08-10-2026",
     "entry_close": 31.83
+  },
+  {
+    "stock": "ADANIENT",
+    "signal": "REV",
+    "fire_bar": 1290,
+    "fire_date": "08-10-2026",
+    "entry_close": 2590.0
+  },
+  {
+    "stock": "ADANIPOWER",
+    "signal": "REV",
+    "fire_bar": 1292,
+    "fire_date": "08-10-2026",
+    "entry_close": 187.64
+  },
+  {
+    "stock": "EDELWEISS",
+    "signal": "REV",
+    "fire_bar": 1290,
+    "fire_date": "08-10-2026",
+    "entry_close": 127.9
   }
 ]

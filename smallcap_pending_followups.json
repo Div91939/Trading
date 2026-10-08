@@ -124,5 +124,131 @@
     "fire_bar": 1281,
     "fire_date": "08-10-2026",
     "entry_close": 86.97
+  },
+  {
+    "stock": "AARTIPHARM",
+    "signal": "REV",
+    "fire_bar": 913,
+    "fire_date": "08-10-2026",
+    "entry_close": 879.05
+  },
+  {
+    "stock": "AVALON",
+    "signal": "REBOUND",
+    "fire_bar": 862,
+    "fire_date": "08-10-2026",
+    "entry_close": 2302.0
+  },
+  {
+    "stock": "CUPID",
+    "signal": "MOM",
+    "fire_bar": 1281,
+    "fire_date": "08-10-2026",
+    "entry_close": 356.65
+  },
+  {
+    "stock": "EDELWEISS",
+    "signal": "REV",
+    "fire_bar": 1281,
+    "fire_date": "08-10-2026",
+    "entry_close": 127.71
+  },
+  {
+    "stock": "EMBDL",
+    "signal": "REBOUND",
+    "fire_bar": 1281,
+    "fire_date": "08-10-2026",
+    "entry_close": 56.26
+  },
+  {
+    "stock": "HCC",
+    "signal": "REV",
+    "fire_bar": 1281,
+    "fire_date": "08-10-2026",
+    "entry_close": 18.75
+  },
+  {
+    "stock": "LUMAXTECH",
+    "signal": "REV",
+    "fire_bar": 1280,
+    "fire_date": "08-10-2026",
+    "entry_close": 1770.2
+  },
+  {
+    "stock": "MARKSANS",
+    "signal": "REV",
+    "fire_bar": 1281,
+    "fire_date": "08-10-2026",
+    "entry_close": 307.8
+  },
+  {
+    "stock": "MARKSANS",
+    "signal": "REBOUND",
+    "fire_bar": 1281,
+    "fire_date": "08-10-2026",
+    "entry_close": 307.8
+  },
+  {
+    "stock": "OPTIEMUS",
+    "signal": "REBOUND",
+    "fire_bar": 1280,
+    "fire_date": "08-10-2026",
+    "entry_close": 816.85
+  },
+  {
+    "stock": "PRICOLLTD",
+    "signal": "REV",
+    "fire_bar": 1280,
+    "fire_date": "08-10-2026",
+    "entry_close": 650.1
+  },
+  {
+    "stock": "SMLMAH",
+    "signal": "REV",
+    "fire_bar": 1281,
+    "fire_date": "08-10-2026",
+    "entry_close": 5850.5
+  },
+  {
+    "stock": "SENCO",
+    "signal": "REBOUND",
+    "fire_bar": 801,
+    "fire_date": "08-10-2026",
+    "entry_close": 337.1
+  },
+  {
+    "stock": "SHAKTIPUMP",
+    "signal": "REV",
+    "fire_bar": 1281,
+    "fire_date": "08-10-2026",
+    "entry_close": 426.65
+  },
+  {
+    "stock": "SUPRIYA",
+    "signal": "REV",
+    "fire_bar": 1183,
+    "fire_date": "08-10-2026",
+    "entry_close": 861.35
+  },
+  {
+    "stock": "SUPRIYA",
+    "signal": "REBOUND",
+    "fire_bar": 1183,
+    "fire_date": "08-10-2026",
+    "entry_close": 861.35
+  },
+  {
+    "stock": "DBREALTY",
+    "signal": "REBOUND",
+    "fire_bar": 1281,
+    "fire_date": "08-10-2026",
+    "entry_close": 84.72
+  },
+  {
+    "stock": "WEBELSOLAR",
+    "signal": "REBOUND",
+    "fire_bar": 1281,
+    "fire_date": "08-10-2026",
+    "entry_close": 66.4
   }
 ]
