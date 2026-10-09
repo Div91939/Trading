@@ -19,5 +19,12 @@
     "fire_bar": 1292,
     "fire_date": "09-10-2026",
     "entry_close": 252.5
+  },
+  {
+    "stock": "ADANIENT",
+    "signal": "REV",
+    "fire_bar": 1291,
+    "fire_date": "09-10-2026",
+    "entry_close": 2634.4
   }
 ]

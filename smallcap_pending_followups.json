@@ -117,5 +117,19 @@
     "fire_bar": 1282,
     "fire_date": "09-10-2026",
     "entry_close": 66.81
+  },
+  {
+    "stock": "OPTIEMUS",
+    "signal": "REBOUND",
+    "fire_bar": 1281,
+    "fire_date": "09-10-2026",
+    "entry_close": 815.85
+  },
+  {
+    "stock": "PCJEWELLER",
+    "signal": "MOM",
+    "fire_bar": 1282,
+    "fire_date": "09-10-2026",
+    "entry_close": 14.81
   }
 ]
