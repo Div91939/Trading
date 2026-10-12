@@ -110,5 +110,26 @@
     "fire_bar": 1283,
     "fire_date": "12-10-2026",
     "entry_close": 155.75
+  },
+  {
+    "stock": "CCAVENUE",
+    "signal": "REV",
+    "fire_bar": 1283,
+    "fire_date": "12-10-2026",
+    "entry_close": 13.83
+  },
+  {
+    "stock": "CCAVENUE",
+    "signal": "REBOUND",
+    "fire_bar": 1283,
+    "fire_date": "12-10-2026",
+    "entry_close": 13.83
+  },
+  {
+    "stock": "LLOYDSENT",
+    "signal": "REV",
+    "fire_bar": 493,
+    "fire_date": "12-10-2026",
+    "entry_close": 71.56
   }
 ]
