@@ -131,5 +131,26 @@
     "fire_bar": 1284,
     "fire_date": "13-10-2026",
     "entry_close": 154.6
+  },
+  {
+    "stock": "SHILPAMED",
+    "signal": "REBOUND",
+    "fire_bar": 1284,
+    "fire_date": "13-10-2026",
+    "entry_close": 973.6
+  },
+  {
+    "stock": "TIPSMUSIC",
+    "signal": "MOM",
+    "fire_bar": 1284,
+    "fire_date": "13-10-2026",
+    "entry_close": 706.95
+  },
+  {
+    "stock": "V2RETAIL",
+    "signal": "REBOUND",
+    "fire_bar": 1284,
+    "fire_date": "13-10-2026",
+    "entry_close": 151.45
   }
 ]
