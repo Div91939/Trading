@@ -1,23 +1,9 @@
 [
   {
-    "stock": "ADANIENT",
-    "signal": "REV",
-    "fire_bar": 1292,
-    "fire_date": "12-10-2026",
-    "entry_close": 2630.0
-  },
-  {
     "stock": "ADANIPOWER",
     "signal": "REV",
-    "fire_bar": 1294,
-    "fire_date": "12-10-2026",
-    "entry_close": 185.9
-  },
-  {
-    "stock": "ORIRAIL",
-    "signal": "REV",
-    "fire_bar": 1292,
-    "fire_date": "12-10-2026",
-    "entry_close": 112.0
+    "fire_bar": 1295,
+    "fire_date": "13-10-2026",
+    "entry_close": 185.75
   }
 ]
