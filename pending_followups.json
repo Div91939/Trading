@@ -1,16 +1,1 @@
-[
-  {
-    "stock": "ADANIPOWER",
-    "signal": "REV",
-    "fire_bar": 1295,
-    "fire_date": "13-10-2026",
-    "entry_close": 185.75
-  },
-  {
-    "stock": "ORIRAIL",
-    "signal": "REV",
-    "fire_bar": 1293,
-    "fire_date": "13-10-2026",
-    "entry_close": 109.85
-  }
-]
+[]
