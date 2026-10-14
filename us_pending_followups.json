@@ -392,171 +392,171 @@
     "entry_close": 37.1
   },
   {
-    "ticker": "ACHC",
-    "signal": "MOM",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 30.08
-  },
-  {
     "ticker": "ACLS",
     "signal": "REV",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 127.63
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 124.88
+  },
+  {
+    "ticker": "ACMR",
+    "signal": "SPRED",
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 64.83
   },
   {
     "ticker": "ACMR",
     "signal": "REV",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 68.1
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 64.83
   },
   {
     "ticker": "ALHC",
-    "signal": "A5",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 8.09
+    "signal": "MOM",
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 8.3
   },
   {
     "ticker": "CBRL",
     "signal": "MOM",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 58.74
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 61.25
   },
   {
     "ticker": "CLSK",
     "signal": "REV",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 10.3
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 10.15
+  },
+  {
+    "ticker": "CVI",
+    "signal": "A5",
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 63.12
   },
   {
     "ticker": "DIOD",
     "signal": "REV",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 90.62
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 90.72
+  },
+  {
+    "ticker": "DK",
+    "signal": "MOM",
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 80.75
+  },
+  {
+    "ticker": "ETSY",
+    "signal": "SURGE",
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 79.28
   },
   {
     "ticker": "FORM",
     "signal": "REV",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 130.28
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 128.09
+  },
+  {
+    "ticker": "ICHR",
+    "signal": "SPRED",
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 51.57
   },
   {
     "ticker": "ICHR",
     "signal": "REV",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 54.38
-  },
-  {
-    "ticker": "LQDA",
-    "signal": "SPRED",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 27.67
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 51.57
   },
   {
     "ticker": "LUMN",
     "signal": "REV",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 5.05
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 4.99
   },
   {
     "ticker": "MARA",
     "signal": "REV",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 9.44
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 9.11
   },
   {
     "ticker": "MXL",
     "signal": "REV",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 88.99
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 88.64
+  },
+  {
+    "ticker": "PARR",
+    "signal": "A5",
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 89.88
   },
   {
     "ticker": "PENG",
     "signal": "SPRED",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 79.155
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 78.2
   },
   {
     "ticker": "PENG",
     "signal": "SURGE",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 79.155
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 78.2
   },
   {
-    "ticker": "PENG",
-    "signal": "MOM",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 79.155
-  },
-  {
-    "ticker": "SDGR",
-    "signal": "SPRED",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 25.91
+    "ticker": "RCUS",
+    "signal": "REV",
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 22.51
   },
   {
     "ticker": "SDGR",
     "signal": "REV",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 25.91
-  },
-  {
-    "ticker": "SEI",
-    "signal": "MOM",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 79.28
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 25.89
   },
   {
     "ticker": "SHAK",
-    "signal": "SURGE",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 69.34
-  },
-  {
-    "ticker": "SKY",
-    "signal": "REV",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 78.52
+    "signal": "MOM",
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 71.06
   },
   {
     "ticker": "SPHR",
     "signal": "REV",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 104.13
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 102.46
   },
   {
-    "ticker": "VSAT",
-    "signal": "SPRED",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 67.66
-  },
-  {
-    "ticker": "VSXY",
-    "signal": "A5",
-    "fire_bar": 1262,
-    "fire_date": "12-10-2026",
-    "entry_close": 88.59
+    "ticker": "WRBY",
+    "signal": "MOM",
+    "fire_bar": 1263,
+    "fire_date": "13-10-2026",
+    "entry_close": 26.52
   }
 ]
