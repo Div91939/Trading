@@ -103,5 +103,12 @@
     "fire_bar": 1285,
     "fire_date": "14-10-2026",
     "entry_close": 153.82
+  },
+  {
+    "stock": "AARTIPHARM",
+    "signal": "REBOUND",
+    "fire_bar": 917,
+    "fire_date": "14-10-2026",
+    "entry_close": 867.65
   }
 ]
