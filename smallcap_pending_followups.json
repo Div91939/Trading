@@ -28,87 +28,52 @@
     "entry_close": 13.83
   },
   {
-    "stock": "GREAVESCOT",
+    "stock": "INOXGREEN",
     "signal": "REBOUND",
-    "fire_bar": 1285,
-    "fire_date": "14-10-2026",
-    "entry_close": 212.88
+    "fire_bar": 965,
+    "fire_date": "15-10-2026",
+    "entry_close": 123.46
   },
   {
-    "stock": "INOXGREEN",
+    "stock": "KRN",
     "signal": "REV",
-    "fire_bar": 964,
-    "fire_date": "14-10-2026",
-    "entry_close": 123.8
+    "fire_bar": 507,
+    "fire_date": "15-10-2026",
+    "entry_close": 1283.5
   },
   {
-    "stock": "INOXGREEN",
+    "stock": "KRN",
     "signal": "REBOUND",
-    "fire_bar": 964,
-    "fire_date": "14-10-2026",
-    "entry_close": 123.8
-  },
-  {
-    "stock": "KPIGREEN",
-    "signal": "REBOUND",
-    "fire_bar": 1285,
-    "fire_date": "14-10-2026",
-    "entry_close": 328.4
+    "fire_bar": 507,
+    "fire_date": "15-10-2026",
+    "entry_close": 1283.5
   },
   {
     "stock": "IXIGO",
     "signal": "REV",
-    "fire_bar": 580,
-    "fire_date": "14-10-2026",
-    "entry_close": 141.63
+    "fire_bar": 581,
+    "fire_date": "15-10-2026",
+    "entry_close": 140.29
   },
   {
     "stock": "LLOYDSENGG",
     "signal": "REBOUND",
-    "fire_bar": 1285,
-    "fire_date": "14-10-2026",
-    "entry_close": 93.54
+    "fire_bar": 1286,
+    "fire_date": "15-10-2026",
+    "entry_close": 91.54
   },
   {
-    "stock": "LLOYDSENT",
+    "stock": "MTARTECH",
     "signal": "REBOUND",
-    "fire_bar": 495,
-    "fire_date": "14-10-2026",
-    "entry_close": 71.75
-  },
-  {
-    "stock": "OPTIEMUS",
-    "signal": "REBOUND",
-    "fire_bar": 1284,
-    "fire_date": "14-10-2026",
-    "entry_close": 818.25
-  },
-  {
-    "stock": "STLTECH",
-    "signal": "REBOUND",
-    "fire_bar": 1285,
-    "fire_date": "14-10-2026",
-    "entry_close": 941.0
-  },
-  {
-    "stock": "TEXRAIL",
-    "signal": "REBOUND",
-    "fire_bar": 1285,
-    "fire_date": "14-10-2026",
-    "entry_close": 114.8
+    "fire_bar": 1286,
+    "fire_date": "15-10-2026",
+    "entry_close": 7288.5
   },
   {
     "stock": "V2RETAIL",
     "signal": "REBOUND",
-    "fire_bar": 1285,
-    "fire_date": "14-10-2026",
-    "entry_close": 153.82
-  },
-  {
-    "stock": "AARTIPHARM",
-    "signal": "REBOUND",
-    "fire_bar": 917,
-    "fire_date": "14-10-2026",
-    "entry_close": 867.65
+    "fire_bar": 1286,
+    "fire_date": "15-10-2026",
+    "entry_close": 165.76
   }
 ]
