@@ -75,5 +75,68 @@
     "fire_bar": 1286,
     "fire_date": "15-10-2026",
     "entry_close": 165.76
+  },
+  {
+    "stock": "AXISCADES",
+    "signal": "REBOUND",
+    "fire_bar": 1286,
+    "fire_date": "15-10-2026",
+    "entry_close": 2020.5
+  },
+  {
+    "stock": "AVALON",
+    "signal": "REV",
+    "fire_bar": 867,
+    "fire_date": "15-10-2026",
+    "entry_close": 2046.9
+  },
+  {
+    "stock": "AVALON",
+    "signal": "REBOUND",
+    "fire_bar": 867,
+    "fire_date": "15-10-2026",
+    "entry_close": 2046.9
+  },
+  {
+    "stock": "BBOX",
+    "signal": "REBOUND",
+    "fire_bar": 1286,
+    "fire_date": "15-10-2026",
+    "entry_close": 880.2
+  },
+  {
+    "stock": "LLOYDSENT",
+    "signal": "REBOUND",
+    "fire_bar": 496,
+    "fire_date": "15-10-2026",
+    "entry_close": 70.31
+  },
+  {
+    "stock": "OPTIEMUS",
+    "signal": "REBOUND",
+    "fire_bar": 1285,
+    "fire_date": "15-10-2026",
+    "entry_close": 760.0
+  },
+  {
+    "stock": "QPOWER",
+    "signal": "REBOUND",
+    "fire_bar": 407,
+    "fire_date": "15-10-2026",
+    "entry_close": 1433.8
+  },
+  {
+    "stock": "SHILPAMED",
+    "signal": "REBOUND",
+    "fire_bar": 1286,
+    "fire_date": "15-10-2026",
+    "entry_close": 922.1
+  },
+  {
+    "stock": "TEXRAIL",
+    "signal": "REBOUND",
+    "fire_bar": 1286,
+    "fire_date": "15-10-2026",
+    "entry_close": 112.89
   }
 ]
