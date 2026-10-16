@@ -89,5 +89,26 @@
     "fire_bar": 1287,
     "fire_date": "16-10-2026",
     "entry_close": 165.17
+  },
+  {
+    "stock": "AVALON",
+    "signal": "REV",
+    "fire_bar": 868,
+    "fire_date": "16-10-2026",
+    "entry_close": 1987.3
+  },
+  {
+    "stock": "INOXGREEN",
+    "signal": "REV",
+    "fire_bar": 966,
+    "fire_date": "16-10-2026",
+    "entry_close": 118.69
+  },
+  {
+    "stock": "SHILPAMED",
+    "signal": "REBOUND",
+    "fire_bar": 1287,
+    "fire_date": "16-10-2026",
+    "entry_close": 937.6
   }
 ]

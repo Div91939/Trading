@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "stock": "SRMENERGY",
+    "signal": "MOM",
+    "fire_bar": 1292,
+    "fire_date": "16-10-2026",
+    "entry_close": 33.06
+  }
+]
