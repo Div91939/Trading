@@ -14,20 +14,6 @@
     "entry_close": 4314.2
   },
   {
-    "stock": "CCAVENUE",
-    "signal": "REV",
-    "fire_bar": 1283,
-    "fire_date": "12-10-2026",
-    "entry_close": 13.83
-  },
-  {
-    "stock": "CCAVENUE",
-    "signal": "REBOUND",
-    "fire_bar": 1283,
-    "fire_date": "12-10-2026",
-    "entry_close": 13.83
-  },
-  {
     "stock": "AXISCADES",
     "signal": "REBOUND",
     "fire_bar": 1287,
