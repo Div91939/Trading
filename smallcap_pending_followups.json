@@ -82,5 +82,61 @@
     "fire_bar": 1288,
     "fire_date": "19-10-2026",
     "entry_close": 776.1
+  },
+  {
+    "stock": "AURIONPRO",
+    "signal": "REBOUND",
+    "fire_bar": 1288,
+    "fire_date": "19-10-2026",
+    "entry_close": 589.85
+  },
+  {
+    "stock": "ICIL",
+    "signal": "REBOUND",
+    "fire_bar": 1288,
+    "fire_date": "19-10-2026",
+    "entry_close": 423.8
+  },
+  {
+    "stock": "LLOYDSENGG",
+    "signal": "REBOUND",
+    "fire_bar": 1288,
+    "fire_date": "19-10-2026",
+    "entry_close": 94.31
+  },
+  {
+    "stock": "MANORAMA",
+    "signal": "REV",
+    "fire_bar": 1064,
+    "fire_date": "19-10-2026",
+    "entry_close": 1796.8
+  },
+  {
+    "stock": "QPOWER",
+    "signal": "REBOUND",
+    "fire_bar": 409,
+    "fire_date": "19-10-2026",
+    "entry_close": 1407.1
+  },
+  {
+    "stock": "SHILPAMED",
+    "signal": "REV",
+    "fire_bar": 1288,
+    "fire_date": "19-10-2026",
+    "entry_close": 876.2
+  },
+  {
+    "stock": "RENUKA",
+    "signal": "REV",
+    "fire_bar": 1288,
+    "fire_date": "19-10-2026",
+    "entry_close": 20.69
+  },
+  {
+    "stock": "WEBELSOLAR",
+    "signal": "REBOUND",
+    "fire_bar": 1288,
+    "fire_date": "19-10-2026",
+    "entry_close": 65.33
   }
 ]
