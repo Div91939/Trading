@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "stock": "DOLATALGO",
+    "signal": "REV",
+    "fire_bar": 1301,
+    "fire_date": "21-10-2026",
+    "entry_close": 57.19
+  },
+  {
+    "stock": "EDELWEISS",
+    "signal": "REV",
+    "fire_bar": 1298,
+    "fire_date": "21-10-2026",
+    "entry_close": 124.4
+  }
+]
