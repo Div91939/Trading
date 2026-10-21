@@ -79,7 +79,7 @@ PENDING_PATH = "us_pending_followups.json"
 
 EMAIL_SENDER   = "tradingscript1357@gmail.com"
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
-EMAIL_RECEIVER = "divyanshdewan@gmail.com"
+EMAIL_RECEIVER = ""#divyanshdewan@gmail.com"
 
 # Bars pulled per ticker per run. 1 would match Smallcap.py exactly, but a
 # missed run would then leave a permanent hole in the series and every
