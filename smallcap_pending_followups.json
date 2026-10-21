@@ -16,127 +16,120 @@
   {
     "stock": "AVALON",
     "signal": "REBOUND",
-    "fire_bar": 869,
-    "fire_date": "19-10-2026",
-    "entry_close": 2017.5
+    "fire_bar": 870,
+    "fire_date": "21-10-2026",
+    "entry_close": 2009.3
   },
   {
     "stock": "CUPID",
     "signal": "REBOUND",
-    "fire_bar": 1288,
-    "fire_date": "19-10-2026",
-    "entry_close": 345.3
+    "fire_bar": 1289,
+    "fire_date": "21-10-2026",
+    "entry_close": 338.9
   },
   {
-    "stock": "INOXGREEN",
-    "signal": "REBOUND",
-    "fire_bar": 967,
-    "fire_date": "19-10-2026",
-    "entry_close": 118.64
-  },
-  {
-    "stock": "KRN",
+    "stock": "ICIL",
     "signal": "REV",
-    "fire_bar": 509,
-    "fire_date": "19-10-2026",
-    "entry_close": 1075.0
-  },
-  {
-    "stock": "KRN",
-    "signal": "REBOUND",
-    "fire_bar": 509,
-    "fire_date": "19-10-2026",
-    "entry_close": 1075.0
-  },
-  {
-    "stock": "MTARTECH",
-    "signal": "REBOUND",
-    "fire_bar": 1288,
-    "fire_date": "19-10-2026",
-    "entry_close": 6851.0
-  },
-  {
-    "stock": "PCJEWELLER",
-    "signal": "MOM",
-    "fire_bar": 1288,
-    "fire_date": "19-10-2026",
-    "entry_close": 17.96
-  },
-  {
-    "stock": "SHILPAMED",
-    "signal": "REBOUND",
-    "fire_bar": 1288,
-    "fire_date": "19-10-2026",
-    "entry_close": 915.6
-  },
-  {
-    "stock": "STLTECH",
-    "signal": "REBOUND",
-    "fire_bar": 1288,
-    "fire_date": "19-10-2026",
-    "entry_close": 859.0
-  },
-  {
-    "stock": "TIPSMUSIC",
-    "signal": "MOM",
-    "fire_bar": 1288,
-    "fire_date": "19-10-2026",
-    "entry_close": 776.1
-  },
-  {
-    "stock": "AURIONPRO",
-    "signal": "REBOUND",
-    "fire_bar": 1288,
-    "fire_date": "19-10-2026",
-    "entry_close": 589.85
+    "fire_bar": 1289,
+    "fire_date": "21-10-2026",
+    "entry_close": 409.05
   },
   {
     "stock": "ICIL",
     "signal": "REBOUND",
-    "fire_bar": 1288,
-    "fire_date": "19-10-2026",
-    "entry_close": 423.8
+    "fire_bar": 1289,
+    "fire_date": "21-10-2026",
+    "entry_close": 409.05
   },
   {
-    "stock": "LLOYDSENGG",
+    "stock": "INOXGREEN",
     "signal": "REBOUND",
-    "fire_bar": 1288,
-    "fire_date": "19-10-2026",
-    "entry_close": 94.31
+    "fire_bar": 968,
+    "fire_date": "21-10-2026",
+    "entry_close": 116.26
+  },
+  {
+    "stock": "KRN",
+    "signal": "REV",
+    "fire_bar": 510,
+    "fire_date": "21-10-2026",
+    "entry_close": 1054.6
+  },
+  {
+    "stock": "KRN",
+    "signal": "REBOUND",
+    "fire_bar": 510,
+    "fire_date": "21-10-2026",
+    "entry_close": 1054.6
+  },
+  {
+    "stock": "IXIGO",
+    "signal": "REBOUND",
+    "fire_bar": 584,
+    "fire_date": "21-10-2026",
+    "entry_close": 148.36
+  },
+  {
+    "stock": "MTARTECH",
+    "signal": "REBOUND",
+    "fire_bar": 1289,
+    "fire_date": "21-10-2026",
+    "entry_close": 6929.0
   },
   {
     "stock": "MANORAMA",
     "signal": "REV",
-    "fire_bar": 1064,
-    "fire_date": "19-10-2026",
-    "entry_close": 1796.8
+    "fire_bar": 1065,
+    "fire_date": "21-10-2026",
+    "entry_close": 1728.2
   },
   {
-    "stock": "QPOWER",
+    "stock": "PRAJIND",
+    "signal": "REV",
+    "fire_bar": 1289,
+    "fire_date": "21-10-2026",
+    "entry_close": 267.2
+  },
+  {
+    "stock": "SMLMAH",
+    "signal": "REV",
+    "fire_bar": 1289,
+    "fire_date": "21-10-2026",
+    "entry_close": 5501.0
+  },
+  {
+    "stock": "SMLMAH",
     "signal": "REBOUND",
-    "fire_bar": 409,
-    "fire_date": "19-10-2026",
-    "entry_close": 1407.1
+    "fire_bar": 1289,
+    "fire_date": "21-10-2026",
+    "entry_close": 5501.0
   },
   {
     "stock": "SHILPAMED",
-    "signal": "REV",
-    "fire_bar": 1288,
-    "fire_date": "19-10-2026",
-    "entry_close": 876.2
+    "signal": "REBOUND",
+    "fire_bar": 1289,
+    "fire_date": "21-10-2026",
+    "entry_close": 875.6
   },
   {
     "stock": "RENUKA",
     "signal": "REV",
-    "fire_bar": 1288,
-    "fire_date": "19-10-2026",
-    "entry_close": 20.69
+    "fire_bar": 1289,
+    "fire_date": "21-10-2026",
+    "entry_close": 20.24
+  },
+  {
+    "stock": "STLTECH",
+    "signal": "REBOUND",
+    "fire_bar": 1289,
+    "fire_date": "21-10-2026",
+    "entry_close": 868.05
   },
   {
     "stock": "WEBELSOLAR",
     "signal": "REBOUND",
-    "fire_bar": 1288,
-    "fire_date": "19-10-2026",
-    "entry_close": 65.33
+    "fire_bar": 1289,
+    "fire_date": "21-10-2026",
+    "entry_close": 63.47
   }
 ]
