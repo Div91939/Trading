@@ -67,7 +67,7 @@ import grading
 LOG_PATH       = "email_log.json"
 EMAIL_SENDER   = "tradingscript1357@gmail.com"
 EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")
-EMAIL_RECEIVER = "divyanshdewan@gmail.com,mohanchirag.26@gmail.com,prateeksinha2026@gmail.com,nishant02206@gmail.com,reuel.amin123@gmail.com"
+EMAIL_RECEIVER = ""#divyanshdewan@gmail.com,mohanchirag.26@gmail.com,prateeksinha2026@gmail.com,nishant02206@gmail.com,reuel.amin123@gmail.com"
 
 # Regime detection — fixed across all stocks
 REG_MA_SLOPE = 0.3    # MA50 slope threshold (% over 20 bars)
