@@ -278,5 +278,75 @@
     "fire_bar": 1290,
     "fire_date": "22-10-2026",
     "entry_close": 61.35
+  },
+  {
+    "stock": "ASHAPURMIN",
+    "signal": "REV",
+    "fire_bar": 1290,
+    "fire_date": "22-10-2026",
+    "entry_close": 432.7
+  },
+  {
+    "stock": "BBOX",
+    "signal": "REBOUND",
+    "fire_bar": 1290,
+    "fire_date": "22-10-2026",
+    "entry_close": 881.9
+  },
+  {
+    "stock": "EDELWEISS",
+    "signal": "REV",
+    "fire_bar": 1290,
+    "fire_date": "22-10-2026",
+    "entry_close": 119.77
+  },
+  {
+    "stock": "GRWRHITECH",
+    "signal": "REBOUND",
+    "fire_bar": 1167,
+    "fire_date": "22-10-2026",
+    "entry_close": 6659.5
+  },
+  {
+    "stock": "GNFC",
+    "signal": "REV",
+    "fire_bar": 1290,
+    "fire_date": "22-10-2026",
+    "entry_close": 513.1
+  },
+  {
+    "stock": "IMFA",
+    "signal": "REV",
+    "fire_bar": 1290,
+    "fire_date": "22-10-2026",
+    "entry_close": 1095.1
+  },
+  {
+    "stock": "LLOYDSENGG",
+    "signal": "REV",
+    "fire_bar": 1290,
+    "fire_date": "22-10-2026",
+    "entry_close": 87.32
+  },
+  {
+    "stock": "LLOYDSENGG",
+    "signal": "REBOUND",
+    "fire_bar": 1290,
+    "fire_date": "22-10-2026",
+    "entry_close": 87.32
+  },
+  {
+    "stock": "REFEX",
+    "signal": "REV",
+    "fire_bar": 1289,
+    "fire_date": "22-10-2026",
+    "entry_close": 235.45
+  },
+  {
+    "stock": "RENUKA",
+    "signal": "REBOUND",
+    "fire_bar": 1290,
+    "fire_date": "22-10-2026",
+    "entry_close": 19.64
   }
 ]
