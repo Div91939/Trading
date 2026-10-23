@@ -1,37 +1,58 @@
 [
   {
+    "stock": "ADANIGREEN",
+    "signal": "REV",
+    "fire_bar": 1300,
+    "fire_date": "23-10-2026",
+    "entry_close": 1224.3
+  },
+  {
+    "stock": "ADANIPOWER",
+    "signal": "REV",
+    "fire_bar": 1302,
+    "fire_date": "23-10-2026",
+    "entry_close": 178.88
+  },
+  {
+    "stock": "DOLATALGO",
+    "signal": "REV",
+    "fire_bar": 1303,
+    "fire_date": "23-10-2026",
+    "entry_close": 56.15
+  },
+  {
     "stock": "EDELWEISS",
     "signal": "REV",
-    "fire_bar": 1299,
-    "fire_date": "22-10-2026",
-    "entry_close": 123.25
+    "fire_bar": 1300,
+    "fire_date": "23-10-2026",
+    "entry_close": 116.75
   },
   {
     "stock": "GRSE",
     "signal": "REV",
-    "fire_bar": 1299,
-    "fire_date": "22-10-2026",
-    "entry_close": 1925.0
-  },
-  {
-    "stock": "HINDCOPPER",
-    "signal": "REV",
-    "fire_bar": 1299,
-    "fire_date": "22-10-2026",
-    "entry_close": 412.9
+    "fire_bar": 1300,
+    "fire_date": "23-10-2026",
+    "entry_close": 1892.5
   },
   {
     "stock": "REFEX",
     "signal": "REV",
-    "fire_bar": 1300,
-    "fire_date": "22-10-2026",
-    "entry_close": 238.25
+    "fire_bar": 1301,
+    "fire_date": "23-10-2026",
+    "entry_close": 229.7
   },
   {
     "stock": "PARAS",
     "signal": "REV",
-    "fire_bar": 1246,
-    "fire_date": "22-10-2026",
-    "entry_close": 1188.9
+    "fire_bar": 1247,
+    "fire_date": "23-10-2026",
+    "entry_close": 1163.7
+  },
+  {
+    "stock": "ADANIENSOL",
+    "signal": "REV",
+    "fire_bar": 1295,
+    "fire_date": "23-10-2026",
+    "entry_close": 1252.9
   }
 ]
