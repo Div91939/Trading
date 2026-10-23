@@ -54,5 +54,19 @@
     "fire_bar": 1295,
     "fire_date": "23-10-2026",
     "entry_close": 1252.9
+  },
+  {
+    "stock": "HINDCOPPER",
+    "signal": "REV",
+    "fire_bar": 1300,
+    "fire_date": "23-10-2026",
+    "entry_close": 399.05
+  },
+  {
+    "stock": "TATATECH",
+    "signal": "REV",
+    "fire_bar": 712,
+    "fire_date": "23-10-2026",
+    "entry_close": 657.35
   }
 ]

@@ -509,5 +509,229 @@
     "fire_bar": 763,
     "fire_date": "23-10-2026",
     "entry_close": 154.27
+  },
+  {
+    "stock": "APOLLO",
+    "signal": "REBOUND",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 374.75
+  },
+  {
+    "stock": "ASHAPURMIN",
+    "signal": "REBOUND",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 420.5
+  },
+  {
+    "stock": "BBOX",
+    "signal": "REV",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 805.1
+  },
+  {
+    "stock": "BLUESTONE",
+    "signal": "REBOUND",
+    "fire_bar": 293,
+    "fire_date": "23-10-2026",
+    "entry_close": 731.2
+  },
+  {
+    "stock": "EMBDL",
+    "signal": "REV",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 48.44
+  },
+  {
+    "stock": "EMBDL",
+    "signal": "REBOUND",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 48.44
+  },
+  {
+    "stock": "EIEL",
+    "signal": "REBOUND",
+    "fire_bar": 473,
+    "fire_date": "23-10-2026",
+    "entry_close": 161.39
+  },
+  {
+    "stock": "HCC",
+    "signal": "REBOUND",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 17.38
+  },
+  {
+    "stock": "ICIL",
+    "signal": "REBOUND",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 394.15
+  },
+  {
+    "stock": "JAIBALAJI",
+    "signal": "REV",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 63.45
+  },
+  {
+    "stock": "JAYNECOIND",
+    "signal": "REBOUND",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 88.69
+  },
+  {
+    "stock": "KPIGREEN",
+    "signal": "REBOUND",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 287.3
+  },
+  {
+    "stock": "MARKSANS",
+    "signal": "REV",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 286.9
+  },
+  {
+    "stock": "NETWORK18",
+    "signal": "REV",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 23.5
+  },
+  {
+    "stock": "PTC",
+    "signal": "REV",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 133.37
+  },
+  {
+    "stock": "QPOWER",
+    "signal": "REV",
+    "fire_bar": 412,
+    "fire_date": "23-10-2026",
+    "entry_close": 1305.4
+  },
+  {
+    "stock": "QPOWER",
+    "signal": "REBOUND",
+    "fire_bar": 412,
+    "fire_date": "23-10-2026",
+    "entry_close": 1305.4
+  },
+  {
+    "stock": "REFEX",
+    "signal": "REBOUND",
+    "fire_bar": 1290,
+    "fire_date": "23-10-2026",
+    "entry_close": 226.55
+  },
+  {
+    "stock": "SHAKTIPUMP",
+    "signal": "REV",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 386.6
+  },
+  {
+    "stock": "RENUKA",
+    "signal": "REBOUND",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 18.7
+  },
+  {
+    "stock": "SKIPPER",
+    "signal": "REV",
+    "fire_bar": 1290,
+    "fire_date": "23-10-2026",
+    "entry_close": 473.9
+  },
+  {
+    "stock": "SWSOLAR",
+    "signal": "REBOUND",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 142.13
+  },
+  {
+    "stock": "TEXRAIL",
+    "signal": "REBOUND",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 98.5
+  },
+  {
+    "stock": "THOMASCOOK",
+    "signal": "REBOUND",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 88.37
+  },
+  {
+    "stock": "TRANSRAILL",
+    "signal": "REV",
+    "fire_bar": 454,
+    "fire_date": "23-10-2026",
+    "entry_close": 428.8
+  },
+  {
+    "stock": "UJJIVANSFB",
+    "signal": "REV",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 58.1
+  },
+  {
+    "stock": "UJJIVANSFB",
+    "signal": "REBOUND",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 58.1
+  },
+  {
+    "stock": "V2RETAIL",
+    "signal": "REBOUND",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 162.81
+  },
+  {
+    "stock": "DBREALTY",
+    "signal": "REV",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 78.07
+  },
+  {
+    "stock": "DBREALTY",
+    "signal": "REBOUND",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 78.07
+  },
+  {
+    "stock": "VIYASH",
+    "signal": "REBOUND",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 204.18
+  },
+  {
+    "stock": "VOLTAMP",
+    "signal": "REV",
+    "fire_bar": 1291,
+    "fire_date": "23-10-2026",
+    "entry_close": 9615.0
   }
 ]
