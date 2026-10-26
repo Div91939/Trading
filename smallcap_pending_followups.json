@@ -460,5 +460,89 @@
     "fire_bar": 764,
     "fire_date": "26-10-2026",
     "entry_close": 149.55
+  },
+  {
+    "stock": "ASHAPURMIN",
+    "signal": "REBOUND",
+    "fire_bar": 1292,
+    "fire_date": "26-10-2026",
+    "entry_close": 417.1
+  },
+  {
+    "stock": "LLOYDSENGG",
+    "signal": "REBOUND",
+    "fire_bar": 1292,
+    "fire_date": "26-10-2026",
+    "entry_close": 83.24
+  },
+  {
+    "stock": "MTARTECH",
+    "signal": "REBOUND",
+    "fire_bar": 1292,
+    "fire_date": "26-10-2026",
+    "entry_close": 6582.5
+  },
+  {
+    "stock": "MASTEK",
+    "signal": "REBOUND",
+    "fire_bar": 1292,
+    "fire_date": "26-10-2026",
+    "entry_close": 1634.2
+  },
+  {
+    "stock": "PCJEWELLER",
+    "signal": "REBOUND",
+    "fire_bar": 1292,
+    "fire_date": "26-10-2026",
+    "entry_close": 16.51
+  },
+  {
+    "stock": "PRICOLLTD",
+    "signal": "REV",
+    "fire_bar": 1291,
+    "fire_date": "26-10-2026",
+    "entry_close": 615.7
+  },
+  {
+    "stock": "REFEX",
+    "signal": "REBOUND",
+    "fire_bar": 1291,
+    "fire_date": "26-10-2026",
+    "entry_close": 225.5
+  },
+  {
+    "stock": "SKYGOLD",
+    "signal": "REV",
+    "fire_bar": 939,
+    "fire_date": "26-10-2026",
+    "entry_close": 938.5
+  },
+  {
+    "stock": "SKYGOLD",
+    "signal": "REBOUND",
+    "fire_bar": 939,
+    "fire_date": "26-10-2026",
+    "entry_close": 938.5
+  },
+  {
+    "stock": "SHAKTIPUMP",
+    "signal": "REBOUND",
+    "fire_bar": 1292,
+    "fire_date": "26-10-2026",
+    "entry_close": 367.0
+  },
+  {
+    "stock": "SKIPPER",
+    "signal": "REV",
+    "fire_bar": 1291,
+    "fire_date": "26-10-2026",
+    "entry_close": 472.9
+  },
+  {
+    "stock": "V2RETAIL",
+    "signal": "REBOUND",
+    "fire_bar": 1292,
+    "fire_date": "26-10-2026",
+    "entry_close": 161.36
   }
 ]

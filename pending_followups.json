@@ -61,5 +61,19 @@
     "fire_bar": 1296,
     "fire_date": "26-10-2026",
     "entry_close": 1226.2
+  },
+  {
+    "stock": "HINDCOPPER",
+    "signal": "REV",
+    "fire_bar": 1301,
+    "fire_date": "26-10-2026",
+    "entry_close": 407.55
+  },
+  {
+    "stock": "TITAGARH",
+    "signal": "REV",
+    "fire_bar": 1301,
+    "fire_date": "26-10-2026",
+    "entry_close": 649.55
   }
 ]
