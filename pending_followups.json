@@ -2,71 +2,64 @@
   {
     "stock": "ADANIGREEN",
     "signal": "REV",
-    "fire_bar": 1300,
-    "fire_date": "23-10-2026",
-    "entry_close": 1224.3
+    "fire_bar": 1301,
+    "fire_date": "26-10-2026",
+    "entry_close": 1188.7
   },
   {
-    "stock": "ADANIPOWER",
+    "stock": "BEML",
     "signal": "REV",
-    "fire_bar": 1302,
-    "fire_date": "23-10-2026",
-    "entry_close": 178.88
-  },
-  {
-    "stock": "DOLATALGO",
-    "signal": "REV",
-    "fire_bar": 1303,
-    "fire_date": "23-10-2026",
-    "entry_close": 56.15
+    "fire_bar": 1305,
+    "fire_date": "26-10-2026",
+    "entry_close": 1823.5
   },
   {
     "stock": "EDELWEISS",
     "signal": "REV",
-    "fire_bar": 1300,
-    "fire_date": "23-10-2026",
-    "entry_close": 116.75
+    "fire_bar": 1301,
+    "fire_date": "26-10-2026",
+    "entry_close": 121.8
   },
   {
     "stock": "GRSE",
     "signal": "REV",
-    "fire_bar": 1300,
-    "fire_date": "23-10-2026",
-    "entry_close": 1892.5
+    "fire_bar": 1301,
+    "fire_date": "26-10-2026",
+    "entry_close": 1875.0
+  },
+  {
+    "stock": "ORIRAIL",
+    "signal": "REV",
+    "fire_bar": 1301,
+    "fire_date": "26-10-2026",
+    "entry_close": 106.75
   },
   {
     "stock": "REFEX",
     "signal": "REV",
-    "fire_bar": 1301,
-    "fire_date": "23-10-2026",
-    "entry_close": 229.7
+    "fire_bar": 1302,
+    "fire_date": "26-10-2026",
+    "entry_close": 224.5
   },
   {
     "stock": "PARAS",
     "signal": "REV",
-    "fire_bar": 1247,
-    "fire_date": "23-10-2026",
-    "entry_close": 1163.7
-  },
-  {
-    "stock": "ADANIENSOL",
-    "signal": "REV",
-    "fire_bar": 1295,
-    "fire_date": "23-10-2026",
-    "entry_close": 1252.9
-  },
-  {
-    "stock": "HINDCOPPER",
-    "signal": "REV",
-    "fire_bar": 1300,
-    "fire_date": "23-10-2026",
-    "entry_close": 399.05
+    "fire_bar": 1248,
+    "fire_date": "26-10-2026",
+    "entry_close": 1197.3
   },
   {
     "stock": "TATATECH",
     "signal": "REV",
-    "fire_bar": 712,
-    "fire_date": "23-10-2026",
-    "entry_close": 657.35
+    "fire_bar": 713,
+    "fire_date": "26-10-2026",
+    "entry_close": 653.15
+  },
+  {
+    "stock": "ADANIENSOL",
+    "signal": "REV",
+    "fire_bar": 1296,
+    "fire_date": "26-10-2026",
+    "entry_close": 1226.2
   }
 ]
