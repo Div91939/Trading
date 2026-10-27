@@ -1,79 +1,23 @@
 [
   {
-    "stock": "ADANIGREEN",
-    "signal": "REV",
-    "fire_bar": 1301,
-    "fire_date": "26-10-2026",
-    "entry_close": 1188.7
-  },
-  {
-    "stock": "BEML",
-    "signal": "REV",
-    "fire_bar": 1305,
-    "fire_date": "26-10-2026",
-    "entry_close": 1823.5
-  },
-  {
-    "stock": "EDELWEISS",
-    "signal": "REV",
-    "fire_bar": 1301,
-    "fire_date": "26-10-2026",
-    "entry_close": 121.8
-  },
-  {
-    "stock": "GRSE",
-    "signal": "REV",
-    "fire_bar": 1301,
-    "fire_date": "26-10-2026",
-    "entry_close": 1875.0
-  },
-  {
-    "stock": "ORIRAIL",
-    "signal": "REV",
-    "fire_bar": 1301,
-    "fire_date": "26-10-2026",
-    "entry_close": 106.75
-  },
-  {
     "stock": "REFEX",
     "signal": "REV",
-    "fire_bar": 1302,
-    "fire_date": "26-10-2026",
-    "entry_close": 224.5
-  },
-  {
-    "stock": "PARAS",
-    "signal": "REV",
-    "fire_bar": 1248,
-    "fire_date": "26-10-2026",
-    "entry_close": 1197.3
-  },
-  {
-    "stock": "TATATECH",
-    "signal": "REV",
-    "fire_bar": 713,
-    "fire_date": "26-10-2026",
-    "entry_close": 653.15
-  },
-  {
-    "stock": "ADANIENSOL",
-    "signal": "REV",
-    "fire_bar": 1296,
-    "fire_date": "26-10-2026",
-    "entry_close": 1226.2
-  },
-  {
-    "stock": "HINDCOPPER",
-    "signal": "REV",
-    "fire_bar": 1301,
-    "fire_date": "26-10-2026",
-    "entry_close": 407.55
+    "fire_bar": 1303,
+    "fire_date": "27-10-2026",
+    "entry_close": 231.95
   },
   {
     "stock": "TITAGARH",
     "signal": "REV",
-    "fire_bar": 1301,
-    "fire_date": "26-10-2026",
-    "entry_close": 649.55
+    "fire_bar": 1302,
+    "fire_date": "27-10-2026",
+    "entry_close": 664.05
+  },
+  {
+    "stock": "TATATECH",
+    "signal": "REV",
+    "fire_bar": 714,
+    "fire_date": "27-10-2026",
+    "entry_close": 664.85
   }
 ]
