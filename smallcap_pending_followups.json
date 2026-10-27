@@ -271,5 +271,61 @@
     "fire_bar": 1293,
     "fire_date": "27-10-2026",
     "entry_close": 66.66
+  },
+  {
+    "stock": "GOKEX",
+    "signal": "REV",
+    "fire_bar": 1293,
+    "fire_date": "27-10-2026",
+    "entry_close": 632.65
+  },
+  {
+    "stock": "GREAVESCOT",
+    "signal": "REV",
+    "fire_bar": 1293,
+    "fire_date": "27-10-2026",
+    "entry_close": 181.68
+  },
+  {
+    "stock": "KPIGREEN",
+    "signal": "REV",
+    "fire_bar": 1293,
+    "fire_date": "27-10-2026",
+    "entry_close": 285.7
+  },
+  {
+    "stock": "RAIN",
+    "signal": "REV",
+    "fire_bar": 1293,
+    "fire_date": "27-10-2026",
+    "entry_close": 202.14
+  },
+  {
+    "stock": "TEXRAIL",
+    "signal": "REV",
+    "fire_bar": 1293,
+    "fire_date": "27-10-2026",
+    "entry_close": 100.58
+  },
+  {
+    "stock": "THOMASCOOK",
+    "signal": "REV",
+    "fire_bar": 1293,
+    "fire_date": "27-10-2026",
+    "entry_close": 90.1
+  },
+  {
+    "stock": "V2RETAIL",
+    "signal": "REBOUND",
+    "fire_bar": 1293,
+    "fire_date": "27-10-2026",
+    "entry_close": 157.57
+  },
+  {
+    "stock": "ZAGGLE",
+    "signal": "REBOUND",
+    "fire_bar": 765,
+    "fire_date": "27-10-2026",
+    "entry_close": 164.78
   }
 ]
