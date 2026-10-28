@@ -26,5 +26,12 @@
     "fire_bar": 715,
     "fire_date": "28-10-2026",
     "entry_close": 651.0
+  },
+  {
+    "stock": "REFEX",
+    "signal": "REV",
+    "fire_bar": 1304,
+    "fire_date": "28-10-2026",
+    "entry_close": 222.65
   }
 ]
