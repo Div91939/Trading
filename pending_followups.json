@@ -1,51 +1,30 @@
 [
   {
-    "stock": "REFEX",
+    "stock": "MAZDOCK",
     "signal": "REV",
-    "fire_bar": 1303,
-    "fire_date": "27-10-2026",
-    "entry_close": 231.95
+    "fire_bar": 1304,
+    "fire_date": "28-10-2026",
+    "entry_close": 1770.0
   },
   {
     "stock": "TITAGARH",
     "signal": "REV",
-    "fire_bar": 1302,
-    "fire_date": "27-10-2026",
-    "entry_close": 664.05
+    "fire_bar": 1303,
+    "fire_date": "28-10-2026",
+    "entry_close": 659.5
+  },
+  {
+    "stock": "SRMENERGY",
+    "signal": "MOM",
+    "fire_bar": 1299,
+    "fire_date": "28-10-2026",
+    "entry_close": 33.1
   },
   {
     "stock": "TATATECH",
     "signal": "REV",
-    "fire_bar": 714,
-    "fire_date": "27-10-2026",
-    "entry_close": 664.85
-  },
-  {
-    "stock": "AFCOM",
-    "signal": "REV",
-    "fire_bar": 548,
-    "fire_date": "27-10-2026",
-    "entry_close": 209.08
-  },
-  {
-    "stock": "GRSE",
-    "signal": "REV",
-    "fire_bar": 1302,
-    "fire_date": "27-10-2026",
-    "entry_close": 1930.9
-  },
-  {
-    "stock": "HINDCOPPER",
-    "signal": "REV",
-    "fire_bar": 1302,
-    "fire_date": "27-10-2026",
-    "entry_close": 407.35
-  },
-  {
-    "stock": "MAZDOCK",
-    "signal": "REV",
-    "fire_bar": 1303,
-    "fire_date": "27-10-2026",
-    "entry_close": 1754.0
+    "fire_bar": 715,
+    "fire_date": "28-10-2026",
+    "entry_close": 651.0
   }
 ]
