@@ -229,5 +229,54 @@
     "fire_bar": 1295,
     "fire_date": "29-10-2026",
     "entry_close": 81.66
+  },
+  {
+    "stock": "AARTIPHARM",
+    "signal": "REBOUND",
+    "fire_bar": 927,
+    "fire_date": "29-10-2026",
+    "entry_close": 927.65
+  },
+  {
+    "stock": "BBOX",
+    "signal": "REBOUND",
+    "fire_bar": 1295,
+    "fire_date": "29-10-2026",
+    "entry_close": 821.15
+  },
+  {
+    "stock": "EMBDL",
+    "signal": "REBOUND",
+    "fire_bar": 1295,
+    "fire_date": "29-10-2026",
+    "entry_close": 50.84
+  },
+  {
+    "stock": "EQUITASBNK",
+    "signal": "REV",
+    "fire_bar": 1295,
+    "fire_date": "29-10-2026",
+    "entry_close": 57.17
+  },
+  {
+    "stock": "EQUITASBNK",
+    "signal": "REBOUND",
+    "fire_bar": 1295,
+    "fire_date": "29-10-2026",
+    "entry_close": 57.17
+  },
+  {
+    "stock": "VOLTAMP",
+    "signal": "REBOUND",
+    "fire_bar": 1295,
+    "fire_date": "29-10-2026",
+    "entry_close": 10176.0
+  },
+  {
+    "stock": "WEBELSOLAR",
+    "signal": "REBOUND",
+    "fire_bar": 1295,
+    "fire_date": "29-10-2026",
+    "entry_close": 66.96
   }
 ]
