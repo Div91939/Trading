@@ -2,36 +2,8 @@
   {
     "stock": "MAZDOCK",
     "signal": "REV",
-    "fire_bar": 1304,
-    "fire_date": "28-10-2026",
-    "entry_close": 1770.0
-  },
-  {
-    "stock": "TITAGARH",
-    "signal": "REV",
-    "fire_bar": 1303,
-    "fire_date": "28-10-2026",
-    "entry_close": 659.5
-  },
-  {
-    "stock": "SRMENERGY",
-    "signal": "MOM",
-    "fire_bar": 1299,
-    "fire_date": "28-10-2026",
-    "entry_close": 33.1
-  },
-  {
-    "stock": "TATATECH",
-    "signal": "REV",
-    "fire_bar": 715,
-    "fire_date": "28-10-2026",
-    "entry_close": 651.0
-  },
-  {
-    "stock": "REFEX",
-    "signal": "REV",
-    "fire_bar": 1304,
-    "fire_date": "28-10-2026",
-    "entry_close": 222.65
+    "fire_bar": 1305,
+    "fire_date": "29-10-2026",
+    "entry_close": 1735.3
   }
 ]
