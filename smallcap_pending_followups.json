@@ -173,5 +173,124 @@
     "fire_bar": 1296,
     "fire_date": "30-10-2026",
     "entry_close": 65.64
+  },
+  {
+    "stock": "AARTIPHARM",
+    "signal": "REBOUND",
+    "fire_bar": 928,
+    "fire_date": "30-10-2026",
+    "entry_close": 872.7
+  },
+  {
+    "stock": "APOLLO",
+    "signal": "REBOUND",
+    "fire_bar": 1296,
+    "fire_date": "30-10-2026",
+    "entry_close": 398.75
+  },
+  {
+    "stock": "BLUESTONE",
+    "signal": "REV",
+    "fire_bar": 298,
+    "fire_date": "30-10-2026",
+    "entry_close": 674.55
+  },
+  {
+    "stock": "EDELWEISS",
+    "signal": "REBOUND",
+    "fire_bar": 1296,
+    "fire_date": "30-10-2026",
+    "entry_close": 121.16
+  },
+  {
+    "stock": "EMBDL",
+    "signal": "REBOUND",
+    "fire_bar": 1296,
+    "fire_date": "30-10-2026",
+    "entry_close": 49.48
+  },
+  {
+    "stock": "GREAVESCOT",
+    "signal": "REBOUND",
+    "fire_bar": 1296,
+    "fire_date": "30-10-2026",
+    "entry_close": 199.4
+  },
+  {
+    "stock": "LLOYDSENGG",
+    "signal": "REBOUND",
+    "fire_bar": 1296,
+    "fire_date": "30-10-2026",
+    "entry_close": 83.12
+  },
+  {
+    "stock": "NETWORK18",
+    "signal": "REBOUND",
+    "fire_bar": 1296,
+    "fire_date": "30-10-2026",
+    "entry_close": 23.75
+  },
+  {
+    "stock": "QPOWER",
+    "signal": "REBOUND",
+    "fire_bar": 417,
+    "fire_date": "30-10-2026",
+    "entry_close": 1395.3
+  },
+  {
+    "stock": "SHAKTIPUMP",
+    "signal": "REV",
+    "fire_bar": 1296,
+    "fire_date": "30-10-2026",
+    "entry_close": 353.65
+  },
+  {
+    "stock": "RENUKA",
+    "signal": "REV",
+    "fire_bar": 1296,
+    "fire_date": "30-10-2026",
+    "entry_close": 17.35
+  },
+  {
+    "stock": "RENUKA",
+    "signal": "REBOUND",
+    "fire_bar": 1296,
+    "fire_date": "30-10-2026",
+    "entry_close": 17.35
+  },
+  {
+    "stock": "SKIPPER",
+    "signal": "REBOUND",
+    "fire_bar": 1295,
+    "fire_date": "30-10-2026",
+    "entry_close": 492.5
+  },
+  {
+    "stock": "SWSOLAR",
+    "signal": "REBOUND",
+    "fire_bar": 1296,
+    "fire_date": "30-10-2026",
+    "entry_close": 135.97
+  },
+  {
+    "stock": "TEXRAIL",
+    "signal": "REBOUND",
+    "fire_bar": 1296,
+    "fire_date": "30-10-2026",
+    "entry_close": 98.26
+  },
+  {
+    "stock": "V2RETAIL",
+    "signal": "REV",
+    "fire_bar": 1296,
+    "fire_date": "30-10-2026",
+    "entry_close": 147.47
+  },
+  {
+    "stock": "V2RETAIL",
+    "signal": "REBOUND",
+    "fire_bar": 1296,
+    "fire_date": "30-10-2026",
+    "entry_close": 147.47
   }
 ]
