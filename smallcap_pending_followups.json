@@ -215,5 +215,19 @@
     "fire_bar": 1297,
     "fire_date": "02-11-2026",
     "entry_close": 158.58
+  },
+  {
+    "stock": "PRAJIND",
+    "signal": "REBOUND",
+    "fire_bar": 1297,
+    "fire_date": "02-11-2026",
+    "entry_close": 271.13
+  },
+  {
+    "stock": "SHAILY",
+    "signal": "REBOUND",
+    "fire_bar": 1134,
+    "fire_date": "02-11-2026",
+    "entry_close": 3010.8
   }
 ]
