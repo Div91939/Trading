@@ -187,5 +187,61 @@
     "fire_bar": 1298,
     "fire_date": "03-11-2026",
     "entry_close": 165.91
+  },
+  {
+    "stock": "GNFC",
+    "signal": "REBOUND",
+    "fire_bar": 1298,
+    "fire_date": "03-11-2026",
+    "entry_close": 465.05
+  },
+  {
+    "stock": "MOIL",
+    "signal": "REV",
+    "fire_bar": 1298,
+    "fire_date": "03-11-2026",
+    "entry_close": 203.22
+  },
+  {
+    "stock": "MOIL",
+    "signal": "REBOUND",
+    "fire_bar": 1298,
+    "fire_date": "03-11-2026",
+    "entry_close": 203.22
+  },
+  {
+    "stock": "PCJEWELLER",
+    "signal": "REV",
+    "fire_bar": 1298,
+    "fire_date": "03-11-2026",
+    "entry_close": 14.69
+  },
+  {
+    "stock": "PRAJIND",
+    "signal": "REBOUND",
+    "fire_bar": 1298,
+    "fire_date": "03-11-2026",
+    "entry_close": 254.63
+  },
+  {
+    "stock": "RAIN",
+    "signal": "REV",
+    "fire_bar": 1298,
+    "fire_date": "03-11-2026",
+    "entry_close": 181.26
+  },
+  {
+    "stock": "RAIN",
+    "signal": "REBOUND",
+    "fire_bar": 1298,
+    "fire_date": "03-11-2026",
+    "entry_close": 181.26
+  },
+  {
+    "stock": "STLTECH",
+    "signal": "REV",
+    "fire_bar": 1298,
+    "fire_date": "03-11-2026",
+    "entry_close": 756.1
   }
 ]
