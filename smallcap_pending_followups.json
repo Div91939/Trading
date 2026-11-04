@@ -194,5 +194,33 @@
     "fire_bar": 1299,
     "fire_date": "04-11-2026",
     "entry_close": 163.98
+  },
+  {
+    "stock": "GNFC",
+    "signal": "REBOUND",
+    "fire_bar": 1299,
+    "fire_date": "04-11-2026",
+    "entry_close": 470.7
+  },
+  {
+    "stock": "MARKSANS",
+    "signal": "REBOUND",
+    "fire_bar": 1299,
+    "fire_date": "04-11-2026",
+    "entry_close": 301.65
+  },
+  {
+    "stock": "REFEX",
+    "signal": "REBOUND",
+    "fire_bar": 1298,
+    "fire_date": "04-11-2026",
+    "entry_close": 222.36
+  },
+  {
+    "stock": "THANGAMAYL",
+    "signal": "REBOUND",
+    "fire_bar": 1299,
+    "fire_date": "04-11-2026",
+    "entry_close": 4285.9
   }
 ]
