@@ -117,5 +117,54 @@
     "fire_bar": 1300,
     "fire_date": "05-11-2026",
     "entry_close": 154.51
+  },
+  {
+    "stock": "GNFC",
+    "signal": "REV",
+    "fire_bar": 1300,
+    "fire_date": "05-11-2026",
+    "entry_close": 460.4
+  },
+  {
+    "stock": "GNFC",
+    "signal": "REBOUND",
+    "fire_bar": 1300,
+    "fire_date": "05-11-2026",
+    "entry_close": 460.4
+  },
+  {
+    "stock": "JAIBALAJI",
+    "signal": "REBOUND",
+    "fire_bar": 1300,
+    "fire_date": "05-11-2026",
+    "entry_close": 67.95
+  },
+  {
+    "stock": "QPOWER",
+    "signal": "REBOUND",
+    "fire_bar": 421,
+    "fire_date": "05-11-2026",
+    "entry_close": 1450.3
+  },
+  {
+    "stock": "SHAILY",
+    "signal": "REBOUND",
+    "fire_bar": 1137,
+    "fire_date": "05-11-2026",
+    "entry_close": 2972.7
+  },
+  {
+    "stock": "SHILPAMED",
+    "signal": "REBOUND",
+    "fire_bar": 1300,
+    "fire_date": "05-11-2026",
+    "entry_close": 921.8
+  },
+  {
+    "stock": "TEXRAIL",
+    "signal": "REBOUND",
+    "fire_bar": 1300,
+    "fire_date": "05-11-2026",
+    "entry_close": 103.55
   }
 ]
