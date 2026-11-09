@@ -131,5 +131,47 @@
     "fire_bar": 1205,
     "fire_date": "09-11-2026",
     "entry_close": 611.5
+  },
+  {
+    "stock": "AVALON",
+    "signal": "REV",
+    "fire_bar": 884,
+    "fire_date": "09-11-2026",
+    "entry_close": 1855.5
+  },
+  {
+    "stock": "BLUESTONE",
+    "signal": "REBOUND",
+    "fire_bar": 305,
+    "fire_date": "09-11-2026",
+    "entry_close": 738.8
+  },
+  {
+    "stock": "GOKEX",
+    "signal": "REBOUND",
+    "fire_bar": 1303,
+    "fire_date": "09-11-2026",
+    "entry_close": 678.1
+  },
+  {
+    "stock": "PCJEWELLER",
+    "signal": "REBOUND",
+    "fire_bar": 1303,
+    "fire_date": "09-11-2026",
+    "entry_close": 15.2
+  },
+  {
+    "stock": "RAIN",
+    "signal": "REV",
+    "fire_bar": 1303,
+    "fire_date": "09-11-2026",
+    "entry_close": 162.03
+  },
+  {
+    "stock": "THANGAMAYL",
+    "signal": "REBOUND",
+    "fire_bar": 1303,
+    "fire_date": "09-11-2026",
+    "entry_close": 4233.4
   }
 ]
