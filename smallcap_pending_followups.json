@@ -14,143 +14,122 @@
     "entry_close": 4314.2
   },
   {
-    "stock": "AVALON",
-    "signal": "REV",
-    "fire_bar": 883,
-    "fire_date": "08-11-2026",
-    "entry_close": 1893.6
+    "stock": "APOLLO",
+    "signal": "REBOUND",
+    "fire_bar": 1303,
+    "fire_date": "09-11-2026",
+    "entry_close": 410.9
   },
   {
     "stock": "AVALON",
     "signal": "REBOUND",
-    "fire_bar": 883,
-    "fire_date": "08-11-2026",
-    "entry_close": 1893.6
+    "fire_bar": 884,
+    "fire_date": "09-11-2026",
+    "entry_close": 1941.9
   },
   {
-    "stock": "BLUESTONE",
+    "stock": "AZAD",
     "signal": "REBOUND",
-    "fire_bar": 304,
-    "fire_date": "08-11-2026",
-    "entry_close": 710.85
+    "fire_bar": 711,
+    "fire_date": "09-11-2026",
+    "entry_close": 2425.2
   },
   {
     "stock": "EQUITASBNK",
     "signal": "REBOUND",
-    "fire_bar": 1302,
-    "fire_date": "08-11-2026",
-    "entry_close": 54.69
-  },
-  {
-    "stock": "GNFC",
-    "signal": "REV",
-    "fire_bar": 1302,
-    "fire_date": "08-11-2026",
-    "entry_close": 451.8
-  },
-  {
-    "stock": "KRN",
-    "signal": "REV",
-    "fire_bar": 523,
-    "fire_date": "08-11-2026",
-    "entry_close": 939.8
+    "fire_bar": 1303,
+    "fire_date": "09-11-2026",
+    "entry_close": 55.36
   },
   {
     "stock": "KRN",
     "signal": "REBOUND",
-    "fire_bar": 523,
-    "fire_date": "08-11-2026",
-    "entry_close": 939.8
+    "fire_bar": 524,
+    "fire_date": "09-11-2026",
+    "entry_close": 955.0
   },
   {
     "stock": "MTARTECH",
     "signal": "REV",
-    "fire_bar": 1302,
-    "fire_date": "08-11-2026",
-    "entry_close": 5448.5
+    "fire_bar": 1303,
+    "fire_date": "09-11-2026",
+    "entry_close": 5475.0
   },
   {
     "stock": "MTARTECH",
     "signal": "REBOUND",
-    "fire_bar": 1302,
-    "fire_date": "08-11-2026",
-    "entry_close": 5448.5
+    "fire_bar": 1303,
+    "fire_date": "09-11-2026",
+    "entry_close": 5475.0
   },
   {
     "stock": "OPTIEMUS",
     "signal": "REBOUND",
-    "fire_bar": 1301,
-    "fire_date": "08-11-2026",
-    "entry_close": 746.75
+    "fire_bar": 1302,
+    "fire_date": "09-11-2026",
+    "entry_close": 756.25
   },
   {
     "stock": "QPOWER",
     "signal": "REBOUND",
-    "fire_bar": 423,
-    "fire_date": "08-11-2026",
-    "entry_close": 1363.5
+    "fire_bar": 424,
+    "fire_date": "09-11-2026",
+    "entry_close": 1417.0
   },
   {
     "stock": "RAIN",
     "signal": "REBOUND",
-    "fire_bar": 1302,
-    "fire_date": "08-11-2026",
-    "entry_close": 181.4
+    "fire_bar": 1303,
+    "fire_date": "09-11-2026",
+    "entry_close": 170.81
   },
   {
     "stock": "RATEGAIN",
     "signal": "REV",
-    "fire_bar": 1211,
-    "fire_date": "08-11-2026",
-    "entry_close": 726.35
+    "fire_bar": 1212,
+    "fire_date": "09-11-2026",
+    "entry_close": 707.05
   },
   {
     "stock": "RATEGAIN",
     "signal": "REBOUND",
-    "fire_bar": 1211,
-    "fire_date": "08-11-2026",
-    "entry_close": 726.35
+    "fire_bar": 1212,
+    "fire_date": "09-11-2026",
+    "entry_close": 707.05
   },
   {
     "stock": "SKYGOLD",
     "signal": "REBOUND",
-    "fire_bar": 949,
-    "fire_date": "08-11-2026",
-    "entry_close": 951.95
-  },
-  {
-    "stock": "SHILPAMED",
-    "signal": "REBOUND",
-    "fire_bar": 1302,
-    "fire_date": "08-11-2026",
-    "entry_close": 942.35
+    "fire_bar": 950,
+    "fire_date": "09-11-2026",
+    "entry_close": 959.0
   },
   {
     "stock": "STLTECH",
     "signal": "REV",
-    "fire_bar": 1302,
-    "fire_date": "08-11-2026",
-    "entry_close": 719.9
+    "fire_bar": 1303,
+    "fire_date": "09-11-2026",
+    "entry_close": 670.95
   },
   {
     "stock": "STLTECH",
     "signal": "REBOUND",
-    "fire_bar": 1302,
-    "fire_date": "08-11-2026",
-    "entry_close": 719.9
+    "fire_bar": 1303,
+    "fire_date": "09-11-2026",
+    "entry_close": 670.95
   },
   {
     "stock": "SUPRIYA",
     "signal": "REV",
-    "fire_bar": 1204,
-    "fire_date": "08-11-2026",
-    "entry_close": 695.8
+    "fire_bar": 1205,
+    "fire_date": "09-11-2026",
+    "entry_close": 611.5
   },
   {
     "stock": "SUPRIYA",
     "signal": "REBOUND",
-    "fire_bar": 1204,
-    "fire_date": "08-11-2026",
-    "entry_close": 695.8
+    "fire_bar": 1205,
+    "fire_date": "09-11-2026",
+    "entry_close": 611.5
   }
 ]
