@@ -152,5 +152,26 @@
     "fire_bar": 1304,
     "fire_date": "11-11-2026",
     "entry_close": 199.84
+  },
+  {
+    "stock": "AZAD",
+    "signal": "REBOUND",
+    "fire_bar": 712,
+    "fire_date": "11-11-2026",
+    "entry_close": 2473.4
+  },
+  {
+    "stock": "QPOWER",
+    "signal": "MOM",
+    "fire_bar": 425,
+    "fire_date": "11-11-2026",
+    "entry_close": 1491.0
+  },
+  {
+    "stock": "SHAKTIPUMP",
+    "signal": "REBOUND",
+    "fire_bar": 1304,
+    "fire_date": "11-11-2026",
+    "entry_close": 399.1
   }
 ]
