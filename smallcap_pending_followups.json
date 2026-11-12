@@ -89,5 +89,40 @@
     "fire_bar": 1207,
     "fire_date": "12-11-2026",
     "entry_close": 642.75
+  },
+  {
+    "stock": "ASTRAMICRO",
+    "signal": "MOM",
+    "fire_bar": 1305,
+    "fire_date": "12-11-2026",
+    "entry_close": 1785.8
+  },
+  {
+    "stock": "MANORAMA",
+    "signal": "MOM",
+    "fire_bar": 1081,
+    "fire_date": "12-11-2026",
+    "entry_close": 2100.1
+  },
+  {
+    "stock": "OPTIEMUS",
+    "signal": "REBOUND",
+    "fire_bar": 1304,
+    "fire_date": "12-11-2026",
+    "entry_close": 776.85
+  },
+  {
+    "stock": "RAIN",
+    "signal": "REV",
+    "fire_bar": 1305,
+    "fire_date": "12-11-2026",
+    "entry_close": 166.47
+  },
+  {
+    "stock": "TANLA",
+    "signal": "MOM",
+    "fire_bar": 1305,
+    "fire_date": "12-11-2026",
+    "entry_close": 730.7
   }
 ]
