@@ -14,115 +14,73 @@
     "entry_close": 4314.2
   },
   {
-    "stock": "CUPID",
-    "signal": "MOM",
-    "fire_bar": 1305,
-    "fire_date": "12-11-2026",
-    "entry_close": 377.35
+    "stock": "AVALON",
+    "signal": "REBOUND",
+    "fire_bar": 887,
+    "fire_date": "13-11-2026",
+    "entry_close": 2004.3
   },
   {
     "stock": "KRN",
     "signal": "REBOUND",
-    "fire_bar": 526,
-    "fire_date": "12-11-2026",
-    "entry_close": 1035.8
-  },
-  {
-    "stock": "KTKBANK",
-    "signal": "MOM",
-    "fire_bar": 1305,
-    "fire_date": "12-11-2026",
-    "entry_close": 360.4
+    "fire_bar": 527,
+    "fire_date": "13-11-2026",
+    "entry_close": 1037.0
   },
   {
     "stock": "MTARTECH",
     "signal": "REBOUND",
-    "fire_bar": 1305,
-    "fire_date": "12-11-2026",
-    "entry_close": 5875.5
+    "fire_bar": 1306,
+    "fire_date": "13-11-2026",
+    "entry_close": 6022.0
+  },
+  {
+    "stock": "RAIN",
+    "signal": "REV",
+    "fire_bar": 1306,
+    "fire_date": "13-11-2026",
+    "entry_close": 165.2
   },
   {
     "stock": "RAIN",
     "signal": "REBOUND",
-    "fire_bar": 1305,
-    "fire_date": "12-11-2026",
-    "entry_close": 170.55
+    "fire_bar": 1306,
+    "fire_date": "13-11-2026",
+    "entry_close": 165.2
   },
   {
     "stock": "RATEGAIN",
     "signal": "REV",
-    "fire_bar": 1214,
-    "fire_date": "12-11-2026",
-    "entry_close": 691.85
+    "fire_bar": 1215,
+    "fire_date": "13-11-2026",
+    "entry_close": 678.0
   },
   {
     "stock": "RATEGAIN",
     "signal": "REBOUND",
-    "fire_bar": 1214,
-    "fire_date": "12-11-2026",
-    "entry_close": 691.85
-  },
-  {
-    "stock": "SKYGOLD",
-    "signal": "MOM",
-    "fire_bar": 952,
-    "fire_date": "12-11-2026",
-    "entry_close": 1027.3
+    "fire_bar": 1215,
+    "fire_date": "13-11-2026",
+    "entry_close": 678.0
   },
   {
     "stock": "STLTECH",
     "signal": "REBOUND",
-    "fire_bar": 1305,
-    "fire_date": "12-11-2026",
-    "entry_close": 739.65
+    "fire_bar": 1306,
+    "fire_date": "13-11-2026",
+    "entry_close": 698.15
   },
   {
     "stock": "SUPRIYA",
     "signal": "REV",
-    "fire_bar": 1207,
-    "fire_date": "12-11-2026",
-    "entry_close": 642.75
+    "fire_bar": 1208,
+    "fire_date": "13-11-2026",
+    "entry_close": 643.9
   },
   {
     "stock": "SUPRIYA",
     "signal": "REBOUND",
-    "fire_bar": 1207,
-    "fire_date": "12-11-2026",
-    "entry_close": 642.75
-  },
-  {
-    "stock": "ASTRAMICRO",
-    "signal": "MOM",
-    "fire_bar": 1305,
-    "fire_date": "12-11-2026",
-    "entry_close": 1785.8
-  },
-  {
-    "stock": "MANORAMA",
-    "signal": "MOM",
-    "fire_bar": 1081,
-    "fire_date": "12-11-2026",
-    "entry_close": 2100.1
-  },
-  {
-    "stock": "OPTIEMUS",
-    "signal": "REBOUND",
-    "fire_bar": 1304,
-    "fire_date": "12-11-2026",
-    "entry_close": 776.85
-  },
-  {
-    "stock": "RAIN",
-    "signal": "REV",
-    "fire_bar": 1305,
-    "fire_date": "12-11-2026",
-    "entry_close": 166.47
-  },
-  {
-    "stock": "TANLA",
-    "signal": "MOM",
-    "fire_bar": 1305,
-    "fire_date": "12-11-2026",
-    "entry_close": 730.7
+    "fire_bar": 1208,
+    "fire_date": "13-11-2026",
+    "entry_close": 643.9
   }
 ]
