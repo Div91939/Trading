@@ -82,5 +82,12 @@
     "fire_bar": 1208,
     "fire_date": "13-11-2026",
     "entry_close": 643.9
+  },
+  {
+    "stock": "V2RETAIL",
+    "signal": "REBOUND",
+    "fire_bar": 1306,
+    "fire_date": "13-11-2026",
+    "entry_close": 164.1
   }
 ]
