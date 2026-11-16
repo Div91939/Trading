@@ -152,5 +152,68 @@
     "fire_bar": 1307,
     "fire_date": "16-11-2026",
     "entry_close": 82.62
+  },
+  {
+    "stock": "AURIONPRO",
+    "signal": "REBOUND",
+    "fire_bar": 1307,
+    "fire_date": "16-11-2026",
+    "entry_close": 564.9
+  },
+  {
+    "stock": "BLUESTONE",
+    "signal": "REBOUND",
+    "fire_bar": 309,
+    "fire_date": "16-11-2026",
+    "entry_close": 712.0
+  },
+  {
+    "stock": "EQUITASBNK",
+    "signal": "REBOUND",
+    "fire_bar": 1307,
+    "fire_date": "16-11-2026",
+    "entry_close": 57.12
+  },
+  {
+    "stock": "MANORAMA",
+    "signal": "REBOUND",
+    "fire_bar": 1083,
+    "fire_date": "16-11-2026",
+    "entry_close": 1879.0
+  },
+  {
+    "stock": "PGIL",
+    "signal": "REBOUND",
+    "fire_bar": 1306,
+    "fire_date": "16-11-2026",
+    "entry_close": 1314.7
+  },
+  {
+    "stock": "PRICOLLTD",
+    "signal": "REV",
+    "fire_bar": 1306,
+    "fire_date": "16-11-2026",
+    "entry_close": 615.0
+  },
+  {
+    "stock": "PRICOLLTD",
+    "signal": "REBOUND",
+    "fire_bar": 1306,
+    "fire_date": "16-11-2026",
+    "entry_close": 615.0
+  },
+  {
+    "stock": "SHILPAMED",
+    "signal": "REBOUND",
+    "fire_bar": 1307,
+    "fire_date": "16-11-2026",
+    "entry_close": 938.35
+  },
+  {
+    "stock": "VIYASH",
+    "signal": "REBOUND",
+    "fire_bar": 1307,
+    "fire_date": "16-11-2026",
+    "entry_close": 236.38
   }
 ]
