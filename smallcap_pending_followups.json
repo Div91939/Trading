@@ -103,5 +103,40 @@
     "fire_bar": 1308,
     "fire_date": "17-11-2026",
     "entry_close": 143.8
+  },
+  {
+    "stock": "AURIONPRO",
+    "signal": "REBOUND",
+    "fire_bar": 1308,
+    "fire_date": "17-11-2026",
+    "entry_close": 563.15
+  },
+  {
+    "stock": "MTARTECH",
+    "signal": "REBOUND",
+    "fire_bar": 1308,
+    "fire_date": "17-11-2026",
+    "entry_close": 5709.5
+  },
+  {
+    "stock": "QPOWER",
+    "signal": "MOM",
+    "fire_bar": 429,
+    "fire_date": "17-11-2026",
+    "entry_close": 1573.3
+  },
+  {
+    "stock": "RATEGAIN",
+    "signal": "REBOUND",
+    "fire_bar": 1217,
+    "fire_date": "17-11-2026",
+    "entry_close": 682.95
+  },
+  {
+    "stock": "SHILPAMED",
+    "signal": "REBOUND",
+    "fire_bar": 1308,
+    "fire_date": "17-11-2026",
+    "entry_close": 917.3
   }
 ]
