@@ -5,5 +5,12 @@
     "fire_bar": 1318,
     "fire_date": "18-11-2026",
     "entry_close": 230.0
+  },
+  {
+    "stock": "SRMENERGY",
+    "signal": "MOM",
+    "fire_bar": 1314,
+    "fire_date": "18-11-2026",
+    "entry_close": 31.55
   }
 ]
