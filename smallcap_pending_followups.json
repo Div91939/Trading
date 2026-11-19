@@ -124,5 +124,26 @@
     "fire_bar": 1310,
     "fire_date": "19-11-2026",
     "entry_close": 144.0
+  },
+  {
+    "stock": "AVALON",
+    "signal": "REV",
+    "fire_bar": 891,
+    "fire_date": "19-11-2026",
+    "entry_close": 1782.6
+  },
+  {
+    "stock": "HCC",
+    "signal": "REBOUND",
+    "fire_bar": 1310,
+    "fire_date": "19-11-2026",
+    "entry_close": 16.84
+  },
+  {
+    "stock": "ZAGGLE",
+    "signal": "REV",
+    "fire_bar": 782,
+    "fire_date": "19-11-2026",
+    "entry_close": 154.46
   }
 ]
