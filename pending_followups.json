@@ -1,16 +1,9 @@
 [
   {
-    "stock": "RAPICUT",
+    "stock": "REFEX",
     "signal": "REV",
-    "fire_bar": 1318,
-    "fire_date": "18-11-2026",
-    "entry_close": 230.0
-  },
-  {
-    "stock": "SRMENERGY",
-    "signal": "MOM",
-    "fire_bar": 1314,
-    "fire_date": "18-11-2026",
-    "entry_close": 31.55
+    "fire_bar": 1320,
+    "fire_date": "19-11-2026",
+    "entry_close": 218.14
   }
 ]
