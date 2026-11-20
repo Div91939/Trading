@@ -1,9 +1,9 @@
 [
   {
-    "stock": "REFEX",
-    "signal": "REV",
+    "stock": "SWITCHTE",
+    "signal": "MOM",
     "fire_bar": 1320,
-    "fire_date": "19-11-2026",
-    "entry_close": 218.14
+    "fire_date": "20-11-2026",
+    "entry_close": 155.9
   }
 ]
