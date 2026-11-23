@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "stock": "REFEX",
+    "signal": "REV",
+    "fire_bar": 1322,
+    "fire_date": "23-11-2026",
+    "entry_close": 209.86
+  }
+]

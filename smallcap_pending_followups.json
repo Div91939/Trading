@@ -131,5 +131,61 @@
     "fire_bar": 1312,
     "fire_date": "23-11-2026",
     "entry_close": 157.71
+  },
+  {
+    "stock": "BALUFORGE",
+    "signal": "REBOUND",
+    "fire_bar": 640,
+    "fire_date": "23-11-2026",
+    "entry_close": 501.0
+  },
+  {
+    "stock": "CUPID",
+    "signal": "REBOUND",
+    "fire_bar": 1312,
+    "fire_date": "23-11-2026",
+    "entry_close": 362.15
+  },
+  {
+    "stock": "KPIGREEN",
+    "signal": "REBOUND",
+    "fire_bar": 1312,
+    "fire_date": "23-11-2026",
+    "entry_close": 315.55
+  },
+  {
+    "stock": "MARKSANS",
+    "signal": "REV",
+    "fire_bar": 1312,
+    "fire_date": "23-11-2026",
+    "entry_close": 277.75
+  },
+  {
+    "stock": "MARKSANS",
+    "signal": "REBOUND",
+    "fire_bar": 1312,
+    "fire_date": "23-11-2026",
+    "entry_close": 277.75
+  },
+  {
+    "stock": "PRICOLLTD",
+    "signal": "REBOUND",
+    "fire_bar": 1311,
+    "fire_date": "23-11-2026",
+    "entry_close": 622.65
+  },
+  {
+    "stock": "RTNPOWER",
+    "signal": "REV",
+    "fire_bar": 1312,
+    "fire_date": "23-11-2026",
+    "entry_close": 6.3
+  },
+  {
+    "stock": "REFEX",
+    "signal": "REV",
+    "fire_bar": 1311,
+    "fire_date": "23-11-2026",
+    "entry_close": 209.86
   }
 ]
