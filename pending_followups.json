@@ -1,16 +1,1 @@
-[
-  {
-    "stock": "SWITCHTE",
-    "signal": "MOM",
-    "fire_bar": 1320,
-    "fire_date": "20-11-2026",
-    "entry_close": 155.9
-  },
-  {
-    "stock": "REFEX",
-    "signal": "REV",
-    "fire_bar": 1321,
-    "fire_date": "20-11-2026",
-    "entry_close": 212.63
-  }
-]
+[]
