@@ -187,5 +187,12 @@
     "fire_bar": 1311,
     "fire_date": "23-11-2026",
     "entry_close": 209.86
+  },
+  {
+    "stock": "IXIGO",
+    "signal": "REBOUND",
+    "fire_bar": 607,
+    "fire_date": "23-11-2026",
+    "entry_close": 167.12
   }
 ]
