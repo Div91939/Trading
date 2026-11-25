@@ -1,9 +1,16 @@
 [
   {
-    "stock": "REFEX",
+    "stock": "HINDCOPPER",
     "signal": "REV",
     "fire_bar": 1322,
-    "fire_date": "23-11-2026",
-    "entry_close": 209.86
+    "fire_date": "25-11-2026",
+    "entry_close": 402.9
+  },
+  {
+    "stock": "REFEX",
+    "signal": "REV",
+    "fire_bar": 1323,
+    "fire_date": "25-11-2026",
+    "entry_close": 208.01
   }
 ]
