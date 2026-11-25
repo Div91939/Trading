@@ -173,5 +173,75 @@
     "fire_bar": 1313,
     "fire_date": "25-11-2026",
     "entry_close": 151.12
+  },
+  {
+    "stock": "KPIGREEN",
+    "signal": "REBOUND",
+    "fire_bar": 1313,
+    "fire_date": "25-11-2026",
+    "entry_close": 308.2
+  },
+  {
+    "stock": "NAZARA",
+    "signal": "REV",
+    "fire_bar": 1313,
+    "fire_date": "25-11-2026",
+    "entry_close": 377.45
+  },
+  {
+    "stock": "NAZARA",
+    "signal": "REBOUND",
+    "fire_bar": 1313,
+    "fire_date": "25-11-2026",
+    "entry_close": 377.45
+  },
+  {
+    "stock": "OPTIEMUS",
+    "signal": "REV",
+    "fire_bar": 1312,
+    "fire_date": "25-11-2026",
+    "entry_close": 737.15
+  },
+  {
+    "stock": "OPTIEMUS",
+    "signal": "REBOUND",
+    "fire_bar": 1312,
+    "fire_date": "25-11-2026",
+    "entry_close": 737.15
+  },
+  {
+    "stock": "PRAJIND",
+    "signal": "REV",
+    "fire_bar": 1313,
+    "fire_date": "25-11-2026",
+    "entry_close": 227.3
+  },
+  {
+    "stock": "RTNPOWER",
+    "signal": "REV",
+    "fire_bar": 1313,
+    "fire_date": "25-11-2026",
+    "entry_close": 6.25
+  },
+  {
+    "stock": "RENUKA",
+    "signal": "REV",
+    "fire_bar": 1313,
+    "fire_date": "25-11-2026",
+    "entry_close": 16.85
+  },
+  {
+    "stock": "TANLA",
+    "signal": "REV",
+    "fire_bar": 1313,
+    "fire_date": "25-11-2026",
+    "entry_close": 649.5
+  },
+  {
+    "stock": "WEBELSOLAR",
+    "signal": "REBOUND",
+    "fire_bar": 1313,
+    "fire_date": "25-11-2026",
+    "entry_close": 62.15
   }
 ]
