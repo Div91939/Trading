@@ -145,5 +145,54 @@
     "fire_bar": 1314,
     "fire_date": "26-11-2026",
     "entry_close": 155.86
+  },
+  {
+    "stock": "LLOYDSENGG",
+    "signal": "REV",
+    "fire_bar": 1314,
+    "fire_date": "26-11-2026",
+    "entry_close": 79.32
+  },
+  {
+    "stock": "MARKSANS",
+    "signal": "REV",
+    "fire_bar": 1314,
+    "fire_date": "26-11-2026",
+    "entry_close": 279.4
+  },
+  {
+    "stock": "PRAJIND",
+    "signal": "REV",
+    "fire_bar": 1314,
+    "fire_date": "26-11-2026",
+    "entry_close": 225.38
+  },
+  {
+    "stock": "PRICOLLTD",
+    "signal": "REBOUND",
+    "fire_bar": 1313,
+    "fire_date": "26-11-2026",
+    "entry_close": 604.15
+  },
+  {
+    "stock": "REFEX",
+    "signal": "REV",
+    "fire_bar": 1313,
+    "fire_date": "26-11-2026",
+    "entry_close": 202.19
+  },
+  {
+    "stock": "SANDUMA",
+    "signal": "REV",
+    "fire_bar": 796,
+    "fire_date": "26-11-2026",
+    "entry_close": 160.7
+  },
+  {
+    "stock": "TANLA",
+    "signal": "REV",
+    "fire_bar": 1314,
+    "fire_date": "26-11-2026",
+    "entry_close": 624.7
   }
 ]
