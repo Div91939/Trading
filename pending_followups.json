@@ -1,16 +1,1 @@
-[
-  {
-    "stock": "EDELWEISS",
-    "signal": "REV",
-    "fire_bar": 1323,
-    "fire_date": "26-11-2026",
-    "entry_close": 123.9
-  },
-  {
-    "stock": "REFEX",
-    "signal": "REV",
-    "fire_bar": 1324,
-    "fire_date": "26-11-2026",
-    "entry_close": 201.66
-  }
-]
+[]
