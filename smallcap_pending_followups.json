@@ -117,5 +117,33 @@
     "fire_bar": 1315,
     "fire_date": "27-11-2026",
     "entry_close": 144.4
+  },
+  {
+    "stock": "LLOYDSENGG",
+    "signal": "REV",
+    "fire_bar": 1315,
+    "fire_date": "27-11-2026",
+    "entry_close": 79.29
+  },
+  {
+    "stock": "OPTIEMUS",
+    "signal": "REBOUND",
+    "fire_bar": 1314,
+    "fire_date": "27-11-2026",
+    "entry_close": 746.0
+  },
+  {
+    "stock": "PRAJIND",
+    "signal": "REBOUND",
+    "fire_bar": 1315,
+    "fire_date": "27-11-2026",
+    "entry_close": 255.64
+  },
+  {
+    "stock": "ZAGGLE",
+    "signal": "REBOUND",
+    "fire_bar": 787,
+    "fire_date": "27-11-2026",
+    "entry_close": 162.37
   }
 ]

@@ -1,1 +1,23 @@
-[]
+[
+  {
+    "stock": "EDELWEISS",
+    "signal": "REV",
+    "fire_bar": 1324,
+    "fire_date": "27-11-2026",
+    "entry_close": 121.15
+  },
+  {
+    "stock": "RAPICUT",
+    "signal": "REV",
+    "fire_bar": 1324,
+    "fire_date": "27-11-2026",
+    "entry_close": 219.95
+  },
+  {
+    "stock": "ADANIENSOL",
+    "signal": "REV",
+    "fire_bar": 1319,
+    "fire_date": "27-11-2026",
+    "entry_close": 1337.0
+  }
+]
